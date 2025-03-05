@@ -10,9 +10,9 @@ const Checkout = () => {
       id: "1",
       name: "Vintage Denim Jacket",
       price: 65.0,
-      size: "M",
+      size: "L",
       quantity: 1,
-      image: "https://via.placeholder.com/600x800",
+      image: "/outerwear/denim-jacket-view1.webp",
     },
     {
       id: "5",
@@ -438,7 +438,7 @@ const Checkout = () => {
                           <div>
                             <div className="flex justify-between text-base font-medium text-gray-900">
                               <h4>{item.name}</h4>
-                              <p className="ml-4">${item.price.toFixed(2)}</p>
+                              <p className="ml-4">€{item.price.toFixed(2)}</p>
                             </div>
                             <p className="mt-1 text-sm text-gray-500">
                               Size: {item.size}
@@ -576,7 +576,7 @@ const Checkout = () => {
                       </p>
                     </div>
                     <p className="text-sm font-medium text-gray-900">
-                      ${item.price.toFixed(2)}
+                      €{item.price.toFixed(2)}
                     </p>
                   </li>
                 ))}
@@ -586,19 +586,19 @@ const Checkout = () => {
             <div className="border-t border-gray-200 mt-6 pt-6">
               <div className="flex justify-between text-sm text-gray-600">
                 <p>Subtotal</p>
-                <p>${subtotal.toFixed(2)}</p>
+                <p>€{subtotal.toFixed(2)}</p>
               </div>
               <div className="flex justify-between text-sm text-gray-600 mt-2">
                 <p>Shipping</p>
-                <p>${shipping.toFixed(2)}</p>
+                <p>€{shipping.toFixed(2)}</p>
               </div>
               <div className="flex justify-between text-sm text-gray-600 mt-2">
                 <p>Tax</p>
-                <p>${tax.toFixed(2)}</p>
+                <p>€{tax.toFixed(2)}</p>
               </div>
               <div className="flex justify-between text-base font-medium text-gray-900 mt-4">
                 <p>Total</p>
-                <p>${total.toFixed(2)}</p>
+                <p>€{total.toFixed(2)}</p>
               </div>
             </div>
 

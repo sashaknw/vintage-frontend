@@ -14,6 +14,7 @@ const Shop = () => {
     era: "all",
     size: "all",
     priceRange: "all",
+    condition: "all", // Added condition filter
     sortBy: "newest",
   });
 
@@ -66,7 +67,7 @@ const Shop = () => {
       category: "tops",
       era: "90s",
       size: "L",
-      condition: "Excellent",
+      condition: "Mint",
       image: "https://via.placeholder.com/600x800",
     },
     {
@@ -96,7 +97,27 @@ const Shop = () => {
       category: "tops",
       era: "80s",
       size: "M",
-      condition: "Excellent",
+      condition: "Mint",
+      image: "https://via.placeholder.com/600x800",
+    },
+    {
+      id: "9",
+      name: "Vintage Band T-Shirt",
+      price: 28.0,
+      category: "tops",
+      era: "90s",
+      size: "L",
+      condition: "Rugged",
+      image: "https://via.placeholder.com/600x800",
+    },
+    {
+      id: "10",
+      name: "Designer Sunglasses",
+      price: 120.0,
+      category: "accessories",
+      era: "70s",
+      size: "One Size",
+      condition: "Mint",
       image: "https://via.placeholder.com/600x800",
     },
   ];
@@ -129,6 +150,13 @@ const Shop = () => {
         if (filters.size !== "all") {
           filteredItems = filteredItems.filter(
             (item) => item.size === filters.size
+          );
+        }
+
+        // Apply condition filter
+        if (filters.condition !== "all") {
+          filteredItems = filteredItems.filter(
+            (item) => item.condition === filters.condition
           );
         }
 
@@ -220,12 +248,18 @@ const Shop = () => {
       { value: "L", label: "L" },
       { value: "XL", label: "XL" },
     ],
+    condition: [
+      { value: "all", label: "All Conditions" },
+      { value: "Mint", label: "Mint" },
+      { value: "Good", label: "She's a beauty" },
+      { value: "Rugged", label: "Rugged" },
+    ],
     priceRange: [
       { value: "all", label: "All Prices" },
-      { value: "under30", label: "Under $30" },
-      { value: "30to50", label: "$30 - $50" },
-      { value: "50to100", label: "$50 - $100" },
-      { value: "over100", label: "Over $100" },
+      { value: "under30", label: "Under 30€" },
+      { value: "30to50", label: "30€ - 50€" },
+      { value: "50to100", label: "50€ - 100€" },
+      { value: "over100", label: "Over 100€" },
     ],
     sortBy: [
       { value: "newest", label: "Newest" },
@@ -242,7 +276,7 @@ const Shop = () => {
 
       {/* Filters */}
       <div className="bg-amber-50 rounded-lg p-6 mb-8">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {/* Category Filter */}
           <div>
             <label
@@ -309,6 +343,28 @@ const Shop = () => {
             </select>
           </div>
 
+          {/* Condition Filter */}
+          <div>
+            <label
+              htmlFor="condition"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Condition
+            </label>
+            <select
+              id="condition"
+              value={filters.condition}
+              onChange={(e) => handleFilterChange("condition", e.target.value)}
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+            >
+              {filterOptions.condition.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Price Range Filter */}
           <div>
             <label
@@ -367,6 +423,7 @@ const Shop = () => {
               era: "all",
               size: "all",
               priceRange: "all",
+              condition: "all", // Added condition reset
               sortBy: "newest",
             })
           }
@@ -397,6 +454,7 @@ const Shop = () => {
                 era: "all",
                 size: "all",
                 priceRange: "all",
+                condition: "all", // Added condition reset
                 sortBy: "newest",
               })
             }

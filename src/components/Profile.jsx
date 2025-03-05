@@ -437,7 +437,7 @@ const Profile = () => {
                                         </Link>
                                       </h4>
                                       <p className="ml-4 text-sm font-medium text-gray-900">
-                                        ${item.price.toFixed(2)}
+                                        €{item.price.toFixed(2)}
                                       </p>
                                     </div>
                                     <p className="mt-1 text-sm text-gray-500">
@@ -460,7 +460,7 @@ const Profile = () => {
                           items
                         </p>
                         <p className="text-lg font-medium text-gray-900">
-                          Total: ${order.total.toFixed(2)}
+                          Total: €{order.total.toFixed(2)}
                         </p>
                       </div>
                     </div>
@@ -521,7 +521,7 @@ const Profile = () => {
                           <Link to={`/item/${item.id}`}>{item.name}</Link>
                         </h3>
                         <p className="mt-1 text-sm font-medium text-amber-700">
-                          ${item.price.toFixed(2)}
+                          €{item.price.toFixed(2)}
                         </p>
                         <div className="mt-3">
                           <Link

@@ -23,12 +23,12 @@ const ItemDetails = () => {
           description:
             "Classic 90s denim jacket with subtle distressing and brass buttons. Perfect for layering in any season.",
           price: 65.0,
-          size: "M",
+          size: "L",
           category: "Outerwear",
           condition: "Good",
           brand: "Levi's",
           era: "90s",
-          images: ["https://via.placeholder.com/600x800"],
+          images: ["/outerwear/denim-jacket-view1.webp", "/outerwear/denim-jacket-view2.webp"],
           inStock: true,
         });
         setLoading(false);
@@ -103,7 +103,7 @@ const ItemDetails = () => {
 
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{item.name}</h1>
           <p className="text-2xl text-amber-700 mb-4">
-            ${item.price.toFixed(2)}
+            €{item.price.toFixed(2)}
           </p>
 
           <div className="border-t border-b border-gray-200 py-4 my-4">

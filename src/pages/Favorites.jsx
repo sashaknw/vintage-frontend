@@ -17,7 +17,8 @@ const Favorites = () => {
       era: "80s",
       size: "One Size",
       condition: "Good",
-      image: "https://via.placeholder.com/600x800",
+      image:
+        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
     },
     {
       id: "7",
@@ -26,7 +27,8 @@ const Favorites = () => {
       era: "90s",
       size: "8",
       condition: "Excellent",
-      image: "https://via.placeholder.com/600x800",
+      image:
+        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
     },
     {
       id: "12",
@@ -35,7 +37,8 @@ const Favorites = () => {
       era: "70s",
       size: "S",
       condition: "Good",
-      image: "https://via.placeholder.com/600x800",
+      image:
+        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
     },
     {
       id: "15",
@@ -44,7 +47,8 @@ const Favorites = () => {
       era: "60s",
       size: "One Size",
       condition: "Fair",
-      image: "https://via.placeholder.com/600x800",
+      image:
+        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
     },
   ];
 
@@ -189,7 +193,7 @@ const Favorites = () => {
                           {item.name}
                         </h3>
                         <p className="mt-1 font-medium text-amber-700">
-                          ${item.price.toFixed(2)}
+                          €{item.price.toFixed(2)}
                         </p>
                       </div>
                       <span className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded">

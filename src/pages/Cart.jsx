@@ -10,9 +10,9 @@ const Cart = () => {
       id: "1",
       name: "Vintage Denim Jacket",
       price: 65.0,
-      size: "M",
+      size: "L",
       quantity: 1,
-      image: "https://via.placeholder.com/600x800",
+      image: "/outerwear/denim-jacket-view1.webp",
     },
     {
       id: "5",
@@ -101,7 +101,7 @@ const Cart = () => {
                             </p>
                           </div>
                           <p className="text-lg font-medium text-amber-700">
-                            ${item.price.toFixed(2)}
+                            €{item.price.toFixed(2)}
                           </p>
                         </div>
                         <div className="mt-4 flex justify-between items-center">
@@ -192,16 +192,16 @@ const Cart = () => {
               <div className="space-y-4">
                 <div className="flex justify-between">
                   <p className="text-gray-600">Subtotal</p>
-                  <p className="text-gray-900">${subtotal.toFixed(2)}</p>
+                  <p className="text-gray-900">€{subtotal.toFixed(2)}</p>
                 </div>
                 <div className="flex justify-between">
                   <p className="text-gray-600">Shipping</p>
-                  <p className="text-gray-900">${shipping.toFixed(2)}</p>
+                  <p className="text-gray-900">€{shipping.toFixed(2)}</p>
                 </div>
                 <div className="flex justify-between border-t border-gray-200 pt-4">
                   <p className="text-lg font-medium text-gray-900">Total</p>
                   <p className="text-lg font-medium text-amber-700">
-                    ${total.toFixed(2)}
+                    €{total.toFixed(2)}
                   </p>
                 </div>
               </div>

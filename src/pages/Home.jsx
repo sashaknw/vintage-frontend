@@ -9,28 +9,31 @@ const Home = () => {
       name: "Vintage Denim Jacket",
       price: 65.0,
       era: "90s",
-      image: "https://via.placeholder.com/600x800",
+      image: "/outerwear/denim-jacket-view1.webp",
     },
     {
       id: "2",
       name: "Floral Print Dress",
       price: 48.5,
       era: "70s",
-      image: "https://via.placeholder.com/600x800",
+      image:
+        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
     },
     {
       id: "3",
       name: "Leather Crossbody Bag",
       price: 35.0,
       era: "80s",
-      image: "https://via.placeholder.com/600x800",
+      image:
+        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
     },
     {
       id: "4",
       name: "High-Waisted Jeans",
       price: 55.0,
       era: "70s",
-      image: "https://via.placeholder.com/600x800",
+      image:
+        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
     },
   ];
 
@@ -66,7 +69,7 @@ const Home = () => {
             </div>
             <div className="md:w-1/2">
               <img
-                src="https://via.placeholder.com/800x1000"
+                src="https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg"
                 alt="Vintage clothing collection"
                 className="rounded-lg shadow-xl"
               />
@@ -96,7 +99,7 @@ const Home = () => {
                 className="group relative overflow-hidden rounded-lg h-48 md:h-64"
               >
                 <img
-                  src={`https://via.placeholder.com/600x800?text=${category}`}
+                  src={`https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg`}
                   alt={category}
                   className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
                 />
@@ -145,7 +148,7 @@ const Home = () => {
                     {item.name}
                   </h3>
                   <p className="font-medium text-amber-700">
-                    ${item.price.toFixed(2)}
+                    €{item.price.toFixed(2)}
                   </p>
                 </div>
               </Link>
