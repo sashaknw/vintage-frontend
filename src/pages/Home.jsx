@@ -1,41 +1,57 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import api from "../services/api";
+//import axios from "axios";
 
 const Home = () => {
-  // Featured items - this would come from your API in a real app
-  const featuredItems = [
-    {
-      id: "1",
-      name: "Vintage Denim Jacket",
-      price: 65.0,
-      era: "90s",
-      image: "/outerwear/denim-jacket-view1.webp",
-    },
-    {
-      id: "2",
-      name: "Floral Print Dress",
-      price: 48.5,
-      era: "70s",
-      image:
-        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
-    },
-    {
-      id: "3",
-      name: "Leather Crossbody Bag",
-      price: 35.0,
-      era: "80s",
-      image:
-        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
-    },
-    {
-      id: "4",
-      name: "High-Waisted Jeans",
-      price: 55.0,
-      era: "70s",
-      image:
-        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
-    },
-  ];
+ const [featuredItems, setFeaturedItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchFeaturedItems = async () => {
+      try {
+        // Adjust the URL to your backend endpoint
+        const response = await api.get('/api/items');
+        
+        // Randomly select 4 items for featured section
+        const shuffled = response.data.sort(() => 0.5 - Math.random());
+        setFeaturedItems(shuffled.slice(0, 4).map(item => ({
+          id: item._id,
+          name: item.name,
+          price: item.price,
+          era: item.era,
+          image: item.images[0], // Use first image
+        })));
+        
+        setLoading(false);
+         } catch (err) {
+        setError('Failed to fetch items');
+        setLoading(false);
+      }
+    };
+
+    fetchFeaturedItems();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-amber-700 text-xl">Loading vintage treasures...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-red-600 text-xl">{error}</p>
+      </div>
+    );
+  }
+
+
+
 
   return (
     <div>

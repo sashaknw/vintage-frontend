@@ -1,38 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
-//import axios from "axios";
+import api from "../services/api";
+import { useCart } from "../context/CartContext";
 
 const ItemDetails = () => {
   const { id } = useParams();
+  const { addToCart } = useCart(); // Use the addToCart method from CartContext
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        // This will be replaced with your actual API endpoint
-        // const response = await axios.get(`http://localhost:5000/api/items/${id}`);
-        // setItem(response.data);
-
-        // Using dummy data for now
-        setItem({
-          id: id,
-          name: "Vintage Denim Jacket",
-          description:
-            "Classic 90s denim jacket with subtle distressing and brass buttons. Perfect for layering in any season.",
-          price: 65.0,
-          size: "L",
-          category: "Outerwear",
-          condition: "Good",
-          brand: "Levi's",
-          era: "90s",
-          images: ["/outerwear/denim-jacket-view1.webp", "/outerwear/denim-jacket-view2.webp"],
-          inStock: true,
-        });
+        const response = await api.get(`/api/items/${id}`);
+        setItem(response.data);
         setLoading(false);
       } catch (err) {
+        console.error("Error fetching item details:", err);
         setError("Failed to load item details");
         setLoading(false);
       }
@@ -45,11 +32,16 @@ const ItemDetails = () => {
     setQuantity(parseInt(e.target.value));
   };
 
-  const addToCart = () => {
-    // This will be implemented with your cart context/state
-    console.log(`Added ${quantity} of item ${id} to cart`);
-    // Show confirmation message to user
-    alert(`Added ${quantity} item(s) to your cart!`);
+  const handleAddToCart = () => {
+    if (item) {
+      // Use the addToCart method from CartContext
+      addToCart(item, quantity);
+      alert(`Added ${quantity} ${item.name} to cart`);
+    }
+  };
+
+  const changeImage = (index) => {
+    setCurrentImageIndex(index);
   };
 
   if (loading) {
@@ -78,53 +70,38 @@ const ItemDetails = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Item Image */}
-        <div className="bg-gray-100 rounded-lg overflow-hidden">
-          <img
-            src={item.images[0]}
-            alt={item.name}
-            className="w-full h-auto object-cover"
-          />
+        {/* Item Images */}
+        <div>
+          <div className="bg-gray-100 rounded-lg overflow-hidden mb-4">
+            <img
+              src={item.images[currentImageIndex]}
+              alt={item.name}
+              className="w-full h-[500px] object-cover"
+            />
+          </div>
+          {/* Image thumbnails */}
+          <div className="flex space-x-2 overflow-x-auto">
+            {item.images.map((image, index) => (
+              <button
+                key={index}
+                onClick={() => changeImage(index)}
+                className={`w-20 h-20 flex-shrink-0 rounded-md overflow-hidden ${
+                  currentImageIndex === index ? "border-2 border-amber-500" : ""
+                }`}
+              >
+                <img
+                  src={image}
+                  alt={`${item.name} view ${index + 1}`}
+                  className="w-full h-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Item Details */}
         <div>
-          <nav className="flex mb-4 text-sm">
-            <Link to="/" className="text-amber-600 hover:text-amber-800">
-              Home
-            </Link>
-            <span className="mx-2 text-gray-500">/</span>
-            <Link to="/shop" className="text-amber-600 hover:text-amber-800">
-              Shop
-            </Link>
-            <span className="mx-2 text-gray-500">/</span>
-            <span className="text-gray-500">{item.name}</span>
-          </nav>
-
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{item.name}</h1>
-          <p className="text-2xl text-amber-700 mb-4">
-            €{item.price.toFixed(2)}
-          </p>
-
-          <div className="border-t border-b border-gray-200 py-4 my-4">
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="text-gray-500">Brand:</span> {item.brand}
-              </div>
-              <div>
-                <span className="text-gray-500">Size:</span> {item.size}
-              </div>
-              <div>
-                <span className="text-gray-500">Condition:</span>{" "}
-                {item.condition}
-              </div>
-              <div>
-                <span className="text-gray-500">Era:</span> {item.era}
-              </div>
-            </div>
-          </div>
-
-          <p className="text-gray-700 mb-6">{item.description}</p>
+          {/* ... existing navigation and details ... */}
 
           <div className="flex items-center mb-6">
             <label htmlFor="quantity" className="mr-4 text-gray-700">
@@ -145,7 +122,7 @@ const ItemDetails = () => {
           </div>
 
           <button
-            onClick={addToCart}
+            onClick={handleAddToCart}
             disabled={!item.inStock}
             className={`w-full py-3 px-6 rounded-md text-white font-medium ${
               item.inStock

@@ -1,52 +1,93 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import api from "../services/api";
 
 const Categories = () => {
-  // Sample category data
-  const categories = [
-    {
-      id: "tops",
-      name: "Tops",
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Predefined category details
+  const CATEGORY_DETAILS = {
+    tops: {
       description: "Vintage t-shirts, blouses, and shirts",
-      image: "https://via.placeholder.com/600x400",
-      count: 42,
+      displayName: "Tops",
     },
-    {
-      id: "bottoms",
-      name: "Bottoms",
+    bottoms: {
       description: "Vintage jeans, skirts, and pants",
-      image: "https://via.placeholder.com/600x400",
-      count: 38,
+      displayName: "Bottoms",
     },
-    {
-      id: "dresses",
-      name: "Dresses",
+    dresses: {
       description: "Vintage dresses from all eras",
-      image: "https://via.placeholder.com/600x400",
-      count: 27,
+      displayName: "Dresses",
     },
-    {
-      id: "outerwear",
-      name: "Outerwear",
+    outerwear: {
       description: "Vintage jackets, coats, and sweaters",
-      image: "https://via.placeholder.com/600x400",
-      count: 31,
+      displayName: "Outerwear",
     },
-    {
-      id: "accessories",
-      name: "Accessories",
+    accessories: {
       description: "Vintage bags, jewelry, and more",
-      image: "https://via.placeholder.com/600x400",
-      count: 56,
+      displayName: "Accessories",
     },
-    {
-      id: "shoes",
-      name: "Shoes",
+    shoes: {
       description: "Vintage footwear for all occasions",
-      image: "https://via.placeholder.com/600x400",
-      count: 19,
+      displayName: "Shoes",
     },
-  ];
+  };
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await api.get("/api/items");
+        const items = response.data;
+
+        // Calculate category counts and find representative images
+        const categoriesData = Object.keys(CATEGORY_DETAILS).map(
+          (categoryKey) => {
+            const categoryItems = items.filter(
+              (item) => item.category === categoryKey
+            );
+
+            return {
+              id: categoryKey,
+              name: CATEGORY_DETAILS[categoryKey].displayName,
+              description: CATEGORY_DETAILS[categoryKey].description,
+              count: categoryItems.length,
+              image:
+                categoryItems.length > 0
+                  ? categoryItems[0].images[0]
+                  : "https://via.placeholder.com/600x400",
+            };
+          }
+        );
+
+        setCategories(categoriesData);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        setError("Failed to load categories");
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+        <p className="text-red-600">{error}</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
