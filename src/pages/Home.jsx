@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+
 import api from "../services/api";
 //import axios from "axios";
 
@@ -37,7 +38,7 @@ const Home = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <p className="text-amber-700 text-xl">Loading vintage treasures...</p>
+        <p className="text-black text-xl">Loading vintage treasures...</p>
       </div>
     );
   }
@@ -56,92 +57,76 @@ const Home = () => {
   return (
     <div>
       {/* Hero Section */}
-      <section className="relative bg-amber-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center py-12 md:py-24">
-            <div className="md:w-1/2 mb-10 md:mb-0 md:pr-10">
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-amber-900 mb-6">
-                Timeless Style, Sustainable Fashion
-              </h1>
-              <p className="text-lg text-amber-800 mb-8">
-                Discover unique vintage pieces from every decade. Each item
-                tells a story and has been carefully selected for quality and
-                character.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  to="/shop"
-                  className="bg-amber-700 hover:bg-amber-800 text-white px-6 py-3 rounded-md text-lg font-medium transition"
-                >
-                  Shop Collection
-                </Link>
-                <Link
-                  to="/about"
-                  className="bg-white hover:bg-gray-100 text-amber-700 border border-amber-700 px-6 py-3 rounded-md text-lg font-medium transition"
-                >
-                  Our Story
-                </Link>
-              </div>
-            </div>
-            <div className="md:w-1/2">
-              <img
-                src="https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg"
-                alt="Vintage clothing collection"
-                className="rounded-lg shadow-xl"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
+      <section className="relative h-screen w-full overflow-hidden">
+        {/* Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          className="absolute top-0 left-0 w-full h-full object-cover z-0"
+        >
+          <source
+            src="https://res.cloudinary.com/dlkmeyasv/video/upload/v1741278765/girl-trying-on_zbkt6q.mp4"
+            type="video/mp4"
+          />
+          Your browser does not support the video tag.
+        </video>
 
-      {/* Categories Preview */}
-      <section className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-serif font-bold text-center text-amber-900 mb-12">
-            Shop by Category
-          </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
-            {[
-              "Dresses",
-              "Tops",
-              "Bottoms",
-              "Outerwear",
-              "Accessories",
-              "Shoes",
-            ].map((category) => (
-              <Link
-                key={category}
-                to={`/shop?category=${category.toLowerCase()}`}
-                className="group relative overflow-hidden rounded-lg h-48 md:h-64"
-              >
-                <img
-                  src={`https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg`}
-                  alt={category}
-                  className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition duration-300">
-                  <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                    <h3 className="text-xl font-medium">{category}</h3>
-                  </div>
-                </div>
+        {/* Overlay */}
+        <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
+
+        {/* Content */}
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+          <div className="bg-white bg-opacity-10 p-12 rounded-2xl max-w-xl w-full backdrop-blur-md space-y-12">
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-slate-100 mb-6">
+              Timeless Style, Sustainable Fashion
+            </h1>
+            <p className="text-lg text-slate-200 mb-8">
+              Discover unique vintage pieces from every decade. Each item tells
+              a story and has been carefully selected for quality and character.
+            </p>
+            <div className="flex flex-wrap gap-4">
+              <Link to="/shop" className="w-full sm:w-auto">
+                <a
+                  href="#_"
+                  className="relative inline-block text-lg group w-full"
+                >
+                  <span className="relative z-10 block px-5 py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                    <span className="absolute inset-0 w-full h-full px-5 py-4 rounded-lg bg-gray-50"></span>
+                    <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                    <span className="relative">Shop Selection</span>
+                  </span>
+                  <span
+                    className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
+                    data-rounded="rounded-lg"
+                  ></span>
+                </a>
               </Link>
-            ))}
-          </div>
-          <div className="text-center mt-10">
-            <Link
-              to="/categories"
-              className="inline-block border-b-2 border-amber-600 text-amber-700 hover:text-amber-900 font-medium"
-            >
-              View All Categories
-            </Link>
+              <Link to="/about" className="w-full sm:w-auto">
+                <a
+                  href="#_"
+                  className="relative inline-block text-lg group w-full"
+                >
+                  <span className="relative z-10 block px-5 py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                    <span className="absolute inset-0 w-full h-full px-5 py-4 rounded-lg bg-gray-50"></span>
+                    <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                    <span className="relative">About Us</span>
+                  </span>
+                  <span
+                    className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
+                    data-rounded="rounded-lg"
+                  ></span>
+                </a>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Featured Items */}
-      <section className="py-16 bg-amber-50">
+      <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-serif font-bold text-center text-amber-900 mb-12">
+          <h2 className="text-3xl font-serif font-bold text-center text-black-900 mb-12">
             Featured Pieces
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -159,11 +144,11 @@ const Home = () => {
                   />
                 </div>
                 <div className="p-4">
-                  <p className="text-sm text-amber-600 mb-1">{item.era}</p>
+                  <p className="text-sm text-black-600 mb-1">{item.era}</p>
                   <h3 className="text-lg font-medium text-gray-900 mb-1">
                     {item.name}
                   </h3>
-                  <p className="font-medium text-amber-700">
+                  <p className="font-medium text-black-700">
                     €{item.price.toFixed(2)}
                   </p>
                 </div>
@@ -171,12 +156,79 @@ const Home = () => {
             ))}
           </div>
           <div className="text-center mt-10">
-            <Link
-              to="/shop"
-              className="bg-amber-700 hover:bg-amber-800 text-white px-6 py-3 rounded-md font-medium transition"
-            >
-              View All Items
+            <Link to="/shop">
+              <a href="#_" class="relative inline-block text-lg group">
+                <span class="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                  <span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+                  <span class="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                  <span class="relative">View All Items</span>
+                </span>
+                <span
+                  class="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
+                  data-rounded="rounded-lg"
+                ></span>
+              </a>
             </Link>
+          </div>
+        </div>
+      </section>
+      {/* Categories Preview */}
+      <section className="py-16 bg-black">
+        <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-12">
+          <h2 className="text-3xl font-serif font-bold text-center text-white mb-12">
+            Shop by Category
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
+            {[
+              { name: "Dresses" },
+              { name: "Tops" },
+              { name: "Bottoms" },
+              { name: "Outerwear" },
+              { name: "Accessories" },
+              { name: "Shoes" },
+            ].map((category) => (
+              <Link
+                key={category.name}
+                to={`/shop?category=${category.name.toLowerCase()}`}
+                className="group relative rounded-xl overflow-hidden"
+              >
+                <div className="relative flex items-center justify-center h-16 md:h-20 overflow-hidden rounded-xl">
+                  {/* Static dotted border with rounded corners */}
+                  <div className="absolute inset-0 border-4 border-white border-dashed  rounded-xl group-hover:opacity-0 transition-all duration-400 ease-in-out"></div>
+
+                  {/* Animated trail effect on hover */}
+                  <div
+                    className="absolute inset-0 border-4 border-white border-dashed opacity-0 group-hover:opacity-100 rounded-xl animate-pulse transition-all duration-500 ease-in-out"
+                    style={{
+                      animation: "borderTrail 2s linear infinite",
+                    }}
+                  ></div>
+
+                  {/* CSS animation for the trail effect */}
+                  <style jsx>{`
+                    @keyframes borderTrail {
+                      0% {
+                        border-style: dashed;
+                        border-spacing: 6px;
+                      }
+                      50% {
+                        border-style: dotted;
+                        border-spacing: 4px;
+                      }
+                      100% {
+                        border-style: dashed;
+                        border-spacing: 2px;
+                      }
+                    }
+                  `}</style>
+
+                  {/* Category name */}
+                  <h3 className="text-xl md:text-2xl font-medium text-white z-10">
+                    {category.name}
+                  </h3>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>

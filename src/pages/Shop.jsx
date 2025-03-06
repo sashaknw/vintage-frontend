@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import api from "../services/api"; // Adjust the path as needed
+import api from "../services/api";
 
 const Shop = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const [filters, setFilters] = useState({
     category: initialCategory,
@@ -45,6 +46,18 @@ const Shop = () => {
 
         let filteredItems = response.data;
 
+        // Apply search filter
+        if (searchTerm) {
+          filteredItems = filteredItems.filter(
+            (item) =>
+              item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+              item.description
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              item.brand.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        }
+
         // Apply price range filter
         if (filters.priceRange !== "all") {
           switch (filters.priceRange) {
@@ -76,7 +89,6 @@ const Shop = () => {
             filteredItems.sort((a, b) => b.price - a.price);
             break;
           case "newest":
-            // Assuming you have a createdAt field
             filteredItems.sort(
               (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
             );
@@ -93,16 +105,232 @@ const Shop = () => {
     };
 
     fetchItems();
-  }, [filters]);
+  }, [filters, searchTerm]);
 
-  // Rest of the component remains the same as in your original code
-  // ... (keep all the existing filter options, handleFilterChange, etc.)
+  const handleFilterChange = (filterName, value) => {
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      [filterName]: value,
+    }));
+
+   
+    if (filterName === "category") {
+      if (value === "all") {
+        searchParams.delete("category");
+      } else {
+        searchParams.set("category", value);
+      }
+      setSearchParams(searchParams);
+    }
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filterOptions = {
+    category: [
+      { value: "all", label: "All Categories" },
+      { value: "tops", label: "Tops" },
+      { value: "bottoms", label: "Bottoms" },
+      { value: "dresses", label: "Dresses" },
+      { value: "outerwear", label: "Outerwear" },
+      { value: "accessories", label: "Accessories" },
+      { value: "shoes", label: "Shoes" },
+    ],
+    era: [
+      { value: "all", label: "All Eras" },
+      { value: "50s", label: "1950s" },
+      { value: "60s", label: "1960s" },
+      { value: "70s", label: "1970s" },
+      { value: "80s", label: "1980s" },
+      { value: "90s", label: "1990s" },
+      { value: "y2k", label: "Y2K (2000s)" },
+    ],
+    size: [
+      { value: "all", label: "All Sizes" },
+      { value: "XS", label: "XS" },
+      { value: "S", label: "S" },
+      { value: "M", label: "M" },
+      { value: "L", label: "L" },
+      { value: "XL", label: "XL" },
+      { value: "XXL", label: "XXL" },
+      { value: "One Size", label: "One Size" },
+    ],
+    condition: [
+      { value: "all", label: "All Conditions" },
+      { value: "Mint", label: "Mint" },
+      { value: "Good", label: "Good" },
+      { value: "Rugged", label: "Rugged" },
+    ],
+    priceRange: [
+      { value: "all", label: "All Prices" },
+      { value: "under30", label: "Under 30€" },
+      { value: "30to50", label: "30€ - 50€" },
+      { value: "50to100", label: "50€ - 100€" },
+      { value: "over100", label: "Over 100€" },
+    ],
+    sortBy: [
+      { value: "newest", label: "Newest" },
+      { value: "priceLow", label: "Price: Low to High" },
+      { value: "priceHigh", label: "Price: High to Low" },
+    ],
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      {/* ... existing JSX ... */}
+      <h1 className="text-3xl font-serif font-bold text-black mb-8">
+        Shop Vintage
+      </h1>
 
-      {/* Items Grid */}
+      {/* Search Bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search items..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="w-full px-4 py-2 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+        />
+      </div>
+
+      {/* Filters Section */}
+      <div className="border-2 border-black rounded-lg p-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
+          {/* Category Filter */}
+          <div>
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Category
+            </label>
+            <select
+              id="category"
+              value={filters.category}
+              onChange={(e) => handleFilterChange("category", e.target.value)}
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+            >
+              {filterOptions.category.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Era Filter */}
+          <div>
+            <label
+              htmlFor="era"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Era
+            </label>
+            <select
+              id="era"
+              value={filters.era}
+              onChange={(e) => handleFilterChange("era", e.target.value)}
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+            >
+              {filterOptions.era.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Size Filter */}
+          <div>
+            <label
+              htmlFor="size"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Size
+            </label>
+            <select
+              id="size"
+              value={filters.size}
+              onChange={(e) => handleFilterChange("size", e.target.value)}
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+            >
+              {filterOptions.size.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Condition Filter */}
+          <div>
+            <label
+              htmlFor="condition"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Condition
+            </label>
+            <select
+              id="condition"
+              value={filters.condition}
+              onChange={(e) => handleFilterChange("condition", e.target.value)}
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+            >
+              {filterOptions.condition.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Price Range Filter */}
+          <div>
+            <label
+              htmlFor="priceRange"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Price Range
+            </label>
+            <select
+              id="priceRange"
+              value={filters.priceRange}
+              onChange={(e) => handleFilterChange("priceRange", e.target.value)}
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+            >
+              {filterOptions.priceRange.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sort By */}
+          <div>
+            <label
+              htmlFor="sortBy"
+              className="block text-sm font-medium text-gray-700 mb-2"
+            >
+              Sort By
+            </label>
+            <select
+              id="sortBy"
+              value={filters.sortBy}
+              onChange={(e) => handleFilterChange("sortBy", e.target.value)}
+              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+            >
+              {filterOptions.sortBy.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
       {loading ? (
         <div className="flex justify-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
@@ -117,7 +345,7 @@ const Shop = () => {
             No items found matching your filters.
           </p>
           <button
-            onClick={() =>
+            onClick={() => {
               setFilters({
                 category: "all",
                 era: "all",
@@ -125,8 +353,9 @@ const Shop = () => {
                 priceRange: "all",
                 condition: "all",
                 sortBy: "newest",
-              })
-            }
+              });
+              setSearchTerm("");
+            }}
             className="text-amber-700 hover:text-amber-900 underline"
           >
             Clear filters and try again
@@ -142,9 +371,9 @@ const Shop = () => {
             >
               <div className="aspect-w-3 aspect-h-4 overflow-hidden">
                 <img
-                  src={item.images[0]} // Use first image from Cloudinary
+                  src={item.images[0]}
                   alt={item.name}
-                  className="w-full h-64 object-cover object-center group-hover:scale-105 transition duration-300"
+                  className="w-full h-64 object-contain bg-gray-100 transition duration-300 group-hover:scale-105"
                 />
               </div>
               <div className="p-4">
@@ -169,8 +398,6 @@ const Shop = () => {
           ))}
         </div>
       )}
-
-      {/* ... rest of the existing component ... */}
     </div>
   );
 };

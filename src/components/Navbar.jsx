@@ -17,16 +17,13 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-amber-50 shadow-md">
+    <nav className="bg-white shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
-              <Link
-                to="/"
-                className="text-2xl font-serif font-bold text-amber-900"
-              >
+              <Link to="/" className="text-2xl font-serif font-bold text-black">
                 Vintage Vault
               </Link>
             </div>
@@ -35,25 +32,25 @@ const Navbar = () => {
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
                 to="/"
-                className="border-transparent text-amber-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className="border-transparent text-black-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 Home
               </Link>
               <Link
                 to="/shop"
-                className="border-transparent text-amber-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className="border-transparent text-black-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 Shop
               </Link>
               <Link
                 to="/categories"
-                className="border-transparent text-amber-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className="border-transparent text-black-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 Categories
               </Link>
               <Link
                 to="/about"
-                className="border-transparent text-amber-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className="border-transparent text-black-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 About
               </Link>
@@ -63,7 +60,7 @@ const Navbar = () => {
           {/* Right side nav items */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
             {/* Search Icon */}
-            <button className="p-1 rounded-full text-amber-800 hover:text-amber-600 focus:outline-none">
+            <button className="p-1 rounded-full text-black-800 hover:text-amber-600 focus:outline-none">
               <svg
                 className="h-6 w-6"
                 fill="none"
@@ -83,7 +80,7 @@ const Navbar = () => {
             {/* Cart Icon */}
             <Link
               to="/cart"
-              className="p-1 ml-3 rounded-full text-amber-800 hover:text-amber-600 focus:outline-none"
+              className="p-1 ml-3 rounded-full text-black-800 hover:text-amber-600 focus:outline-none"
             >
               <svg
                 className="h-6 w-6"
@@ -109,7 +106,7 @@ const Navbar = () => {
                     className="flex text-sm rounded-full focus:outline-none"
                     onClick={toggleMenu}
                   >
-                    <div className="h-8 w-8 rounded-full bg-amber-700 flex items-center justify-center text-white">
+                    <div className="h-8 w-8 rounded-full bg-black-700 flex items-center justify-center text-white">
                       {user.username.charAt(0).toUpperCase()}
                     </div>
                   </button>
@@ -149,15 +146,14 @@ const Navbar = () => {
               <div className="ml-3 flex items-center space-x-4">
                 <Link
                   to="/login"
-                  className="text-amber-800 hover:text-amber-600 font-medium"
+                  className="text-black-800 hover:text-amber-600 font-medium"
                 >
                   Login
                 </Link>
-                <Link
-                  to="/register"
-                  className="bg-amber-700 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-amber-800"
-                >
-                  Sign Up
+                <Link to="/register">
+                  <button className="px-2 py-1 text-black  border-2 border-black rounded-md font-medium hover:bg-black hover:text-white transition">
+                    Register
+                  </button>
                 </Link>
               </div>
             )}
@@ -167,7 +163,7 @@ const Navbar = () => {
           <div className="flex items-center sm:hidden">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-amber-800 hover:text-amber-600 hover:bg-amber-100"
+              className="inline-flex items-center justify-center p-2 rounded-md text-amber-800 hover:text-black hover:bg-[#fd6c55]"
             >
               <svg
                 className={`${isMenuOpen ? "hidden" : "block"} h-6 w-6`}
