@@ -5,7 +5,7 @@ import { useCart } from "../context/CartContext";
 
 const ItemDetails = () => {
   const { id } = useParams();
-  const { addToCart } = useCart(); // Use the addToCart method from CartContext
+  const { addToCart } = useCart();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -34,7 +34,6 @@ const ItemDetails = () => {
 
   const handleAddToCart = () => {
     if (item) {
-      // Use the addToCart method from CartContext
       addToCart(item, quantity);
       alert(`Added ${quantity} ${item.name} to cart`);
     }
@@ -101,7 +100,62 @@ const ItemDetails = () => {
 
         {/* Item Details */}
         <div>
-          {/* ... existing navigation and details ... */}
+          <nav className="flex mb-4 text-sm">
+            <Link to="/" className="text-amber-600 hover:text-amber-800">
+              Home
+            </Link>
+            <span className="mx-2 text-gray-500">/</span>
+            <Link to="/shop" className="text-amber-600 hover:text-amber-800">
+              Shop
+            </Link>
+            <span className="mx-2 text-gray-500">/</span>
+            <span className="text-gray-500">{item.name}</span>
+          </nav>
+
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{item.name}</h1>
+          <p className="text-2xl text-amber-700 mb-4">
+            €{item.price.toFixed(2)}
+          </p>
+
+          <div className="border-t border-b border-gray-200 py-4 my-4">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-500">Brand:</span>{" "}
+                {item.brand || "N/A"}
+              </div>
+              <div>
+                <span className="text-gray-500">Size:</span> {item.size}
+              </div>
+              <div>
+                <span className="text-gray-500">Condition:</span>{" "}
+                {item.condition}
+              </div>
+              <div>
+                <span className="text-gray-500">Era:</span> {item.era}
+              </div>
+            </div>
+          </div>
+
+          {/* Detailed Description Section */}
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-3">
+              Item Description
+            </h2>
+            <p className="text-gray-700 leading-relaxed">{item.description}</p>
+          </div>
+
+          {/* Additional Details (Optional) */}
+          <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              Vintage Details
+            </h3>
+            <ul className="list-disc list-inside text-gray-700 space-y-1">
+              <li>Era: {item.era} Vintage</li>
+              <li>Condition: {item.condition} Condition</li>
+              <li>Unique Vintage Piece</li>
+              <li>One of a Kind Garment</li>
+            </ul>
+          </div>
 
           <div className="flex items-center mb-6">
             <label htmlFor="quantity" className="mr-4 text-gray-700">

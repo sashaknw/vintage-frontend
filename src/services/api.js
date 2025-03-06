@@ -7,6 +7,7 @@ const api = axios.create({
   withCredentials: false,
 });
 
+// First interceptor for logging
 api.interceptors.request.use(
   (config) => {
     console.log("API Request:", config.url);
@@ -15,7 +16,7 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Add a request interceptor to include the auth token in requests
+// Second interceptor for adding authentication token
 api.interceptors.request.use(
   (config) => {
     // Get token from localStorage
@@ -28,9 +29,7 @@ api.interceptors.request.use(
 
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 export default api;
