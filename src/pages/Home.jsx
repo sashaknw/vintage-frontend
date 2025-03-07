@@ -1,33 +1,39 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 import api from "../services/api";
 //import axios from "axios";
 
 const Home = () => {
- const [featuredItems, setFeaturedItems] = useState([]);
+  const [featuredItems, setFeaturedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Fix for the fetchFeaturedItems function in your Home.jsx
 
   useEffect(() => {
     const fetchFeaturedItems = async () => {
       try {
-        // Adjust the URL to your backend endpoint
-        const response = await api.get('/api/items');
-        
-        // Randomly select 4 items for featured section
+     
+        const response = await api.get("/api/items");
         const shuffled = response.data.sort(() => 0.5 - Math.random());
-        setFeaturedItems(shuffled.slice(0, 4).map(item => ({
-          id: item._id,
-          name: item.name,
-          price: item.price,
-          era: item.era,
-          image: item.images[0], // Use first image
-        })));
+
+        // OPTION 1: Preserve the entire item structure including images array
+       // setFeaturedItems(shuffled.slice(0, 4));
+
         
+      setFeaturedItems(shuffled.slice(0, 4).map(item => ({
+        id: item._id,
+        name: item.name,
+        price: item.price,
+        era: item.era,
+        images: item.images, // Keep the entire images array
+        image: item.images[0] // For backward compatibility
+      })));
+      
+
         setLoading(false);
-         } catch (err) {
-        setError('Failed to fetch items');
+      } catch (err) {
+        setError("Failed to fetch items");
         setLoading(false);
       }
     };
@@ -50,9 +56,6 @@ const Home = () => {
       </div>
     );
   }
-
-
-
 
   return (
     <div>
@@ -124,6 +127,7 @@ const Home = () => {
       </section>
 
       {/* Featured Items */}
+      {/* Featured Items */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-serif font-bold text-center text-black-900 mb-12">
@@ -132,16 +136,27 @@ const Home = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredItems.map((item) => (
               <Link
-                key={item.id}
-                to={`/item/${item.id}`}
+                key={item._id || item.id}
+                to={`/item/${item._id || item.id}`}
                 className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300"
               >
-                <div className="aspect-w-3 aspect-h-4 overflow-hidden">
+                <div className="aspect-w-3 aspect-h-4 overflow-hidden relative">
+                  {/* Primary image */}
                   <img
-                    src={item.image}
+                    src={item.image || (item.images && item.images[0])}
                     alt={item.name}
-                    className="w-full h-64 object-cover object-center group-hover:scale-105 transition duration-300"
+                    className="w-full h-64 object-contain bg-gray-50 transition duration-300 group-hover:scale-105"
                   />
+
+                 
+            {item.images && item.images.length > 1 && (
+              <img
+                src={item.images[1]}
+                alt={`${item.name} - alternate view`}
+                className="w-full h-64 object-contain bg-gray-50 absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300"
+              />
+            )}
+            
                 </div>
                 <div className="p-4">
                   <p className="text-sm text-black-600 mb-1">{item.era}</p>
@@ -156,18 +171,16 @@ const Home = () => {
             ))}
           </div>
           <div className="text-center mt-10">
-            <Link to="/shop">
-              <a href="#_" class="relative inline-block text-lg group">
-                <span class="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
-                  <span class="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
-                  <span class="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
-                  <span class="relative">View All Items</span>
-                </span>
-                <span
-                  class="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
-                  data-rounded="rounded-lg"
-                ></span>
-              </a>
+            <Link to="/shop" className="relative inline-block text-lg group">
+              <span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                <span className="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+                <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                <span className="relative">View All Items</span>
+              </span>
+              <span
+                className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
+                data-rounded="rounded-lg"
+              ></span>
             </Link>
           </div>
         </div>
@@ -234,12 +247,12 @@ const Home = () => {
       </section>
 
       {/* Newsletter */}
-      <section className="py-16 bg-amber-700">
+      <section className="py-16 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl font-serif font-bold text-white mb-4">
             Join Our Community
           </h2>
-          <p className="text-amber-100 max-w-2xl mx-auto mb-8">
+          <p className="text-white max-w-2xl mx-auto mb-8">
             Subscribe to our newsletter for early access to new arrivals,
             exclusive vintage finds, and style inspiration.
           </p>
@@ -250,11 +263,18 @@ const Home = () => {
               className="flex-grow rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
               required
             />
-            <button
-              type="submit"
-              className="bg-amber-900 hover:bg-amber-800 text-white px-6 py-3 rounded-md font-medium transition"
-            >
-              Subscribe
+            <button type="submit">
+              <a href="#_" className="relative inline-block text-lg group">
+                <span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                  <span className="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+                  <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                  <span className="relative">Subscribe</span>
+                </span>
+                <span
+                  className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
+                  data-rounded="rounded-lg"
+                ></span>
+              </a>
             </button>
           </form>
         </div>

@@ -3,13 +3,13 @@ import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
-    <footer className="bg-amber-900 text-amber-100">
+    <footer className="bg-white text-black">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-1">
             <h3 className="text-xl font-serif font-bold mb-4">Vintage Vault</h3>
-            <p className="text-sm text-amber-200">
+            <p className="text-sm text-black">
               Curated vintage fashion for the discerning collector. Each piece
               tells a story from the past, ready for its next chapter.
             </p>
@@ -20,17 +20,14 @@ const Footer = () => {
             <h4 className="text-lg font-medium mb-4">Quick Links</h4>
             <ul className="space-y-2">
               <li>
-                <Link
-                  to="/"
-                  className="text-amber-300 hover:text-white text-sm"
-                >
+                <Link to="/" className="text-black hover:text-white text-sm">
                   Home
                 </Link>
               </li>
               <li>
                 <Link
                   to="/shop"
-                  className="text-amber-300 hover:text-white text-sm"
+                  className="text-black hover:text-amber-300 text-sm"
                 >
                   Shop
                 </Link>
@@ -38,7 +35,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/categories"
-                  className="text-amber-300 hover:text-white text-sm"
+                  className="text-black hover:text-amber-300 text-sm"
                 >
                   Categories
                 </Link>
@@ -46,7 +43,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/about"
-                  className="text-amber-300 hover:text-white text-sm"
+                  className="text-black hover:text-amber-300 text-sm"
                 >
                   About Us
                 </Link>
@@ -61,7 +58,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/contact"
-                  className="text-amber-300 hover:text-white text-sm"
+                  className="text-black hover:text-amber-300 text-sm"
                 >
                   Contact Us
                 </Link>
@@ -69,7 +66,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/shipping"
-                  className="text-amber-300 hover:text-white text-sm"
+                  className="text-black hover:text-amber-300 text-sm"
                 >
                   Shipping Policy
                 </Link>
@@ -77,7 +74,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/returns"
-                  className="text-amber-300 hover:text-white text-sm"
+                  className="text-black hover:text-amber-300 text-sm"
                 >
                   Returns & Exchanges
                 </Link>
@@ -85,7 +82,7 @@ const Footer = () => {
               <li>
                 <Link
                   to="/faq"
-                  className="text-amber-300 hover:text-white text-sm"
+                  className="text-black hover:text-amber-300 text-sm"
                 >
                   FAQ
                 </Link>
@@ -104,11 +101,11 @@ const Footer = () => {
               <input
                 type="email"
                 placeholder="Your email"
-                className="px-4 py-2 w-full sm:w-auto rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-900 mb-2 sm:mb-0"
+                className="px-4 py-2 w-full sm:w-auto rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-900 mb-2 sm:mb-0 border-2 border-amber-500"
               />
               <button
                 type="submit"
-                className="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-md ml-0 sm:ml-2"
+                className="bg-black hover:bg-amber-500 text-white px-4 py-2 rounded-md ml-0 sm:ml-2"
               >
                 Subscribe
               </button>
@@ -119,13 +116,13 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="border-t border-amber-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-amber-300">
+            <p className="text-sm text-black">
               &copy; {new Date().getFullYear()} Vintage Vault. All rights
               reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               {/* Social Media Icons */}
-              <a href="#" className="text-amber-300 hover:text-white">
+              <a href="#" className="text-black hover:text-white">
                 <span className="sr-only">Facebook</span>
                 <svg
                   className="h-6 w-6"
@@ -140,7 +137,7 @@ const Footer = () => {
                   />
                 </svg>
               </a>
-              <a href="#" className="text-amber-300 hover:text-white">
+              <a href="#" className="text-black hover:text-white">
                 <span className="sr-only">Instagram</span>
                 <svg
                   className="h-6 w-6"
@@ -155,7 +152,7 @@ const Footer = () => {
                   />
                 </svg>
               </a>
-              <a href="#" className="text-amber-300 hover:text-white">
+              <a href="#" className="text-black hover:text-white">
                 <span className="sr-only">Twitter</span>
                 <svg
                   className="h-6 w-6"

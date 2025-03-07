@@ -48,15 +48,43 @@ const Categories = () => {
               (item) => item.category === categoryKey
             );
 
+            // Get up to 2 images for each category (for the hover effect)
+            const categoryImages = [];
+            if (
+              categoryItems.length > 0 &&
+              categoryItems[0].images &&
+              categoryItems[0].images.length > 0
+            ) {
+              categoryImages.push(categoryItems[0].images[0]);
+            } else {
+              categoryImages.push("https://via.placeholder.com/600x400");
+            }
+
+            // Try to get a second image from another item in the category
+            if (
+              categoryItems.length > 1 &&
+              categoryItems[1].images &&
+              categoryItems[1].images.length > 0
+            ) {
+              categoryImages.push(categoryItems[1].images[0]);
+            } else if (
+              categoryItems.length > 0 &&
+              categoryItems[0].images &&
+              categoryItems[0].images.length > 1
+            ) {
+              // Or use the second image of the first item if available
+              categoryImages.push(categoryItems[0].images[1]);
+            } else {
+              // Fallback to the first image if no second is available
+              categoryImages.push(categoryImages[0]);
+            }
+
             return {
               id: categoryKey,
               name: CATEGORY_DETAILS[categoryKey].displayName,
               description: CATEGORY_DETAILS[categoryKey].description,
               count: categoryItems.length,
-              image:
-                categoryItems.length > 0
-                  ? categoryItems[0].images[0]
-                  : "https://via.placeholder.com/600x400",
+              images: categoryImages,
             };
           }
         );
@@ -76,7 +104,7 @@ const Categories = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-gray-500"></div>
       </div>
     );
   }
@@ -91,7 +119,7 @@ const Categories = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-serif font-bold text-center text-amber-900 mb-12">
+      <h1 className="text-3xl font-serif font-bold text-center text-black mb-12">
         Shop by Category
       </h1>
 
@@ -103,18 +131,29 @@ const Categories = () => {
             className="group"
           >
             <div className="overflow-hidden rounded-lg shadow-md transition duration-300 hover:shadow-xl">
-              <div className="relative h-64">
+              <div className="relative h-64 bg-gray-50">
+                {/* Primary image */}
                 <img
-                  src={category.image}
+                  src={category.images[0]}
                   alt={category.name}
-                  className="w-full h-full object-cover transition duration-300 group-hover:scale-105"
+                  className="w-full h-full object-contain transition duration-300 group-hover:opacity-0"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-20 group-hover:bg-opacity-10 transition duration-300"></div>
+
+                {/* Secondary image (shown on hover) */}
+                {category.images[1] && (
+                  <img
+                    src={category.images[1]}
+                    alt={`${category.name} alternate`}
+                    className="w-full h-full object-contain absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300"
+                  />
+                )}
+
+                <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-0 transition duration-300"></div>
               </div>
               <div className="bg-white p-6">
-                <h2 className="text-xl font-medium text-amber-900 mb-2 group-hover:text-amber-700">
+                <h2 className="text-xl font-medium text-black mb-2 group-hover:text-gray-700">
                   {category.name}
-                  <span className="text-sm font-normal text-amber-600 ml-2">
+                  <span className="text-sm font-normal text-gray-600 ml-2">
                     ({category.count})
                   </span>
                 </h2>
