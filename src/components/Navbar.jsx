@@ -1,10 +1,10 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext"; // You'll need to create this
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { user, logout } = useContext(AuthContext); // Assuming you'll have auth context
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -16,15 +16,26 @@ const Navbar = () => {
     navigate("/login");
   };
 
+  // Get the user's initial safely
+  const getUserInitial = () => {
+    if (user && user.name) {
+      return user.name.charAt(0).toUpperCase();
+    }
+    if (user && user.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    return "U"; // Default fallback
+  };
+
   return (
-    <nav className="bg-white shadow-md">
+    <nav className="bg-white shadow-md relative z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
-              <Link to="/" className="text-2xl font-serif font-bold text-black">
-                Vintage Vault
+              <Link to="/" className=" font-golos text-3xl font-bold text-black">
+                vintage vault
               </Link>
             </div>
 
@@ -106,36 +117,35 @@ const Navbar = () => {
                     className="flex text-sm rounded-full focus:outline-none"
                     onClick={toggleMenu}
                   >
-                    <div className="h-8 w-8 rounded-full bg-black-700 flex items-center justify-center text-white">
-                      {user.username.charAt(0).toUpperCase()}
+                    <div className="h-8 w-8 rounded-full bg-amber-500 flex items-center justify-center text-black">
+                      {getUserInitial()}
                     </div>
                   </button>
                 </div>
 
-                {/* Dropdown menu */}
                 {isMenuOpen && (
-                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5">
+                  <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-xl py-1 bg-white ring-1 ring-black ring-opacity-5 z-50">
                     <Link
                       to="/profile"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
                     >
                       Your Profile
                     </Link>
                     <Link
                       to="/orders"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
                     >
                       Your Orders
                     </Link>
                     <Link
                       to="/favorites"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
                     >
                       Favorites
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
                     >
                       Sign out
                     </button>
@@ -151,7 +161,7 @@ const Navbar = () => {
                   Login
                 </Link>
                 <Link to="/register">
-                  <button className="px-2 py-1 text-black  border-2 border-black rounded-md font-medium hover:bg-black hover:text-white transition">
+                  <button className="px-2 py-1 text-black border-2 border-black rounded-md font-medium hover:bg-black hover:text-white transition">
                     Register
                   </button>
                 </Link>
@@ -233,12 +243,12 @@ const Navbar = () => {
             <div className="flex items-center px-4">
               <div className="flex-shrink-0">
                 <div className="h-10 w-10 rounded-full bg-amber-700 flex items-center justify-center text-white font-medium">
-                  {user.username.charAt(0).toUpperCase()}
+                  {getUserInitial()}
                 </div>
               </div>
               <div className="ml-3">
                 <div className="text-base font-medium text-amber-900">
-                  {user.username}
+                  {user.name || user.email}
                 </div>
                 <div className="text-sm font-medium text-amber-600">
                   {user.email}

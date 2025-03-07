@@ -1,95 +1,69 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
+import api from "../services/api";
 
 const Favorites = () => {
-  //const { user } = useContext(AuthContext);
+  const { user } = useAuth();
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Mock data - in a real app, this would come from an API call
-  const mockFavorites = [
-    {
-      id: "3",
-      name: "Leather Crossbody Bag",
-      price: 35.0,
-      era: "80s",
-      size: "One Size",
-      condition: "Good",
-      image:
-        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
-    },
-    {
-      id: "7",
-      name: "Leather Boots",
-      price: 75.0,
-      era: "90s",
-      size: "8",
-      condition: "Excellent",
-      image:
-        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
-    },
-    {
-      id: "12",
-      name: "Floral Print Blouse",
-      price: 28.0,
-      era: "70s",
-      size: "S",
-      condition: "Good",
-      image:
-        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
-    },
-    {
-      id: "15",
-      name: "Vintage Watch",
-      price: 120.0,
-      era: "60s",
-      size: "One Size",
-      condition: "Fair",
-      image:
-        "https://agreeabletyrant.dar.org/wp-content/uploads/2017/03/placeholder.jpg",
-    },
-  ];
+  const [sortBy, setSortBy] = useState("date");
 
   useEffect(() => {
-    // Simulate fetching favorites from API
     const fetchFavorites = async () => {
       try {
         setLoading(true);
-
-        // In a real app, this would be an API call like:
-        // const response = await axios.get('/api/favorites', {
-        //   headers: {
-        //     Authorization: `Bearer ${localStorage.getItem('token')}`
-        //   }
-        // });
-        // setFavorites(response.data);
-
-        // Using mock data for now
-        setTimeout(() => {
-          setFavorites(mockFavorites);
-          setLoading(false);
-        }, 800);
-      } catch (err) {
-        setError("Failed to load favorites");
+        const response = await api.get("/api/favorites");
+        setFavorites(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching favorites:", error);
+        setError("Failed to load favorites. Please try again later.");
         setLoading(false);
       }
     };
 
-    fetchFavorites();
-  }, []);
+    if (user) {
+      fetchFavorites();
+    } else {
+      setLoading(false);
+    }
+  }, [user]);
 
-  const removeFavorite = (itemId) => {
-    // In a real app, this would call an API to remove the item
-    // For now, just update the local state
-    setFavorites(favorites.filter((item) => item.id !== itemId));
+  const removeFavorite = async (itemId) => {
+    try {
+      await api.delete(`/api/favorites/${itemId}`);
+      setFavorites(favorites.filter((item) => item.id !== itemId));
+    } catch (error) {
+      console.error("Error removing from favorites:", error);
+    }
+  };
+
+  const sortFavorites = (items) => {
+    switch (sortBy) {
+      case "priceLow":
+        return [...items].sort((a, b) => a.price - b.price);
+      case "priceHigh":
+        return [...items].sort((a, b) => b.price - a.price);
+      case "name":
+        return [...items].sort((a, b) => a.name.localeCompare(b.name));
+      case "date":
+      default:
+        return [...items].sort(
+          (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+        );
+    }
+  };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
   };
 
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-serif font-bold text-amber-900 mb-8">
+        <h1 className="text-3xl font-serif font-bold text-black mb-8">
           My Favorites
         </h1>
         <div className="flex justify-center items-center py-12">
@@ -99,10 +73,31 @@ const Favorites = () => {
     );
   }
 
+  if (!user) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h1 className="text-3xl font-serif font-bold text-black mb-8">
+          My Favorites
+        </h1>
+        <div className="bg-white rounded-lg shadow-md p-8 text-center">
+          <h2 className="text-lg font-medium text-gray-900 mb-4">
+            Please log in to view your favorites
+          </h2>
+          <Link
+            to="/login"
+            className="inline-block bg-amber-700 hover:bg-amber-800 text-white px-6 py-3 rounded-md font-medium transition"
+          >
+            Login
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-serif font-bold text-amber-900 mb-8">
+        <h1 className="text-3xl font-serif font-bold text-black mb-8">
           My Favorites
         </h1>
         <div className="bg-red-50 p-4 rounded-md">
@@ -112,9 +107,11 @@ const Favorites = () => {
     );
   }
 
+  const sortedFavorites = sortFavorites(favorites);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-serif font-bold text-amber-900 mb-8">
+      <h1 className="text-3xl font-serif font-bold text-black mb-8">
         My Favorites
       </h1>
 
@@ -141,11 +138,18 @@ const Favorites = () => {
             Start adding items to your favorites while you browse our
             collection.
           </p>
-          <Link
-            to="/shop"
-            className="inline-block bg-amber-700 hover:bg-amber-800 text-white px-6 py-3 rounded-md font-medium transition"
-          >
-            Browse Collection
+          <Link to="/shop">
+            <a href="#_" className="relative inline-block text-lg group">
+              <span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                <span className="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+                <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                <span className="relative">See Collection</span>
+              </span>
+              <span
+                className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
+                data-rounded="rounded-lg"
+              ></span>
+            </a>
           </Link>
         </div>
       ) : (
@@ -158,7 +162,8 @@ const Favorites = () => {
             <div className="flex items-center">
               <select
                 className="border border-gray-300 rounded-md shadow-sm px-4 py-2 bg-white text-gray-700 hover:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                defaultValue="date"
+                value={sortBy}
+                onChange={handleSortChange}
               >
                 <option value="date">Sort by: Date Added</option>
                 <option value="priceLow">Sort by: Price Low to High</option>
@@ -169,7 +174,7 @@ const Favorites = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {favorites.map((item) => (
+            {sortedFavorites.map((item) => (
               <div
                 key={item.id}
                 className="group relative bg-white rounded-lg shadow-md overflow-hidden"
@@ -221,7 +226,7 @@ const Favorites = () => {
 
                 <button
                   onClick={() => removeFavorite(item.id)}
-                  className="absolute top-2 right-2 p-1.5 rounded-full bg-white shadow-sm text-amber-600 hover:text-red-600"
+                  className="absolute top-2 right-2 p-1.5 rounded-full bg-white shadow-sm text-red-600 hover:text-amber-600"
                   aria-label={`Remove ${item.name} from favorites`}
                 >
                   <svg

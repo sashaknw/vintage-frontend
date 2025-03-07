@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../services/api";
+import FavoriteButton from "../components/FavoriteButton";
+import { TypeAnimation } from "react-type-animation";
+import { motion } from "framer-motion";
+
 //import axios from "axios";
 
 const Home = () => {
@@ -32,7 +36,8 @@ const Home = () => {
       
 
         setLoading(false);
-      } catch (err) {
+      } catch (error) {
+        console.error("Error fetching featured items:", error);
         setError("Failed to fetch items");
         setLoading(false);
       }
@@ -66,7 +71,7 @@ const Home = () => {
           autoPlay
           loop
           muted
-          className="absolute top-0 left-0 w-full h-full object-cover z-0"
+          className="absolute top-0 left-0 w-full h-full object-cover "
         >
           <source
             src="https://res.cloudinary.com/dlkmeyasv/video/upload/v1741278765/girl-trying-on_zbkt6q.mp4"
@@ -81,8 +86,19 @@ const Home = () => {
         {/* Content */}
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
           <div className="bg-white bg-opacity-10 p-12 rounded-2xl max-w-xl w-full backdrop-blur-md space-y-12">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold text-slate-100 mb-6">
-              Timeless Style, Sustainable Fashion
+            <h1 className="text-5xl md:text-5xl font-serif font-bold text-slate-100 mb-6">
+              <TypeAnimation
+                sequence={[
+                  "Timeless Style, Sustainable Fashion", // Type this string
+                  // You can add more sequences if you want text to change
+                  // For example: 1000, 'Another text', 1000, 'Yet another text'
+                ]}
+                wrapper="span"
+                speed={20} // Speed in milliseconds per character
+                cursor={true}
+                repeat={1} // Don't repeat the animation
+                style={{ display: "inline-block" }}
+              />
             </h1>
             <p className="text-lg text-slate-200 mb-8">
               Discover unique vintage pieces from every decade. Each item tells
@@ -127,60 +143,68 @@ const Home = () => {
       </section>
 
       {/* Featured Items */}
-      {/* Featured Items */}
       <section className="py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl font-serif font-bold text-center text-black-900 mb-12">
             Featured Pieces
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredItems.map((item) => (
-              <Link
-                key={item._id || item.id}
-                to={`/item/${item._id || item.id}`}
-                className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300"
-              >
-                <div className="aspect-w-3 aspect-h-4 overflow-hidden relative">
-                  {/* Primary image */}
-                  <img
-                    src={item.image || (item.images && item.images[0])}
-                    alt={item.name}
-                    className="w-full h-64 object-contain bg-gray-50 transition duration-300 group-hover:scale-105"
-                  />
 
-                 
-            {item.images && item.images.length > 1 && (
-              <img
-                src={item.images[1]}
-                alt={`${item.name} - alternate view`}
-                className="w-full h-64 object-contain bg-gray-50 absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300"
-              />
-            )}
-            
-                </div>
-                <div className="p-4">
-                  <p className="text-sm text-black-600 mb-1">{item.era}</p>
-                  <h3 className="text-lg font-medium text-gray-900 mb-1">
-                    {item.name}
-                  </h3>
-                  <p className="font-medium text-black-700">
-                    €{item.price.toFixed(2)}
-                  </p>
-                </div>
-              </Link>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {featuredItems.map((item, index) => (
+              <motion.div
+                key={item._id || item.id}
+                initial={{ opacity: 0, y: 100 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ amount: 0.3 }}
+                transition={{
+                  duration: 0.6,
+                  delay: index * 0.1,
+                  ease: "easeOut",
+                }}
+              >
+                <Link
+                  to={`/item/${item._id || item.id}`}
+                  className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 relative block h-full"
+                >
+                  {/* Add FavoriteButton component with proper positioning */}
+                  <div className="relative">
+                    <FavoriteButton itemId={item._id || item.id} />
+
+                    <div className="aspect-w-3 aspect-h-4 overflow-hidden">
+                      {/* Primary image */}
+                      <img
+                        src={item.image || (item.images && item.images[0])}
+                        alt={item.name}
+                        className="w-full h-64 object-contain bg-gray-50 transition duration-300 group-hover:scale-105"
+                      />
+
+                      {item.images && item.images.length > 1 && (
+                        <img
+                          src={item.images[1]}
+                          alt={`${item.name} - alternate view`}
+                          className="w-full h-64 object-contain bg-gray-50 absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300"
+                        />
+                      )}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-sm text-black-600 mb-1">{item.era}</p>
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">
+                      {item.name}
+                    </h3>
+                    <p className="font-medium text-black-700">
+                      €{item.price.toFixed(2)}
+                    </p>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
+
+          {/* View All Items Button */}
           <div className="text-center mt-10">
             <Link to="/shop" className="relative inline-block text-lg group">
-              <span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
-                <span className="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
-                <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
-                <span className="relative">View All Items</span>
-              </span>
-              <span
-                className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
-                data-rounded="rounded-lg"
-              ></span>
+              {/* Your existing button */}
             </Link>
           </div>
         </div>
@@ -191,7 +215,7 @@ const Home = () => {
           <h2 className="text-3xl font-serif font-bold text-center text-white mb-12">
             Shop by Category
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 font-golos">
             {[
               { name: "Dresses" },
               { name: "Tops" },
@@ -206,34 +230,31 @@ const Home = () => {
                 className="group relative rounded-xl overflow-hidden"
               >
                 <div className="relative flex items-center justify-center h-16 md:h-20 overflow-hidden rounded-xl">
-                  {/* Static dotted border with rounded corners */}
-                  <div className="absolute inset-0 border-4 border-white border-dashed  rounded-xl group-hover:opacity-0 transition-all duration-400 ease-in-out"></div>
+                 
+                  <div className="absolute inset-0 border-4 border-white border-dashed rounded-xl group-hover:opacity-0 transition-all duration-400 ease-in-out"></div>
 
-                  {/* Animated trail effect on hover */}
-                  <div
-                    className="absolute inset-0 border-4 border-white border-dashed opacity-0 group-hover:opacity-100 rounded-xl animate-pulse transition-all duration-500 ease-in-out"
-                    style={{
-                      animation: "borderTrail 2s linear infinite",
-                    }}
-                  ></div>
-
-                  {/* CSS animation for the trail effect */}
-                  <style jsx>{`
-                    @keyframes borderTrail {
-                      0% {
-                        border-style: dashed;
-                        border-spacing: 6px;
-                      }
-                      50% {
-                        border-style: dotted;
-                        border-spacing: 4px;
-                      }
-                      100% {
-                        border-style: dashed;
-                        border-spacing: 2px;
-                      }
-                    }
-                  `}</style>
+                  {/* Animated SVG border - thinner */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <svg
+                      className="w-full h-full"
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                    >
+                      <rect
+                        x="1"
+                        y="1"
+                        width="98"
+                        height="98"
+                        rx="12"
+                        ry="12"
+                        fill="none"
+                        stroke="white"
+                        strokeWidth="2" // Changed from 4 to 2
+                        strokeDasharray="6,6" // Made dashes and gaps smaller for a more delicate look
+                        className="animate-dash"
+                      />
+                    </svg>
+                  </div>
 
                   {/* Category name */}
                   <h3 className="text-xl md:text-2xl font-medium text-white z-10">
@@ -244,6 +265,19 @@ const Home = () => {
             ))}
           </div>
         </div>
+
+        {/* CSS for the animated dash */}
+        <style jsx>{`
+          @keyframes dash {
+            to {
+              stroke-dashoffset: -32;
+            }
+          }
+
+          .animate-dash {
+            animation: dash 1.5s linear infinite;
+          }
+        `}</style>
       </section>
 
       {/* Newsletter */}

@@ -8,7 +8,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="col-span-1 md:col-span-1">
-            <h3 className="text-xl font-serif font-bold mb-4">Vintage Vault</h3>
+            <h3 className="text-xl font-golos font-bold mb-4">vintage vault</h3>
             <p className="text-sm text-black">
               Curated vintage fashion for the discerning collector. Each piece
               tells a story from the past, ready for its next chapter.

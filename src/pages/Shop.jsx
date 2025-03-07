@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import api from "../services/api";
+import FavoriteButton from "../components/FavoriteButton";
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -182,7 +183,6 @@ const Shop = () => {
       <h1 className="text-3xl font-serif font-bold text-black mb-8">
         Shop Vintage
       </h1>
-
       {/* Search Bar */}
       <div className="mb-6">
         <input
@@ -193,7 +193,6 @@ const Shop = () => {
           className="w-full px-4 py-2 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
         />
       </div>
-
       {/* Filters Section */}
       <div className="border-2 border-black rounded-lg p-6 mb-8">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -330,7 +329,7 @@ const Shop = () => {
           </div>
         </div>
       </div>
-
+      
       {loading ? (
         <div className="flex justify-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
@@ -367,15 +366,23 @@ const Shop = () => {
             <Link
               key={item._id}
               to={`/item/${item._id}`}
-              className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300"
+              className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 relative"
             >
-              <div className="aspect-w-3 aspect-h-4 overflow-hidden">
-                <img
-                  src={item.images[0]}
-                  alt={item.name}
-                  className="w-full h-64 object-contain bg-gray-100 transition duration-300 group-hover:scale-105"
-                />
+              <div className="relative">
+                {/* Position the favorite button */}
+                <div className="absolute top-2 right-2 z-10">
+                  <FavoriteButton itemId={item._id} />
+                </div>
+
+                <div className="aspect-w-3 aspect-h-4 overflow-hidden">
+                  <img
+                    src={item.images[0]}
+                    alt={item.name}
+                    className="w-full h-64 object-contain bg-gray-100 transition duration-300 group-hover:scale-105"
+                  />
+                </div>
               </div>
+
               <div className="p-4">
                 <div className="flex justify-between items-start">
                   <div>

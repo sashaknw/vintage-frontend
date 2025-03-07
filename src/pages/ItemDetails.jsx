@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import api from "../services/api";
 import { useCart } from "../context/CartContext";
+import FavoriteButton from "../components/FavoriteButton";
 
 const ItemDetails = () => {
   const { id } = useParams();
@@ -11,6 +12,7 @@ const ItemDetails = () => {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [hoveringImage, setHoveringImage] = useState(false);
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -43,6 +45,28 @@ const ItemDetails = () => {
     setCurrentImageIndex(index);
   };
 
+  const goToPreviousImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (currentImageIndex > 0) {
+      setCurrentImageIndex(currentImageIndex - 1);
+    } else {
+      // Wrap to the last image
+      setCurrentImageIndex(item.images.length - 1);
+    }
+  };
+
+  const goToNextImage = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (currentImageIndex < item.images.length - 1) {
+      setCurrentImageIndex(currentImageIndex + 1);
+    } else {
+      // Wrap to the first image
+      setCurrentImageIndex(0);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -71,13 +95,77 @@ const ItemDetails = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Item Images */}
         <div>
-          <div className="bg-gray-100 rounded-lg overflow-hidden mb-4">
+          <div
+            className="bg-gray-100 rounded-lg overflow-hidden mb-4 relative"
+            onMouseEnter={() => setHoveringImage(true)}
+            onMouseLeave={() => setHoveringImage(false)}
+          >
+            {/* Favorite button */}
+            <div className="absolute top-4 right-4 z-10">
+              <FavoriteButton itemId={item._id} />
+            </div>
+
+            {/* Previous image arrow */}
+            <button
+              onClick={goToPreviousImage}
+              className={`absolute left-2 top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white bg-opacity-60 flex items-center justify-center z-10 transition-opacity duration-300 ${
+                hoveringImage ? "opacity-70" : "opacity-0"
+              } hover:opacity-100 focus:outline-none`}
+              aria-label="Previous image"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="w-6 h-6 text-gray-800"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+
+            {/* Next image arrow */}
+            <button
+              onClick={goToNextImage}
+              className={`absolute right-2 top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white bg-opacity-60 flex items-center justify-center z-10 transition-opacity duration-300 ${
+                hoveringImage ? "opacity-70" : "opacity-0"
+              } hover:opacity-100 focus:outline-none`}
+              aria-label="Next image"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                className="w-6 h-6 text-gray-800"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+
+            {/* Current image */}
             <img
               src={item.images[currentImageIndex]}
               alt={item.name}
               className="w-full h-[500px] object-cover"
             />
+
+            {/* Image counter indicator */}
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white text-xs rounded-full px-2 py-1">
+              {currentImageIndex + 1} / {item.images.length}
+            </div>
           </div>
+
           {/* Image thumbnails */}
           <div className="flex space-x-2 overflow-x-auto">
             {item.images.map((image, index) => (
@@ -85,7 +173,9 @@ const ItemDetails = () => {
                 key={index}
                 onClick={() => changeImage(index)}
                 className={`w-20 h-20 flex-shrink-0 rounded-md overflow-hidden ${
-                  currentImageIndex === index ? "border-2 border-amber-500" : ""
+                  currentImageIndex === index
+                    ? "border-2 border-amber-500"
+                    : "border border-gray-200"
                 }`}
               >
                 <img
