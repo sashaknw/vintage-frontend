@@ -227,36 +227,25 @@ const Home = () => {
               <Link
                 key={category.name}
                 to={`/shop?category=${category.name.toLowerCase()}`}
-                className="group relative rounded-xl overflow-hidden"
+                className="relative group"
               >
-                <div className="relative flex items-center justify-center h-16 md:h-20 overflow-hidden rounded-xl">
-                 
-                  <div className="absolute inset-0 border-4 border-white border-dashed rounded-xl group-hover:opacity-0 transition-all duration-400 ease-in-out"></div>
+                <div className="relative flex items-center justify-center h-16 md:h-20 rounded-xl border-2 border-white overflow-hidden group-hover:border-transparent transition-all duration-300">
+                  {/* SVG for animated dashed outline */}
+                  <svg className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <rect
+                      width="100%"
+                      height="100%"
+                      fill="none"
+                      stroke="white"
+                      strokeWidth="3"
+                      strokeDasharray="10,10"
+                      strokeLinecap="round"
+                      rx="12"
+                      ry="12"
+                      className="dash-animation"
+                    />
+                  </svg>
 
-                  {/* Animated SVG border - thinner */}
-                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg
-                      className="w-full h-full"
-                      viewBox="0 0 100 100"
-                      preserveAspectRatio="none"
-                    >
-                      <rect
-                        x="1"
-                        y="1"
-                        width="98"
-                        height="98"
-                        rx="12"
-                        ry="12"
-                        fill="none"
-                        stroke="white"
-                        strokeWidth="2" // Changed from 4 to 2
-                        strokeDasharray="6,6" // Made dashes and gaps smaller for a more delicate look
-                        className="animate-dash"
-                      />
-                    </svg>
-                  </div>
-
-                  {/* Category name */}
                   <h3 className="text-xl md:text-2xl font-medium text-white z-10">
                     {category.name}
                   </h3>
@@ -266,16 +255,16 @@ const Home = () => {
           </div>
         </div>
 
-        {/* CSS for the animated dash */}
         <style jsx>{`
-          @keyframes dash {
-            to {
-              stroke-dashoffset: -32;
-            }
+          .dash-animation {
+            stroke-dashoffset: 0;
+            animation: dash 20s linear infinite;
           }
 
-          .animate-dash {
-            animation: dash 1.5s linear infinite;
+          @keyframes dash {
+            to {
+              stroke-dashoffset: 500;
+            }
           }
         `}</style>
       </section>

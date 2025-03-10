@@ -6,11 +6,15 @@ import FavoriteButton from "../components/FavoriteButton";
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
+    const initialSearchTerm = searchParams.get("search") || "";
+
+
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  
 
   const [filters, setFilters] = useState({
     category: initialCategory,
@@ -26,7 +30,6 @@ const Shop = () => {
       try {
         setLoading(true);
 
-        // Construct query parameters based on filters
         const queryParams = new URLSearchParams();
 
         if (filters.category !== "all") {
@@ -125,9 +128,24 @@ const Shop = () => {
     }
   };
 
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
+ const handleSearchChange = (e) => {
+   const value = e.target.value;
+   setSearchTerm(value);
+
+   // Update URL search params
+   if (value.trim()) {
+     searchParams.set("search", value.trim());
+   } else {
+     searchParams.delete("search");
+   }
+   setSearchParams(searchParams);
+ };
+
+ const clearSearch = () => {
+   setSearchTerm("");
+   searchParams.delete("search");
+   setSearchParams(searchParams);
+ };
 
   const filterOptions = {
     category: [
@@ -184,14 +202,36 @@ const Shop = () => {
         Shop Vintage
       </h1>
       {/* Search Bar */}
-      <div className="mb-6">
+      <div className="mb-6 relative">
         <input
           type="text"
           placeholder="Search items..."
           value={searchTerm}
           onChange={handleSearchChange}
-          className="w-full px-4 py-2 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+          className="w-full px-4 py-2 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 pr-10"
         />
+        {searchTerm && (
+          <button
+            onClick={clearSearch}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            aria-label="Clear search"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M6 18L18 6M6 6l12 12"
+              />
+            </svg>
+          </button>
+        )}
       </div>
       {/* Filters Section */}
       <div className="border-2 border-black rounded-lg p-6 mb-8">
@@ -329,7 +369,7 @@ const Shop = () => {
           </div>
         </div>
       </div>
-      
+
       {loading ? (
         <div className="flex justify-center py-12">
           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>

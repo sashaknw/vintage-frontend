@@ -302,6 +302,50 @@ const Profile = () => {
                         className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
                       />
                     </div>
+                    <div className="mb-4">
+                      <label
+                        htmlFor="bio"
+                        className="block text-gray-700 text-sm font-medium mb-2"
+                      >
+                        Bio
+                      </label>
+                      <textarea
+                        id="bio"
+                        name="bio"
+                        value={profileData.bio}
+                        onChange={handleChange}
+                        rows="3"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        placeholder="Tell us about yourself..."
+                      ></textarea>
+                    </div>
+
+                    <div className="mb-4">
+                      <label
+                        htmlFor="profilePicture"
+                        className="block text-gray-700 text-sm font-medium mb-2"
+                      >
+                        Profile Picture URL
+                      </label>
+                      <input
+                        type="text"
+                        id="profilePicture"
+                        name="profilePicture"
+                        value={profileData.profilePicture}
+                        onChange={handleChange}
+                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                        placeholder="https://unsplash.com/illustrations/a-skeleton-with-a-sculler-holding-a-sculler-yR2wXEoUwNE"
+                      />
+                      {profileData.profilePicture && (
+                        <div className="mt-2">
+                          <img
+                            src={profileData.profilePicture}
+                            alt="Profile preview"
+                            className="w-20 h-20 object-cover rounded-full"
+                          />
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="mt-8 flex justify-end space-x-4">

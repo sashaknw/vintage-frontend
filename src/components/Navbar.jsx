@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchInputRef = useRef(null);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -11,12 +14,48 @@ const Navbar = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const toggleSearch = () => {
+    setIsSearchOpen(!isSearchOpen);
+    if (!isSearchOpen) {
+      setTimeout(() => {
+        searchInputRef.current?.focus();
+      }, 100);
+    }
+  };
+
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
 
-  // Get the user's initial safely
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchQuery.trim())}`);
+      setIsSearchOpen(false);
+      setSearchQuery("");
+    }
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        isSearchOpen &&
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target) &&
+        !event.target.closest('button[aria-label="Search"]')
+      ) {
+        setIsSearchOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSearchOpen]);
+
+  // Get the user's initial 
   const getUserInitial = () => {
     if (user && user.name) {
       return user.name.charAt(0).toUpperCase();
@@ -24,7 +63,7 @@ const Navbar = () => {
     if (user && user.email) {
       return user.email.charAt(0).toUpperCase();
     }
-    return "U"; // Default fallback
+    return "U"; 
   };
 
   return (
@@ -34,7 +73,10 @@ const Navbar = () => {
           <div className="flex">
             {/* Logo */}
             <div className="flex-shrink-0 flex items-center">
-              <Link to="/" className=" font-golos text-3xl font-bold text-black">
+              <Link
+                to="/"
+                className=" font-golos text-3xl font-bold text-black"
+              >
                 vintage vault
               </Link>
             </div>
@@ -65,29 +107,82 @@ const Navbar = () => {
               >
                 About
               </Link>
+              <Link
+                to="/community"
+                className="border-transparent text-black-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+              >
+                Community
+              </Link>
             </div>
           </div>
 
           {/* Right side nav items */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            {/* Search Icon */}
-            <button className="p-1 rounded-full text-black-800 hover:text-amber-600 focus:outline-none">
-              <svg
-                className="h-6 w-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
+            {/* Search Icon and Expandable Search Bar */}
+            <div className="relative">
+              <button
+                aria-label="Search"
+                className="p-1 rounded-full text-black-800 hover:text-amber-600 focus:outline-none"
+                onClick={toggleSearch}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                ></path>
-              </svg>
-            </button>
+                <svg
+                  className="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  ></path>
+                </svg>
+              </button>
 
+              {/* Expanding Search Bar */}
+              <div
+                className={`absolute right-0 top-0 mt-10 transition-all duration-300 ease-in-out overflow-hidden ${
+                  isSearchOpen
+                    ? "w-64 opacity-100 scale-100"
+                    : "w-0 opacity-0 scale-95"
+                }`}
+              >
+                <form
+                  onSubmit={handleSearchSubmit}
+                  className="flex bg-white shadow-md rounded-md overflow-hidden"
+                >
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search for vintage items..."
+                    className="px-3 py-2 w-full focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-black px-3 py-2 text-white hover:bg-gray-800 transition"
+                  >
+                    <svg
+                      className="h-4 w-4"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                      ></path>
+                    </svg>
+                  </button>
+                </form>
+              </div>
+            </div>
             {/* Cart Icon */}
             <Link
               to="/cart"

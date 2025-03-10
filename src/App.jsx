@@ -22,6 +22,14 @@ import Checkout from "./pages/Checkout";
 import Favorites from "./pages/Favorites";
 import NotFound from "./pages/NotFound";
 
+import Community from "./pages/Community";
+import CategoryPage from "./pages/CategoryPage";
+import TopicPage from "./pages/TopicPage";
+import CreateTopicPage from "./pages/CreateTopicPage";
+import SearchResultsPage from "./pages/SearchResultsPage";
+import FollowedTopicsPage from "./pages/FollowedTopicsPage";
+
+
 // Protected Route Component
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -42,6 +50,22 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route path="/cart" element={<Cart />} />
+
+              <Route path="/community" element={<Community />} />
+              <Route
+                path="/community/category/:categoryId"
+                element={<CategoryPage />}
+              />
+              <Route
+                path="/community/category/:categoryId/new"
+                element={<CreateTopicPage />}
+              />
+              <Route path="/community/topic/:topicId" element={<TopicPage />} />
+              <Route path="/community/search" element={<SearchResultsPage />} />
+              <Route
+                path="/community/followed"
+                element={<FollowedTopicsPage />}
+              />
 
               {/* Protected Routes */}
               <Route
