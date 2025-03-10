@@ -15,6 +15,7 @@ import Categories from "./pages/Categories";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import PublicProfile from "./components/PublicProfile";
 import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import Checkout from "./pages/Checkout";
@@ -66,10 +67,11 @@ function App() {
                 path="/community/followed"
                 element={<FollowedTopicsPage />}
               />
+              <Route path="/profile/:userId" element={<PublicProfile />} />
 
               {/* Protected Routes */}
               <Route
-                path="/profile"
+                path="/account"
                 element={
                   <ProtectedRoute>
                     <Profile />

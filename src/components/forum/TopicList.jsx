@@ -22,7 +22,7 @@ const TopicList = ({ topics, categoryId, categoryName }) => {
     <div className="bg-white rounded-lg shadow overflow-hidden">
       <div className="p-4 border-b">
         <div className="flex justify-between items-center">
-          <h2 className="text-xl font-medium text-black">{categoryName}</h2>
+          <h2 className="text-xl font-medium text-white ">{categoryName}</h2>
           <Link to={`/community/category/${categoryId}/new`}>
             <a href="#_" className="relative inline-block text-lg group w-full">
               <span className="relative z-10 block px-5 py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">

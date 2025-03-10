@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 const Profile = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user, logout, updateProfile } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("account");
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -16,6 +15,7 @@ const Profile = () => {
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
+    profilePicture: "",
   });
 
   // Mock orders data
@@ -48,6 +48,7 @@ const Profile = () => {
         ...formData,
         username: user.username || "",
         email: user.email || "",
+        profilePicture: user.profilePicture || "",
       });
     }
   }, [user]);
@@ -76,8 +77,20 @@ const Profile = () => {
     }
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 800));
+      // Prepare data for update
+      const updateData = {
+        username: formData.username,
+        email: formData.email,
+        profilePicture: formData.profilePicture,
+      };
+
+      if (formData.newPassword) {
+        updateData.currentPassword = formData.currentPassword;
+        updateData.newPassword = formData.newPassword;
+      }
+
+      // Update profile (assuming updateProfile is provided by AuthContext)
+      await updateProfile(updateData);
 
       setMessage({ type: "success", text: "Profile updated successfully" });
       setIsEditing(false);
@@ -94,6 +107,30 @@ const Profile = () => {
         type: "error",
         text: error.response?.data?.message || "Failed to update profile",
       });
+    }
+  };
+
+  // Handle account deletion
+  const handleDeleteAccount = async () => {
+    if (
+      window.confirm(
+        "Are you sure you want to delete your account? This action cannot be undone."
+      )
+    ) {
+      try {
+        // Replace this with your actual API call
+        await updateProfile({ deleteAccount: true });
+
+        // Log out the user after successful deletion
+        logout();
+
+        // Redirect to home page or a "goodbye" page would happen via logout function
+      } catch (error) {
+        setMessage({
+          type: "error",
+          text: error.response?.data?.message || "Failed to delete account",
+        });
+      }
     }
   };
 
@@ -215,8 +252,57 @@ const Profile = () => {
               </div>
             )}
 
+            {/* Profile Picture (Always Visible) */}
+            <div className="flex items-center justify-center mb-6">
+              <div className="relative">
+                {user.profilePicture ? (
+                  <img
+                    src={user.profilePicture}
+                    alt="Profile"
+                    className="w-24 h-24 rounded-full object-cover border border-gray-200"
+                  />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-bold text-xl">
+                    {user.username
+                      ? user.username.charAt(0).toUpperCase()
+                      : user.name
+                      ? user.name.charAt(0).toUpperCase()
+                      : "?"}
+                  </div>
+                )}
+              </div>
+            </div>
+
             {isEditing ? (
               <form onSubmit={handleSubmit}>
+                {/* Profile Picture URL field */}
+                <div className="mb-6">
+                  <label
+                    htmlFor="profilePicture"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
+                    Profile Picture URL
+                  </label>
+                  <input
+                    type="text"
+                    id="profilePicture"
+                    name="profilePicture"
+                    value={formData.profilePicture}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
+                    placeholder="Enter URL for your profile picture"
+                  />
+                  {formData.profilePicture && (
+                    <div className="mt-2 flex justify-center">
+                      <img
+                        src={formData.profilePicture}
+                        alt="Profile preview"
+                        className="w-16 h-16 object-cover rounded-full border border-gray-200"
+                      />
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Username field */}
                   <div>
@@ -332,6 +418,7 @@ const Profile = () => {
                         setFormData({
                           username: user.username || "",
                           email: user.email || "",
+                          profilePicture: user.profilePicture || "",
                           currentPassword: "",
                           newPassword: "",
                           confirmPassword: "",
@@ -356,7 +443,9 @@ const Profile = () => {
                   <h3 className="text-sm font-medium text-gray-500 mb-1">
                     Username
                   </h3>
-                  <p className="text-black font-medium">{user.username || user.name}</p>
+                  <p className="text-black font-medium">
+                    {user.username || user.name}
+                  </p>
                 </div>
                 <div className="bg-gray-50 p-4 rounded-md border border-gray-100">
                   <h3 className="text-sm font-medium text-gray-500 mb-1">
@@ -400,6 +489,36 @@ const Profile = () => {
                     </p>
                   </div>
                 </div>
+
+                {/* Delete Account Option */}
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <svg
+                      className="h-5 w-5 text-gray-400"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      ></path>
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <button
+                      onClick={handleDeleteAccount}
+                      className="text-red-600 hover:text-red-800 font-medium transition-colors"
+                    >
+                      Delete Account
+                    </button>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Permanently delete your account and all associated data
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -427,9 +546,7 @@ const Profile = () => {
                     d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                   ></path>
                 </svg>
-                <h3 className="mt-2 text-black font-medium">
-                  No orders yet
-                </h3>
+                <h3 className="mt-2 text-black font-medium">No orders yet</h3>
                 <p className="mt-1 text-gray-500">
                   Start browsing our collection to find unique vintage items.
                 </p>
@@ -445,7 +562,11 @@ const Profile = () => {
             ) : (
               <div className="space-y-6">
                 {orders.map((order) => (
-                  <div key={order.id} className="bg-gray-50 rounded-lg p-6 border border-gray-100">
+                  <div
+                    key={order.id}
+                    className="bg-gray-50 rounded-lg p-6 border border-gray-100"
+                  >
+                    {/* Order details remain the same */}
                     <div className="flex flex-wrap justify-between items-start mb-4">
                       <div>
                         <h3 className="text-lg font-medium text-black">
@@ -495,7 +616,7 @@ const Profile = () => {
                                 <div>
                                   <div className="flex justify-between">
                                     <h4 className="text-sm font-medium text-black">
-                                      <Link 
+                                      <Link
                                         to={`/item/${item.id}`}
                                         className="hover:text-amber-700 transition-colors"
                                       >
@@ -517,7 +638,7 @@ const Profile = () => {
                       </div>
                     </div>
 
-<div className="border-t border-gray-100 pt-4 mt-4 flex justify-between items-center">
+                    <div className="border-t border-gray-100 pt-4 mt-4 flex justify-between items-center">
                       <p className="text-sm text-gray-500">
                         {order.items.reduce(
                           (total, item) => total + item.quantity,

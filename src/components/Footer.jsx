@@ -1,131 +1,40 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Footer = () => {
+  const location = useLocation();
+
+  // Determine if the footer should use dark theme based on current page
+  const isDarkTheme = ["/community"].includes(location.pathname);
+
+  // Dynamic theme classes
+  const themeClasses = {
+    background: isDarkTheme ? "bg-black" : "bg-white",
+    text: isDarkTheme ? "text-white" : "text-black",
+    mutedText: isDarkTheme ? "text-gray-400" : "text-gray-500",
+    linkHover: isDarkTheme ? "hover:text-gray-300" : "hover:text-amber-500",
+  };
+
   return (
-    <footer className="bg-white text-black">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+    <footer className={`${themeClasses.background} ${themeClasses.text} py-8`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Compact Footer with Responsive Layout */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
           {/* Company Info */}
-          <div className="col-span-1 md:col-span-1">
-            <h3 className="text-xl font-golos font-bold mb-4">vintage vault</h3>
-            <p className="text-sm text-black">
-              Curated vintage fashion for the discerning collector. Each piece
-              tells a story from the past, ready for its next chapter.
+          <div className="col-span-2 sm:col-span-1">
+            <h3 className="text-lg font-bold mb-2">vintage vault</h3>
+            <p className={`text-xs ${themeClasses.mutedText} mb-4`}>
+              Curated vintage fashion for the discerning collector.
             </p>
-          </div>
 
-          {/* Quick Links */}
-          <div className="col-span-1">
-            <h4 className="text-lg font-medium mb-4">Quick Links</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/" className="text-black hover:text-white text-sm">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/shop"
-                  className="text-black hover:text-amber-300 text-sm"
-                >
-                  Shop
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/categories"
-                  className="text-black hover:text-amber-300 text-sm"
-                >
-                  Categories
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/about"
-                  className="text-black hover:text-amber-300 text-sm"
-                >
-                  About Us
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Customer Service */}
-          <div className="col-span-1">
-            <h4 className="text-lg font-medium mb-4">Customer Service</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link
-                  to="/contact"
-                  className="text-black hover:text-amber-300 text-sm"
-                >
-                  Contact Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/shipping"
-                  className="text-black hover:text-amber-300 text-sm"
-                >
-                  Shipping Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/returns"
-                  className="text-black hover:text-amber-300 text-sm"
-                >
-                  Returns & Exchanges
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/faq"
-                  className="text-black hover:text-amber-300 text-sm"
-                >
-                  FAQ
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div className="col-span-1">
-            <h4 className="text-lg font-medium mb-4">Stay Updated</h4>
-            <p className="text-sm mb-4">
-              Subscribe to our newsletter for vintage finds and exclusive
-              offers.
-            </p>
-            <form className="flex flex-col sm:flex-row">
-              <input
-                type="email"
-                placeholder="Your email"
-                className="px-4 py-2 w-full sm:w-auto rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 text-amber-900 mb-2 sm:mb-0 border-2 border-amber-500"
-              />
-              <button
-                type="submit"
-                className="bg-black hover:bg-amber-500 text-white px-4 py-2 rounded-md ml-0 sm:ml-2"
+            {/* Social Media - Moved up in mobile view */}
+            <div className="flex space-x-4">
+              <a
+                href="#"
+                className={`${themeClasses.text} ${themeClasses.linkHover}`}
               >
-                Subscribe
-              </button>
-            </form>
-          </div>
-        </div>
-
-        {/* Bottom Section */}
-        <div className="border-t border-amber-800 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <p className="text-sm text-black">
-              &copy; {new Date().getFullYear()} Vintage Vault. All rights
-              reserved.
-            </p>
-            <div className="flex space-x-6 mt-4 md:mt-0">
-              {/* Social Media Icons */}
-              <a href="#" className="text-black hover:text-white">
-                <span className="sr-only">Facebook</span>
                 <svg
-                  className="h-6 w-6"
+                  className="h-5 w-5"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
@@ -137,10 +46,12 @@ const Footer = () => {
                   />
                 </svg>
               </a>
-              <a href="#" className="text-black hover:text-white">
-                <span className="sr-only">Instagram</span>
+              <a
+                href="#"
+                className={`${themeClasses.text} ${themeClasses.linkHover}`}
+              >
                 <svg
-                  className="h-6 w-6"
+                  className="h-5 w-5"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                   aria-hidden="true"
@@ -152,19 +63,111 @@ const Footer = () => {
                   />
                 </svg>
               </a>
-              <a href="#" className="text-black hover:text-white">
-                <span className="sr-only">Twitter</span>
-                <svg
-                  className="h-6 w-6"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                </svg>
-              </a>
             </div>
           </div>
+
+          {/* Quick Links - Condensed */}
+          <div className="col-span-1">
+            <h4 className="text-sm font-medium mb-2">Quick Links</h4>
+            <ul className="space-y-1">
+              <li>
+                <Link to="/" className={`text-xs ${themeClasses.linkHover}`}>
+                  Home
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/shop"
+                  className={`text-xs ${themeClasses.linkHover}`}
+                >
+                  Shop
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/community"
+                  className={`text-xs ${themeClasses.linkHover}`}
+                >
+                  Community
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/about"
+                  className={`text-xs ${themeClasses.linkHover}`}
+                >
+                  About
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Customer Service - Condensed */}
+          <div className="col-span-1">
+            <h4 className="text-sm font-medium mb-2">Support</h4>
+            <ul className="space-y-1">
+              <li>
+                <Link
+                  to="/contact"
+                  className={`text-xs ${themeClasses.linkHover}`}
+                >
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/returns"
+                  className={`text-xs ${themeClasses.linkHover}`}
+                >
+                  Returns
+                </Link>
+              </li>
+              <li>
+                <Link to="/faq" className={`text-xs ${themeClasses.linkHover}`}>
+                  FAQ
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Newsletter - Styled to match site design */}
+          <div className="col-span-2 sm:col-span-1">
+            <h4 className="text-sm font-medium mb-2">Newsletter</h4>
+            <form>
+              <div className="flex flex-col space-y-2">
+                <input
+                  type="email"
+                  placeholder="Your email"
+                  className={`text-xs px-3 py-2 rounded-full bg-transparent border ${
+                    isDarkTheme
+                      ? "border-gray-700 text-white placeholder-gray-500 focus:border-white"
+                      : "border-gray-300 text-black placeholder-gray-500 focus:border-amber-500"
+                  } focus:outline-none focus:ring-1 ${
+                    isDarkTheme
+                      ? "focus:ring-white/30"
+                      : "focus:ring-amber-500/30"
+                  }`}
+                />
+                <button
+                  type="submit"
+                  className={`text-xs px-3 py-2 rounded-full transition-colors ${
+                    isDarkTheme
+                      ? "border border-white text-white hover:bg-white hover:text-black"
+                      : "bg-black text-white hover:bg-amber-500"
+                  }`}
+                >
+                  Subscribe
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Bottom Section - Simplified */}
+        <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-800">
+          <p className={`text-xs ${themeClasses.mutedText} text-center`}>
+            &copy; {new Date().getFullYear()} Vintage Vault
+          </p>
         </div>
       </div>
     </footer>

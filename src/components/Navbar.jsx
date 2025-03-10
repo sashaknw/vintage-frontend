@@ -55,7 +55,7 @@ const Navbar = () => {
     };
   }, [isSearchOpen]);
 
-  // Get the user's initial 
+  // Get the user's initial
   const getUserInitial = () => {
     if (user && user.name) {
       return user.name.charAt(0).toUpperCase();
@@ -63,7 +63,7 @@ const Navbar = () => {
     if (user && user.email) {
       return user.email.charAt(0).toUpperCase();
     }
-    return "U"; 
+    return "U";
   };
 
   return (
@@ -221,22 +221,23 @@ const Navbar = () => {
                 {isMenuOpen && (
                   <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-xl py-1 bg-white ring-1 ring-black ring-opacity-5 z-50">
                     <Link
-                      to="/profile"
+                      to="/account"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
                     >
                       Your Profile
                     </Link>
-                    <Link
-                      to="/orders"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
-                    >
-                      Your Orders
-                    </Link>
+                  
                     <Link
                       to="/favorites"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
                     >
                       Favorites
+                    </Link>
+                    <Link
+                      to="/community/followed"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
+                    >
+                      My Topics
                     </Link>
                     <button
                       onClick={handleLogout}
@@ -330,6 +331,12 @@ const Navbar = () => {
           >
             About
           </Link>
+          <Link
+            to="/community"
+            className="text-amber-800 hover:bg-amber-100 block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
+          >
+            Community
+          </Link>
         </div>
 
         {/* Mobile user menu */}
@@ -357,17 +364,18 @@ const Navbar = () => {
               >
                 Your Profile
               </Link>
-              <Link
-                to="/orders"
-                className="block px-4 py-2 text-base font-medium text-amber-800 hover:bg-amber-100"
-              >
-                Your Orders
-              </Link>
+             
               <Link
                 to="/favorites"
                 className="block px-4 py-2 text-base font-medium text-amber-800 hover:bg-amber-100"
               >
                 Favorites
+              </Link>
+              <Link
+                to="/community/followed"
+                className="block px-4 py-2 text-base font-medium text-amber-800 hover:bg-amber-100"
+              >
+                My Topics
               </Link>
               <button
                 onClick={handleLogout}

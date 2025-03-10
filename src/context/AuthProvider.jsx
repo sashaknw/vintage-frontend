@@ -1,5 +1,6 @@
 // AuthProvider.jsx - Combines context with service
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import authService from "../services/authService";
 
@@ -7,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   // Check if user is already logged in
   useEffect(() => {
@@ -67,6 +69,68 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  // Update user profile
+  const updateProfile = async (profileData) => {
+    try {
+      setLoading(true);
+
+      // Handle account deletion separately
+      if (profileData.deleteAccount) {
+        await authService.deleteAccount();
+        logout();
+        navigate("/");
+        return { success: true };
+      }
+
+      const updatedProfile = await authService.updateProfile(profileData);
+      setUser((prevUser) => ({
+        ...prevUser,
+        ...updatedProfile,
+      }));
+      setError(null);
+      return updatedProfile;
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to update profile");
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Upload profile picture
+  const uploadProfilePicture = async (formData) => {
+    try {
+      setLoading(true);
+      const response = await authService.uploadProfilePicture(formData);
+
+      // Update the user state with the new profile picture URL
+      setUser((prevUser) => ({
+        ...prevUser,
+        profilePicture: response.profilePicture,
+      }));
+
+      setError(null);
+      return response;
+    } catch (err) {
+      setError(
+        err.response?.data?.message || "Failed to upload profile picture"
+      );
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Get the public profile of any user
+  const getPublicProfile = async (userId) => {
+    try {
+      return await authService.getPublicProfile(userId);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to fetch user profile");
+      throw err;
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -76,6 +140,9 @@ export const AuthProvider = ({ children }) => {
         register,
         login,
         logout,
+        updateProfile,
+        uploadProfilePicture,
+        getPublicProfile,
         isAuthenticated: !!user,
       }}
     >
