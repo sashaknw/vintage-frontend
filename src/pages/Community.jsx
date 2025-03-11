@@ -49,33 +49,38 @@ const Community = () => {
             {/* Top section with title */}
             <div>
               <h1 className="text-4xl font-bold mb-1 text-white">
-                Community Forum —
+                Community Forum
               </h1>
               <p className="text-gray-300 mb-6">
                 Connect with fellow vintage enthusiasts and share your style
                 journey
               </p>
-            </div>
-
-            {/* Input and button on the same line */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-auto">
-              <form onSubmit={handleSearch} className="flex-grow max-w-md">
-                <input
-                  type="text"
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-transparent px-6 py-2 rounded-full border border-white text-white text-sm placeholder-white focus:outline-none focus:ring-2 focus:ring-white/50 hover:bg-white/10 transition-colors"
-                />
-              </form>
+              {/* search */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-auto">
+                <form onSubmit={handleSearch} className="flex-grow max-w-md">
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-transparent px-6 py-2 rounded-full border border-white text-white text-sm placeholder-white focus:outline-none focus:ring-2 focus:ring-white/50 hover:bg-white/10 transition-colors"
+                  />
+                </form>
+              </div>
             </div>
           </div>
         </div>
-
+        {/* Categories Section */}
+        <div className="p-6">
+          <h2 className="text-4xl font-bold mb-4 py-4 text-white text-left">
+            Hot Topics
+          </h2>
+          <ForumCategories cardStyle={true} />
+        </div>
         {/* Activity and Guidelines Cards in a row */}
         <div className="grid grid-cols-1 p-6 md:grid-cols-2 gap-5">
           {/* Stats Card */}
-          <div className=" p-6 rounded-3xl border-2  border-white">
+          <div className=" p-6 rounded-3xl border-2  border-white ">
             <div className="mb-2 flex justify-between items-center">
               <span className="text-xs font-medium uppercase tracking-wider text-white">
                 FORUM ACTIVITY
@@ -181,14 +186,6 @@ const Community = () => {
               </ul>
             </div>
           </div>
-        </div>
-
-        {/* Categories Section */}
-        <div>
-          <h2 className="text-4xl font-bold mb-4 py-4 text-white">
-            Hot Topics
-          </h2>
-          <ForumCategories cardStyle={true} />
         </div>
       </div>
     </div>

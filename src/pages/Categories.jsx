@@ -50,28 +50,16 @@ const Categories = () => {
 
             // Get up to 2 images for each category (for the hover effect)
             const categoryImages = [];
-            if (
-              categoryItems.length > 0 &&
-              categoryItems[0].images &&
-              categoryItems[0].images.length > 0
-            ) {
+            if (categoryItems.length > 0 && categoryItems[0].images && categoryItems[0].images.length > 0) {
               categoryImages.push(categoryItems[0].images[0]);
             } else {
               categoryImages.push("https://via.placeholder.com/600x400");
             }
 
             // Try to get a second image from another item in the category
-            if (
-              categoryItems.length > 1 &&
-              categoryItems[1].images &&
-              categoryItems[1].images.length > 0
-            ) {
+            if (categoryItems.length > 1 && categoryItems[1].images && categoryItems[1].images.length > 0) {
               categoryImages.push(categoryItems[1].images[0]);
-            } else if (
-              categoryItems.length > 0 &&
-              categoryItems[0].images &&
-              categoryItems[0].images.length > 1
-            ) {
+            } else if (categoryItems.length > 0 && categoryItems[0].images && categoryItems[0].images.length > 1) {
               // Or use the second image of the first item if available
               categoryImages.push(categoryItems[0].images[1]);
             } else {
@@ -84,7 +72,7 @@ const Categories = () => {
               name: CATEGORY_DETAILS[categoryKey].displayName,
               description: CATEGORY_DETAILS[categoryKey].description,
               count: categoryItems.length,
-              images: categoryImages,
+              images: categoryImages
             };
           }
         );
@@ -138,7 +126,7 @@ const Categories = () => {
                   alt={category.name}
                   className="w-full h-full object-contain transition duration-300 group-hover:opacity-0"
                 />
-
+                
                 {/* Secondary image (shown on hover) */}
                 {category.images[1] && (
                   <img
@@ -147,7 +135,7 @@ const Categories = () => {
                     className="w-full h-full object-contain absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300"
                   />
                 )}
-
+                
                 <div className="absolute inset-0 bg-black bg-opacity-10 group-hover:bg-opacity-0 transition duration-300"></div>
               </div>
               <div className="bg-white p-6">

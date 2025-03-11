@@ -20,10 +20,6 @@ const Home = () => {
      
         const response = await api.get("/api/items");
         const shuffled = response.data.sort(() => 0.5 - Math.random());
-
-        // OPTION 1: Preserve the entire item structure including images array
-       // setFeaturedItems(shuffled.slice(0, 4));
-
         
       setFeaturedItems(shuffled.slice(0, 4).map(item => ({
         id: item._id,
@@ -46,14 +42,26 @@ const Home = () => {
     fetchFeaturedItems();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-black text-xl">Loading vintage treasures...</p>
-      </div>
-    );
-  }
-
+if (loading) {
+  return (
+    <div className="flex justify-center items-center h-screen">
+      <TypeAnimation
+        sequence={[
+          "vintage vault...", 
+          3000, 
+          "loading...",
+          5000 
+        ]}
+        wrapper="span"
+        speed={20} 
+        cursor={true}
+        repeat={2} 
+        className="text-black text-3xl font-sans font-bold"
+        style={{ display: "inline-block" }}
+      />
+    </div>
+  );
+}
   if (error) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -89,20 +97,17 @@ const Home = () => {
             <h1 className="text-5xl md:text-5xl font-serif font-bold text-slate-100 mb-6">
               <TypeAnimation
                 sequence={[
-                  "Timeless Style, Sustainable Fashion", // Type this string
-                  // You can add more sequences if you want text to change
-                  // For example: 1000, 'Another text', 1000, 'Yet another text'
+                  "Timeless Style, Sustainable Fashion", 2000, "Like-minded Community & Spaces", 2000
                 ]}
                 wrapper="span"
                 speed={20} // Speed in milliseconds per character
                 cursor={true}
-                repeat={1} // Don't repeat the animation
+                repeat={2} 
                 style={{ display: "inline-block" }}
               />
             </h1>
             <p className="text-lg text-slate-200 mb-8">
-              Discover unique vintage pieces from every decade. Each item tells
-              a story and has been carefully selected for quality and character.
+              Discover unique vintage pieces from every decade. Connect with the local fashion community.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link to="/shop" className="w-full sm:w-auto">
@@ -212,7 +217,7 @@ const Home = () => {
       {/* Categories Preview */}
       <section className="py-16 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-12">
-          <h2 className="text-3xl font-serif font-bold text-center text-white mb-12">
+          <h2 className="text-3xl font-serif font-bold text-center  text-white mb-12 ">
             Shop by Category
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 font-golos">
@@ -246,7 +251,7 @@ const Home = () => {
                     />
                   </svg>
 
-                  <h3 className="text-xl md:text-2xl font-medium text-white z-10">
+                  <h3 className="text-xl md:text-2xl font-medium text-white z-10 group-hover:text-[#feff26]">
                     {category.name}
                   </h3>
                 </div>

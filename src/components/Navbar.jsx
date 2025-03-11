@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -8,7 +9,10 @@ const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const searchInputRef = useRef(null);
   const { user, logout } = useAuth();
+  const { cartItemCount } = useCart();
   const navigate = useNavigate();
+
+
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -85,31 +89,31 @@ const Navbar = () => {
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
                 to="/"
-                className="border-transparent text-black-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className="border-transparent text-black-800  hover:border-[#feff26] inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 Home
               </Link>
               <Link
                 to="/shop"
-                className="border-transparent text-black-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className="border-transparent text-black-800  hover:border-[#feff26] inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 Shop
               </Link>
               <Link
                 to="/categories"
-                className="border-transparent text-black-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className="border-transparent text-black-800  hover:border-[#feff26] inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 Categories
               </Link>
               <Link
                 to="/about"
-                className="border-transparent text-black-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className="border-transparent text-black-800  hover:border-[#feff26] inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 About
               </Link>
               <Link
                 to="/community"
-                className="border-transparent text-black-800 hover:text-amber-600 hover:border-amber-600 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className="border-transparent text-black-800  hover:border-[#feff26] inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 Community
               </Link>
@@ -122,7 +126,7 @@ const Navbar = () => {
             <div className="relative">
               <button
                 aria-label="Search"
-                className="p-1 rounded-full text-black-800 hover:text-amber-600 focus:outline-none"
+                className="p-1 rounded-full text-black-800  focus:outline-none hover:scale-110"
                 onClick={toggleSearch}
               >
                 <svg
@@ -186,7 +190,7 @@ const Navbar = () => {
             {/* Cart Icon */}
             <Link
               to="/cart"
-              className="p-1 ml-3 rounded-full text-black-800 hover:text-amber-600 focus:outline-none"
+              className="p-1 ml-3 rounded-full text-black-800 hover:scale-110 focus:outline-none relative"
             >
               <svg
                 className="h-6 w-6"
@@ -202,6 +206,12 @@ const Navbar = () => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 ></path>
               </svg>
+              {/* Cart counter */}
+              {cartItemCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#feff26] text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {cartItemCount}
+                </span>
+              )}
             </Link>
 
             {/* User Menu */}
@@ -226,7 +236,7 @@ const Navbar = () => {
                     >
                       Your Profile
                     </Link>
-                  
+
                     <Link
                       to="/favorites"
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
@@ -252,12 +262,12 @@ const Navbar = () => {
               <div className="ml-3 flex items-center space-x-4">
                 <Link
                   to="/login"
-                  className="text-black-800 hover:text-amber-600 font-medium"
+                  className="text-black-800 hover:scale-110 text-sm font-medium"
                 >
                   Login
                 </Link>
                 <Link to="/register">
-                  <button className="px-2 py-1 text-black border-2 border-black rounded-md font-medium hover:bg-black hover:text-white transition">
+                  <button className="px-2 py-1 text-black border-2 border-black rounded-md text-sm font-medium hover:bg-black hover:text-white transition">
                     Register
                   </button>
                 </Link>
@@ -352,7 +362,7 @@ const Navbar = () => {
                 <div className="text-base font-medium text-amber-900">
                   {user.name || user.email}
                 </div>
-                <div className="text-sm font-medium text-amber-600">
+                <div className="text-sm font-medium text-[#feff26]">
                   {user.email}
                 </div>
               </div>
@@ -364,7 +374,7 @@ const Navbar = () => {
               >
                 Your Profile
               </Link>
-             
+
               <Link
                 to="/favorites"
                 className="block px-4 py-2 text-base font-medium text-amber-800 hover:bg-amber-100"
@@ -390,7 +400,7 @@ const Navbar = () => {
             <div className="flex items-center justify-center space-x-4 px-4">
               <Link
                 to="/login"
-                className="text-amber-800 font-medium hover:text-amber-600"
+                className="text-amber-800 font-medium hover:text-[#feff26]"
               >
                 Login
               </Link>

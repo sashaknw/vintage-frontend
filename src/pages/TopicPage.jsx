@@ -179,19 +179,19 @@ const TopicPage = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-10 bg-gray-50 min-h-screen">
+    <div className="max-w-screen-2xl mx-auto px-8 py-10 bg-black min-h-screen">
       {/* Header Bar */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <Link
             to="/community"
-            className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white"
+            className="text-sm font-medium px-3 py-1.5 rounded-full  bg-[#f0ff26] hover:scale-110"
           >
             Community
           </Link>
           <Link
             to={`/community/category/${topic.category._id}`}
-            className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white"
+            className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white hover:scale-110"
           >
             {topic.category.name}
           </Link>
@@ -278,7 +278,7 @@ const TopicPage = () => {
             {!topic.isLocked && (
               <button
                 onClick={() => setShowReplyForm(true)}
-                className="bg-black text-white px-4 py-2 rounded-full text-sm hover:bg-gray-800"
+                className="bg-black text-white px-4 py-2 rounded-full text-sm hover:scale-110"
                 disabled={!isAuthenticated}
               >
                 Reply to Topic
@@ -300,8 +300,8 @@ const TopicPage = () => {
       )}
 
       {/* Replies */}
-      <div className="space-y-4">
-        <h2 className="text-xl font-bold">Replies</h2>
+      <div className="space-y-4 p-10 ">
+        <h2 className="text-2xl font-bold text-white">Replies</h2>
 
         {replies.length === 0 ? (
           <div className="bg-white rounded-3xl border border-gray-200 p-6 text-center">
@@ -391,7 +391,7 @@ const TopicPage = () => {
           <div className="mt-6 text-center">
             <button
               onClick={() => setShowReplyForm(true)}
-              className="bg-black text-white px-4 py-2 rounded-full text-sm hover:bg-gray-800"
+              className="bg-[#f0ff26]  text-black px-4 py-2 rounded-full text-sm hover:bg-white"
               disabled={!isAuthenticated}
             >
               Post a Reply

@@ -4,10 +4,10 @@ import { useCart } from "../context/CartContext";
 
 const Cart = () => {
   const navigate = useNavigate();
-  const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const { cartItems, removeFromCart } = useCart();
 
   const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + item.price,
     0
   );
 
@@ -87,82 +87,31 @@ const Cart = () => {
                         <div>
                           <h3 className="text-lg font-medium text-gray-900">
                             <Link
-                              to={`/items/${item._id}`}
-                              className="hover:text-amber-700 transition-colors"
+                              to={`/item/${item._id}`}
+                              className="hover:text-black transition-colors"
                             >
                               {item.name}
                             </Link>
                           </h3>
-                          <p className="mt-1 text-sm text-gray-500">
-                            Size: {item.size}
-                          </p>
+                          {item.size && (
+                            <p className="mt-1 text-sm text-gray-500">
+                              Size: {item.size}
+                            </p>
+                          )}
+                          {item.category && (
+                            <p className="mt-1 text-sm text-gray-500">
+                              Category: {item.category}
+                            </p>
+                          )}
                         </div>
                         <p className="text-lg font-medium text-black">
                           €{item.price.toFixed(2)}
                         </p>
                       </div>
-                      <div className="mt-4 flex justify-between items-center">
-                        <div className="flex items-center border border-gray-200 rounded-md overflow-hidden">
-                          <button
-                            onClick={() =>
-                              updateQuantity(
-                                item._id,
-                                Math.max(1, item.quantity - 1)
-                              )
-                            }
-                            className="p-2 text-gray-600 hover:bg-gray-50 transition-colors"
-                          >
-                            <svg
-                              className="h-4 w-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M20 12H4"
-                              />
-                            </svg>
-                          </button>
-                          <input
-                            type="number"
-                            min="1"
-                            max="10"
-                            value={item.quantity}
-                            onChange={(e) =>
-                              updateQuantity(item._id, parseInt(e.target.value))
-                            }
-                            className="w-10 text-center border-x border-gray-200 py-1 text-gray-900 focus:outline-none focus:ring-0"
-                          />
-                          <button
-                            onClick={() =>
-                              updateQuantity(
-                                item._id,
-                                Math.min(10, item.quantity + 1)
-                              )
-                            }
-                            className="p-2 text-gray-600 hover:bg-gray-50 transition-colors"
-                          >
-                            <svg
-                              className="h-4 w-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M12 4v16m8-8H4"
-                              />
-                            </svg>
-                          </button>
-                        </div>
+                      <div className="mt-4 flex justify-end items-center">
                         <button
                           onClick={() => removeFromCart(item._id)}
-                          className="text-sm text-gray-500 hover:text-black transition-colors"
+                          className="text-sm text-black hover:bg-[#feff26] px-3 py-1 rounded-full border border-black transition-colors"
                         >
                           Remove
                         </button>
@@ -175,7 +124,7 @@ const Cart = () => {
             <div className="border-t border-gray-100 px-6 py-4">
               <Link
                 to="/shop"
-                className="text-amber-700 hover:text-amber-900 font-medium"
+                className="text-black hover:bg-[#feff26] rounded-full px-3 py-1 font-medium transition-colors"
               >
                 ← Continue Shopping
               </Link>
@@ -191,7 +140,7 @@ const Cart = () => {
             </h2>
             <div className="space-y-4">
               <div className="flex justify-between text-gray-600">
-                <p>Subtotal</p>
+                <p>Subtotal ({cartItems.length} {cartItems.length === 1 ? 'item' : 'items'})</p>
                 <p className="text-black font-medium">€{subtotal.toFixed(2)}</p>
               </div>
               <div className="flex justify-between text-gray-600">
@@ -212,35 +161,37 @@ const Cart = () => {
               Proceed to Checkout
             </button>
             <div className="mt-6 flex items-center justify-center">
-              <svg
-                className="h-5 w-5 text-amber-700"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                />
-              </svg>
+              <div className="bg-black rounded-full p-1">
+                <svg
+                  className="h-4 w-4 text-[#feff26]"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                  />
+                </svg>
+              </div>
               <span className="ml-2 text-sm text-gray-500">
                 Secure Checkout
               </span>
             </div>
           </div>
-          <div className="mt-6 bg-gray-50 rounded-lg p-4 border border-gray-100">
+          <div className="mt-6 bg-white rounded-lg p-4 border border-gray-100">
             <h3 className="text-sm font-medium text-black mb-2">
               Customer Service
             </h3>
             <p className="text-sm text-gray-600">
               Have questions about your order? Contact our customer service team
               at{" "}
-              <a
+              
                 href="mailto:support@vintagevault.com"
-                className="font-medium text-amber-700 hover:text-amber-900 transition-colors"
-              >
+                className="font-medium text-black hover:bg-[#feff26] px-2 py-0.5 rounded-full transition-colors"
+             <a>
                 support@vintagevault.com
               </a>
             </p>
