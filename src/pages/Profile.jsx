@@ -7,6 +7,10 @@ const Profile = () => {
   const [activeTab, setActiveTab] = useState("account");
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [showConfirmation, setShowConfirmation] = useState({
+    action: null,
+    show: false,
+  });
 
   // Form state
   const [formData, setFormData] = useState({
@@ -41,14 +45,16 @@ const Profile = () => {
     },
   ]);
 
-  // Load user data into form when component mounts
+  // Load user data into form when component mounts or when user data changes
   useEffect(() => {
     if (user) {
       setFormData({
-        ...formData,
-        username: user.username || "",
+        username: user.username || user.name || "",
         email: user.email || "",
         profilePicture: user.profilePicture || "",
+        currentPassword: "",
+        newPassword: "",
+        confirmPassword: "",
       });
     }
   }, [user]);
@@ -63,11 +69,29 @@ const Profile = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  // Handle confirmation dialog for logout and delete account
+  const handleConfirmationDialog = (action) => {
+    setShowConfirmation({ action, show: true });
+  };
+
+  const handleConfirmAction = () => {
+    if (showConfirmation.action === "logout") {
+      logout();
+    } else if (showConfirmation.action === "delete") {
+      handleDeleteAccount();
+    }
+    setShowConfirmation({ action: null, show: false });
+  };
+
+  const handleCancelAction = () => {
+    setShowConfirmation({ action: null, show: false });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
 
-    // Validation
+    // Validation: only check password match if new password is provided
     if (
       formData.newPassword &&
       formData.newPassword !== formData.confirmPassword
@@ -83,7 +107,15 @@ const Profile = () => {
         profilePicture: formData.profilePicture,
       };
 
+      // Only include password fields if the user is trying to change their password
       if (formData.newPassword) {
+        if (!formData.currentPassword) {
+          setMessage({
+            type: "error",
+            text: "Current password is required to set a new password",
+          });
+          return;
+        }
         updateData.currentPassword = formData.currentPassword;
         updateData.newPassword = formData.newPassword;
       }
@@ -93,6 +125,7 @@ const Profile = () => {
       setMessage({ type: "success", text: "Profile updated successfully" });
       setIsEditing(false);
 
+      // Reset only password fields
       setFormData({
         ...formData,
         currentPassword: "",
@@ -109,24 +142,14 @@ const Profile = () => {
 
   // Handle account deletion
   const handleDeleteAccount = async () => {
-    if (
-      window.confirm(
-        "Are you sure you want to delete your account? This action cannot be undone."
-      )
-    ) {
-      try {
-      
-        await updateProfile({ deleteAccount: true });
-
-       
-        logout();
-
-      } catch (error) {
-        setMessage({
-          type: "error",
-          text: error.response?.data?.message || "Failed to delete account",
-        });
-      }
+    try {
+      await updateProfile({ deleteAccount: true });
+      logout();
+    } catch (error) {
+      setMessage({
+        type: "error",
+        text: error.response?.data?.message || "Failed to delete account",
+      });
     }
   };
 
@@ -338,8 +361,11 @@ const Profile = () => {
 
                 <div className="mt-8">
                   <h3 className="text-lg font-medium text-black mb-4">
-                    Change Password
+                    Change Password (Optional)
                   </h3>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Leave blank if you don't want to change your password.
+                  </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Current password field */}
                     <div>
@@ -358,7 +384,7 @@ const Profile = () => {
                         className="w-full px-4 py-2 border border-gray-200 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
                       />
                       <p className="mt-1 text-xs text-gray-500">
-                        Required to change password
+                        Required in order to change password
                       </p>
                     </div>
 
@@ -409,7 +435,7 @@ const Profile = () => {
                       // Reset form to current user data
                       if (user) {
                         setFormData({
-                          username: user.username || "",
+                          username: user.username || user.name || "",
                           email: user.email || "",
                           profilePicture: user.profilePicture || "",
                           currentPassword: "",
@@ -472,7 +498,7 @@ const Profile = () => {
                   </div>
                   <div className="ml-3">
                     <button
-                      onClick={logout}
+                      onClick={() => handleConfirmationDialog("logout")}
                       className="text-red-600 hover:text-black font-medium transition-colors"
                     >
                       Sign Out
@@ -502,7 +528,7 @@ const Profile = () => {
                   </div>
                   <div className="ml-3">
                     <button
-                      onClick={handleDeleteAccount}
+                      onClick={() => handleConfirmationDialog("delete")}
                       className="text-red-600 hover:text-red-800 font-medium transition-colors"
                     >
                       Delete Account
@@ -707,6 +733,44 @@ const Profile = () => {
           </div>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmation.show && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <h3 className="text-xl font-medium text-black mb-4">
+              {showConfirmation.action === "logout"
+                ? "Sign Out Confirmation"
+                : "Delete Account Confirmation"}
+            </h3>
+            <p className="text-gray-700 mb-6">
+              {showConfirmation.action === "logout"
+                ? "Are you sure you want to sign out?"
+                : "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed."}
+            </p>
+            <div className="flex justify-end space-x-4">
+              <button
+                onClick={handleCancelAction}
+                className="px-4 py-2 border border-gray-200 rounded-md text-gray-700 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmAction}
+                className={`px-4 py-2 rounded-md text-white transition-colors ${
+                  showConfirmation.action === "delete"
+                    ? "bg-red-600 hover:bg-red-700"
+                    : "bg-black hover:bg-gray-900"
+                }`}
+              >
+                {showConfirmation.action === "logout"
+                  ? "Sign Out"
+                  : "Delete Account"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

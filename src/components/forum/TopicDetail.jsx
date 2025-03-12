@@ -1,9 +1,39 @@
-// components/forum/TopicDetail.jsx
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import ReplyForm from "./ReplyForm";
 import ReplyList from "./ReplyList";
 import { formatDistanceToNow } from "../../helpers/dateUtils";
+
+const UserAvatar = ({ user, size = "medium" }) => {
+  const sizeClasses = {
+    small: "w-6 h-6 text-xs",
+    medium: "w-8 h-8 text-sm",
+    large: "w-12 h-12 text-base",
+  };
+
+  const classes = `${sizeClasses[size]} rounded-full flex items-center justify-center font-bold`;
+
+  if (!user) {
+    return <div className={`${classes} bg-gray-200 text-gray-600`}>?</div>;
+  }
+
+  if (user.profilePicture) {
+    return (
+      <img
+        src={user.profilePicture}
+        alt={user.name || "User"}
+        className={`${classes} object-cover border border-gray-200`}
+      />
+    );
+  }
+
+  return (
+    <div className={`${classes} bg-gray-200 text-gray-700`}>
+      {(user.name || user.username || "?").charAt(0).toUpperCase()}
+    </div>
+  );
+};
 
 const TopicDetail = ({
   topic,
@@ -13,7 +43,6 @@ const TopicDetail = ({
   onLike,
   following = false,
 }) => {
-  // Remove the unused user variable, only keep isAuthenticated
   const { isAuthenticated } = useAuth();
   const [showReplyForm, setShowReplyForm] = useState(false);
 
@@ -21,8 +50,7 @@ const TopicDetail = ({
     if (isAuthenticated) {
       setShowReplyForm(true);
     } else {
-      // If not authenticated, you might want to redirect to login
-      // or show a modal explaining they need to log in
+      
       alert("Please log in to reply");
     }
   };
@@ -50,29 +78,39 @@ const TopicDetail = ({
         {/* Topic Header */}
         <div className="p-4 border-b">
           <h1 className="text-2xl font-medium text-black">{topic.title}</h1>
-          <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-gray-500">
-            <span>Posted by {topic.author?.name || "Unknown"}</span>
-            <span>•</span>
-            <span>{formatDistanceToNow(new Date(topic.createdAt))}</span>
-            <span>•</span>
+          <div className="mt-3 flex items-center">
+            <UserAvatar user={topic.author} size="medium" />
+            <div className="ml-3">
+              {topic.author ? (
+                <Link
+                  to={`/profile/${topic.author._id}`}
+                  className="font-medium text-gray-900 hover:text-amber-700 transition-colors"
+                >
+                  {topic.author.name || "Unknown"}
+                </Link>
+              ) : (
+                <span className="font-medium text-gray-900">Unknown</span>
+              )}
+              <div className="text-sm text-gray-500">
+                {formatDistanceToNow(new Date(topic.createdAt))}
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-gray-500">
             <span>In {topic.category?.name}</span>
             {topic.isPinned && (
-              <>
-                <span>•</span>
-                <span className="bg-amber-200 text-black text-xs px-2 py-0.5 rounded-full">
-                  Pinned
-                </span>
-              </>
+              <span className="bg-amber-200 text-black text-xs px-2 py-0.5 rounded-full">
+                Pinned
+              </span>
             )}
             {topic.isLocked && (
-              <>
-                <span>•</span>
-                <span className="bg-gray-200 text-gray-800 text-xs px-2 py-0.5 rounded-full">
-                  Locked
-                </span>
-              </>
+              <span className="bg-gray-200 text-gray-800 text-xs px-2 py-0.5 rounded-full">
+                Locked
+              </span>
             )}
           </div>
+
           <div className="mt-4 flex flex-wrap gap-2">
             <button
               onClick={handleFollowClick}
@@ -83,19 +121,34 @@ const TopicDetail = ({
               }`}
               disabled={!isAuthenticated}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              {following ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              )}
               {following ? "Following" : "Follow"}
             </button>
             {!topic.isLocked && (

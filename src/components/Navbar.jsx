@@ -12,8 +12,6 @@ const Navbar = () => {
   const { cartItemCount } = useCart();
   const navigate = useNavigate();
 
-
-
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
@@ -59,7 +57,7 @@ const Navbar = () => {
     };
   }, [isSearchOpen]);
 
-  // Get the user's initial
+  // Get the user's initial for fallback
   const getUserInitial = () => {
     if (user && user.name) {
       return user.name.charAt(0).toUpperCase();
@@ -69,6 +67,10 @@ const Navbar = () => {
     }
     return "U";
   };
+
+  // Check if user has a profile picture
+  const hasProfilePicture =
+    user && user.profilePicture && user.profilePicture.trim() !== "";
 
   return (
     <nav className="bg-white shadow-md relative z-50">
@@ -222,9 +224,17 @@ const Navbar = () => {
                     className="flex text-sm rounded-full focus:outline-none"
                     onClick={toggleMenu}
                   >
-                    <div className="h-8 w-8 rounded-full bg-amber-500 flex items-center justify-center text-black">
-                      {getUserInitial()}
-                    </div>
+                    {hasProfilePicture ? (
+                      <img
+                        src={user.profilePicture}
+                        alt="Profile"
+                        className="h-8 w-8 rounded-full object-cover border border-gray-200"
+                      />
+                    ) : (
+                      <div className="h-8 w-8 rounded-full bg-amber-500 flex items-center justify-center text-black">
+                        {getUserInitial()}
+                      </div>
+                    )}
                   </button>
                 </div>
 
@@ -354,9 +364,17 @@ const Navbar = () => {
           <div className="pt-4 pb-3 border-t border-amber-200">
             <div className="flex items-center px-4">
               <div className="flex-shrink-0">
-                <div className="h-10 w-10 rounded-full bg-amber-700 flex items-center justify-center text-white font-medium">
-                  {getUserInitial()}
-                </div>
+                {hasProfilePicture ? (
+                  <img
+                    src={user.profilePicture}
+                    alt="Profile"
+                    className="h-10 w-10 rounded-full object-cover border border-gray-200"
+                  />
+                ) : (
+                  <div className="h-10 w-10 rounded-full bg-amber-700 flex items-center justify-center text-white font-medium">
+                    {getUserInitial()}
+                  </div>
+                )}
               </div>
               <div className="ml-3">
                 <div className="text-base font-medium text-amber-900">
@@ -369,7 +387,7 @@ const Navbar = () => {
             </div>
             <div className="mt-3 space-y-1">
               <Link
-                to="/profile"
+                to="/account"
                 className="block px-4 py-2 text-base font-medium text-amber-800 hover:bg-amber-100"
               >
                 Your Profile
