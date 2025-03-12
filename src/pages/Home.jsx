@@ -5,31 +5,50 @@ import FavoriteButton from "../components/FavoriteButton";
 import { TypeAnimation } from "react-type-animation";
 import { motion } from "framer-motion";
 
-//import axios from "axios";
-
 const Home = () => {
   const [featuredItems, setFeaturedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isPortrait, setIsPortrait] = useState(
+    window.innerHeight > window.innerWidth
+  );
+  const [showOrientationPrompt, setShowOrientationPrompt] = useState(false);
 
-  // Fix for the fetchFeaturedItems function in your Home.jsx
+  // Check device orientation on mount and when window resizes
+  useEffect(() => {
+    const checkOrientation = () => {
+      const portrait = window.innerHeight > window.innerWidth;
+      setIsPortrait(portrait);
+
+      // Only show orientation prompt on mobile devices in portrait mode
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      setShowOrientationPrompt(isMobile && portrait);
+    };
+
+    checkOrientation();
+    window.addEventListener("resize", checkOrientation);
+
+    return () => {
+      window.removeEventListener("resize", checkOrientation);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchFeaturedItems = async () => {
       try {
-     
         const response = await api.get("/api/items");
         const shuffled = response.data.sort(() => 0.5 - Math.random());
-        
-      setFeaturedItems(shuffled.slice(0, 4).map(item => ({
-        id: item._id,
-        name: item.name,
-        price: item.price,
-        era: item.era,
-        images: item.images, // Keep the entire images array
-        image: item.images[0] // For backward compatibility
-      })));
-      
+
+        setFeaturedItems(
+          shuffled.slice(0, 4).map((item) => ({
+            id: item._id,
+            name: item.name,
+            price: item.price,
+            era: item.era,
+            images: item.images,
+            image: item.images[0],
+          }))
+        );
 
         setLoading(false);
       } catch (error) {
@@ -42,26 +61,22 @@ const Home = () => {
     fetchFeaturedItems();
   }, []);
 
-if (loading) {
-  return (
-    <div className="flex justify-center items-center h-screen">
-      <TypeAnimation
-        sequence={[
-          "vintage vault...", 
-          3000, 
-          "loading...",
-          5000 
-        ]}
-        wrapper="span"
-        speed={20} 
-        cursor={true}
-        repeat={2} 
-        className="text-black text-3xl font-sans font-bold"
-        style={{ display: "inline-block" }}
-      />
-    </div>
-  );
-}
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <TypeAnimation
+          sequence={["vintage vault...", 3000, "loading...", 5000]}
+          wrapper="span"
+          speed={20}
+          cursor={true}
+          repeat={2}
+          className="text-black text-3xl font-sans font-bold"
+          style={{ display: "inline-block" }}
+        />
+      </div>
+    );
+  }
+
   if (error) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -72,51 +87,97 @@ if (loading) {
 
   return (
     <div>
+      {/* Orientation Prompt for Mobile */}
+      {showOrientationPrompt && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex flex-col items-center justify-center text-white p-6">
+          <div className="animate-bounce mb-6">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="64"
+              height="64"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M17 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2Z"></path>
+              <path d="M12 18h.01"></path>
+              <path d="m21 7-4-4"></path>
+              <path d="m17 7 4-4"></path>
+            </svg>
+          </div>
+          <h2 className="text-2xl font-bold mb-4 text-center">
+            For Best Experience
+          </h2>
+          <p className="text-lg mb-6 text-center">
+            Please rotate your device to landscape mode
+          </p>
+          <button
+            onClick={() => setShowOrientationPrompt(false)}
+            className="bg-white text-black font-bold py-2 px-6 rounded-lg"
+          >
+            Continue in Portrait
+          </button>
+        </div>
+      )}
+
       {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden">
-        {/* Video Background */}
-        <video
-          autoPlay
-          loop
-          muted
-          className="absolute top-0 left-0 w-full h-full object-cover "
-        >
-          <source
-            src="https://res.cloudinary.com/dlkmeyasv/video/upload/v1741278765/girl-trying-on_zbkt6q.mp4"
-            type="video/mp4"
-          />
-          Your browser does not support the video tag.
-        </video>
+        {/* Video Background - Mobile Optimized */}
+        <div className="absolute top-0 left-0 w-full h-full">
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline // Important for iOS
+            className="absolute top-0 left-0 w-full h-full object-cover"
+            style={{
+              objectPosition: isPortrait ? "center" : "center",
+            }}
+          >
+            <source
+              src="https://res.cloudinary.com/dlkmeyasv/video/upload/v1741278765/girl-trying-on_zbkt6q.mp4"
+              type="video/mp4"
+            />
+            Your browser does not support the video tag.
+          </video>
+        </div>
 
         {/* Overlay */}
         <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
 
         {/* Content */}
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
-          <div className="bg-white bg-opacity-10 p-12 rounded-2xl max-w-xl w-full backdrop-blur-md space-y-12">
-            <h1 className="text-5xl md:text-5xl font-serif font-bold text-slate-100 mb-6">
+          <div className="bg-white bg-opacity-10 p-4 sm:p-12 rounded-2xl w-full max-w-xl backdrop-blur-md space-y-6 sm:space-y-12">
+            <h1 className="text-3xl sm:text-5xl font-serif font-bold text-slate-100 mb-4 sm:mb-6">
               <TypeAnimation
                 sequence={[
-                  "Timeless Style, Sustainable Fashion", 2000, "Like-minded Community & Spaces", 2000
+                  "Timeless Style, Sustainable Fashion",
+                  2000,
+                  "Like-minded Community & Spaces",
+                  2000,
                 ]}
                 wrapper="span"
-                speed={20} // Speed in milliseconds per character
+                speed={20}
                 cursor={true}
-                repeat={2} 
+                repeat={2}
                 style={{ display: "inline-block" }}
               />
             </h1>
-            <p className="text-lg text-slate-200 mb-8">
-              Discover unique vintage pieces from every decade. Connect with the local fashion community.
+            <p className="text-base sm:text-lg text-slate-200 mb-4 sm:mb-8">
+              Discover unique vintage pieces from every decade. Connect with the
+              local fashion community.
             </p>
-            <div className="flex flex-wrap gap-4">
-              <Link to="/shop" className="w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link to="/shop" className="w-full">
                 <a
                   href="#_"
                   className="relative inline-block text-lg group w-full"
                 >
-                  <span className="relative z-10 block px-5 py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
-                    <span className="absolute inset-0 w-full h-full px-5 py-4 rounded-lg bg-gray-50"></span>
+                  <span className="relative z-10 block px-5 py-3 sm:py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                    <span className="absolute inset-0 w-full h-full px-5 py-3 sm:py-4 rounded-lg bg-gray-50"></span>
                     <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
                     <span className="relative">Shop Selection</span>
                   </span>
@@ -126,13 +187,13 @@ if (loading) {
                   ></span>
                 </a>
               </Link>
-              <Link to="/about" className="w-full sm:w-auto">
+              <Link to="/about" className="w-full">
                 <a
                   href="#_"
                   className="relative inline-block text-lg group w-full"
                 >
-                  <span className="relative z-10 block px-5 py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
-                    <span className="absolute inset-0 w-full h-full px-5 py-4 rounded-lg bg-gray-50"></span>
+                  <span className="relative z-10 block px-5 py-3 sm:py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                    <span className="absolute inset-0 w-full h-full px-5 py-3 sm:py-4 rounded-lg bg-gray-50"></span>
                     <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
                     <span className="relative">About Us</span>
                   </span>
@@ -148,13 +209,13 @@ if (loading) {
       </section>
 
       {/* Featured Items */}
-      <section className="py-16 bg-white">
+      <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-serif font-bold text-center text-black-900 mb-12">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-center text-black-900 mb-8 sm:mb-12">
             Featured Pieces
           </h2>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             {featuredItems.map((item, index) => (
               <motion.div
                 key={item._id || item.id}
@@ -180,24 +241,26 @@ if (loading) {
                       <img
                         src={item.image || (item.images && item.images[0])}
                         alt={item.name}
-                        className="w-full h-64 object-contain bg-gray-50 transition duration-300 group-hover:scale-105"
+                        className="w-full h-48 sm:h-64 object-contain bg-gray-50 transition duration-300 group-hover:scale-105"
                       />
 
                       {item.images && item.images.length > 1 && (
                         <img
                           src={item.images[1]}
                           alt={`${item.name} - alternate view`}
-                          className="w-full h-64 object-contain bg-gray-50 absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300"
+                          className="w-full h-48 sm:h-64 object-contain bg-gray-50 absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-300"
                         />
                       )}
                     </div>
                   </div>
-                  <div className="p-4">
-                    <p className="text-sm text-black-600 mb-1">{item.era}</p>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">
+                  <div className="p-2 sm:p-4">
+                    <p className="text-xs sm:text-sm text-black-600 mb-1">
+                      {item.era}
+                    </p>
+                    <h3 className="text-sm sm:text-lg font-medium text-gray-900 mb-1 truncate">
                       {item.name}
                     </h3>
-                    <p className="font-medium text-black-700">
+                    <p className="font-medium text-sm sm:text-base text-black-700">
                       €{item.price.toFixed(2)}
                     </p>
                   </div>
@@ -207,20 +270,21 @@ if (loading) {
           </div>
 
           {/* View All Items Button */}
-          <div className="text-center mt-10">
+          <div className="text-center mt-8 sm:mt-10">
             <Link to="/shop" className="relative inline-block text-lg group">
               {/* Your existing button */}
             </Link>
           </div>
         </div>
       </section>
+
       {/* Categories Preview */}
-      <section className="py-16 bg-black">
+      <section className="py-12 sm:py-16 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-12">
-          <h2 className="text-3xl font-serif font-bold text-center  text-white mb-12 ">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-center text-white mb-8 sm:mb-12">
             Shop by Category
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12 font-golos">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 lg:gap-12 font-golos">
             {[
               { name: "Dresses" },
               { name: "Tops" },
@@ -234,7 +298,7 @@ if (loading) {
                 to={`/shop?category=${category.name.toLowerCase()}`}
                 className="relative group"
               >
-                <div className="relative flex items-center justify-center h-16 md:h-20 rounded-xl border-2 border-white overflow-hidden group-hover:border-transparent transition-all duration-300">
+                <div className="relative flex items-center justify-center h-14 sm:h-16 md:h-20 rounded-xl border-2 border-white overflow-hidden group-hover:border-transparent transition-all duration-300">
                   {/* SVG for animated dashed outline */}
                   <svg className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <rect
@@ -251,7 +315,7 @@ if (loading) {
                     />
                   </svg>
 
-                  <h3 className="text-xl md:text-2xl font-medium text-white z-10 group-hover:text-[#feff26]">
+                  <h3 className="text-base sm:text-xl md:text-2xl font-medium text-white z-10 group-hover:text-[#feff26]">
                     {category.name}
                   </h3>
                 </div>
@@ -275,12 +339,12 @@ if (loading) {
       </section>
 
       {/* Newsletter */}
-      <section className="py-16 bg-black">
+      <section className="py-12 sm:py-16 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-serif font-bold text-white mb-4">
+          <h2 className="text-2xl sm:text-3xl font-serif font-bold text-white mb-3 sm:mb-4">
             Join Our Newsletter
           </h2>
-          <p className="text-white max-w-2xl mx-auto mb-8">
+          <p className="text-white max-w-2xl mx-auto mb-6 sm:mb-8 text-sm sm:text-base">
             Subscribe to our newsletter for early access to new arrivals,
             exclusive vintage finds, and style inspiration.
           </p>
@@ -288,13 +352,13 @@ if (loading) {
             <input
               type="email"
               placeholder="Your email address"
-              className="flex-grow rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              className="flex-grow rounded-md px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-500"
               required
             />
             <button type="submit">
               <a href="#_" className="relative inline-block text-lg group">
-                <span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
-                  <span className="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+                <span className="relative z-10 block px-4 sm:px-5 py-2 sm:py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                  <span className="absolute inset-0 w-full h-full px-4 sm:px-5 py-2 sm:py-3 rounded-lg bg-gray-50"></span>
                   <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
                   <span className="relative">Subscribe</span>
                 </span>
