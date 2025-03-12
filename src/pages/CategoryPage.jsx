@@ -91,50 +91,74 @@ const CategoryPage = () => {
           </div>
         </div>
 
-        {/* Category Header Card */}
-        <div className="bg-black text-white p-6 rounded-3xl border-2 border-white mb-6">
-          <div className="flex justify-between items-start">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-2xl">{category.icon}</span>
-                <h1 className="text-2xl font-bold">{category.name}</h1>
-              </div>
-              <p className="text-gray-300 mb-4">{category.description}</p>
+        {/* Category Header Card - Now with background image */}
+        <div
+          className="bg-black text-white p-6 rounded-3xl border-2 border-white mb-6 relative overflow-hidden"
+          style={{
+            position: "relative",
+          }}
+        >
+          {/* Background Image */}
+          <div
+            className="absolute inset-0 z-0 opacity-45"
+            style={{
+              backgroundImage:
+                "url('https://res.cloudinary.com/dlkmeyasv/image/upload/v1741771913/market_nacjhg.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+            }}
+          ></div>
 
-              <Link
-                to={`/community/category/${categoryId}/new`}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-[#feff27] text-black rounded-full text-sm hover:bg-yellow-300 transition-colors"
-              >
-                New Topic
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
+          {/* Content with higher z-index */}
+          <div className="relative z-10">
+            <div className="flex justify-between items-start">
+              <div>
+                <div className="flex items-center gap-3 mb-2">
+                  <h1 className="text-2xl font-bold">{category.name}</h1>
+                </div>
+                <p className="text-gray-300 mb-4">{category.description}</p>
+
+                <Link
+                  to={`/community/category/${categoryId}/new`}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#feff27] text-black rounded-full text-sm hover:bg-yellow-300 transition-colors"
                 >
-                  <path
-                    fillRule="evenodd"
-                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </Link>
-            </div>
-
-            <div className="flex flex-col items-end">
-              <div className="bg-gray-800 px-3 py-1 rounded-full text-sm font-medium mb-2">
-                {topics.length} topics
+                  New Topic
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </Link>
               </div>
 
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                className="bg-gray-800 px-3 py-1 rounded-full text-sm border-0 text-white cursor-pointer focus:ring-0"
-              >
-                <option value="latest">Latest Activity</option>
-                <option value="popular">Most Replies</option>
-                <option value="oldest">Oldest First</option>
-              </select>
+              <div className="flex flex-col items-end mt-12">
+                <div className="bg-transparent border border-white px-3 py-1 rounded-full text-sm font-medium mb-2">
+                  {topics.length} topics
+                </div>
+
+                <select
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="bg-transparent border border-white px-3 py-1 rounded-full text-sm text-white cursor-pointer focus:ring-0"
+                >
+                  <option value="latest" className="bg-black text-white">
+                    Latest Activity
+                  </option>
+                  <option value="popular" className="bg-black text-white">
+                    Most Replies
+                  </option>
+                  <option value="oldest" className="bg-black text-white">
+                    Oldest First
+                  </option>
+                </select>
+              </div>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-// pages/TopicPage.jsx - Modern design with card layout and profile picture support
+// pages/TopicPage.jsx - Fixed div structure
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -147,11 +147,6 @@ const TopicPage = () => {
     }
   };
 
-  // This function was defined but never called in the component
-  // Removing it to clean up the code
-
-  // Removed the unused getCategoryTheme function and theme variable
-
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-10 bg-gray-50 min-h-screen">
@@ -222,12 +217,21 @@ const TopicPage = () => {
             </div>
           </div>
 
-          <div className="flex justify-between items-center mb-4">
+          <div className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               <UserAvatar user={topic.author} />
               <div>
                 <div className="font-medium">
-                  {topic.author?.name || "Unknown"}
+                  {topic.author ? (
+                    <Link
+                      to={`/profile/${topic.author._id}`}
+                      className="hover:text-amber-700 transition-colors"
+                    >
+                      {topic.author.name || "Unknown"}
+                    </Link>
+                  ) : (
+                    "Unknown"
+                  )}
                 </div>
                 <div className="text-xs text-gray-500">
                   Posted {formatDate(new Date(topic.createdAt))}
@@ -338,7 +342,16 @@ const TopicPage = () => {
                       <UserAvatar user={reply.author} />
                       <div>
                         <div className="font-medium">
-                          {reply.author?.name || "Unknown"}
+                          {reply.author ? (
+                            <Link
+                              to={`/profile/${reply.author._id}`}
+                              className="hover:text-amber-700 transition-colors"
+                            >
+                              {reply.author.name || "Unknown"}
+                            </Link>
+                          ) : (
+                            "Unknown"
+                          )}
                         </div>
                         <div className="text-xs text-gray-500">
                           {formatDistanceToNow(new Date(reply.createdAt))}

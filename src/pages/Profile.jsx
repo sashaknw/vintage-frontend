@@ -77,9 +77,8 @@ const Profile = () => {
     }
 
     try {
-      // Prepare data for update
       const updateData = {
-        username: formData.username,
+        name: formData.username,
         email: formData.email,
         profilePicture: formData.profilePicture,
       };
@@ -89,13 +88,11 @@ const Profile = () => {
         updateData.newPassword = formData.newPassword;
       }
 
-      // Update profile (assuming updateProfile is provided by AuthContext)
       await updateProfile(updateData);
 
       setMessage({ type: "success", text: "Profile updated successfully" });
       setIsEditing(false);
 
-      // Reset password fields
       setFormData({
         ...formData,
         currentPassword: "",
@@ -118,13 +115,12 @@ const Profile = () => {
       )
     ) {
       try {
-        // Replace this with your actual API call
+      
         await updateProfile({ deleteAccount: true });
 
-        // Log out the user after successful deletion
+       
         logout();
 
-        // Redirect to home page or a "goodbye" page would happen via logout function
       } catch (error) {
         setMessage({
           type: "error",
@@ -134,10 +130,7 @@ const Profile = () => {
     }
   };
 
-  // Handle order cancellation
   const cancelOrder = (orderId) => {
-    // In a real app, you would call your API here
-    // For now, just update the local state
     setOrders(
       orders.map((order) =>
         order.id === orderId ? { ...order, status: "cancelled" } : order
