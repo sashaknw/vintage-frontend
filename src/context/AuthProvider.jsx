@@ -1,4 +1,3 @@
-// AuthProvider.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
@@ -10,7 +9,6 @@ export const AuthProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Check if user is already logged in
   useEffect(() => {
     const checkLoggedIn = async () => {
       try {
@@ -18,13 +16,10 @@ export const AuthProvider = ({ children }) => {
         if (token) {
           const userData = await authService.getCurrentUser();
 
-          // Debug logs
           console.log("User data from verification:", userData);
 
-          // Store full user data in state
           setUser(userData);
 
-          // Optional: keep a backup of user data in localStorage
           localStorage.setItem("userData", JSON.stringify(userData));
         }
       } catch (error) {
@@ -40,16 +35,13 @@ export const AuthProvider = ({ children }) => {
     checkLoggedIn();
   }, []);
 
-  // Register user
   const register = async (userData) => {
     try {
       setLoading(true);
       const response = await authService.register(userData);
 
-      // Store the complete user object
       setUser(response.user);
 
-      // Optional: keep a backup of user data in localStorage
       localStorage.setItem("userData", JSON.stringify(response.user));
 
       setError(null);
@@ -62,16 +54,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login user
   const login = async (email, password) => {
     try {
       setLoading(true);
       const response = await authService.login({ email, password });
 
-      // Store the complete user object
       setUser(response.user);
 
-      // Optional: keep a backup of user data in localStorage
       localStorage.setItem("userData", JSON.stringify(response.user));
 
       setError(null);
@@ -84,19 +73,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout user
   const logout = () => {
     authService.logout();
     setUser(null);
     localStorage.removeItem("userData"); // Clear backup data
   };
 
-  // Update user profile
   const updateProfile = async (profileData) => {
     try {
       setLoading(true);
 
-      // Handle account deletion separately
       if (profileData.deleteAccount) {
         await authService.deleteAccount();
         logout();
@@ -106,13 +92,11 @@ export const AuthProvider = ({ children }) => {
 
       const updatedProfile = await authService.updateProfile(profileData);
 
-      // Update the entire user object with the new data
       setUser((prevUser) => ({
         ...prevUser,
         ...updatedProfile,
       }));
 
-      // Update backup in localStorage
       if (updatedProfile) {
         const currentData = JSON.parse(
           localStorage.getItem("userData") || "{}"
@@ -136,19 +120,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Upload profile picture
   const uploadProfilePicture = async (formData) => {
     try {
       setLoading(true);
       const response = await authService.uploadProfilePicture(formData);
 
-      // Update the user state with the new profile picture URL
       setUser((prevUser) => ({
         ...prevUser,
         profilePicture: response.profilePicture,
       }));
 
-      // Update backup in localStorage
       if (response.profilePicture) {
         const currentData = JSON.parse(
           localStorage.getItem("userData") || "{}"
@@ -197,6 +178,7 @@ export const AuthProvider = ({ children }) => {
         uploadProfilePicture,
         getPublicProfile,
         isAuthenticated: !!user,
+        isAdmin: user ? !!user.isAdmin : false,
       }}
     >
       {children}

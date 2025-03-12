@@ -21,6 +21,18 @@ const forumService = {
     return response.data;
   },
 
+  // New method for updating topics
+  updateTopic: async (topicId, data) => {
+    const response = await api.put(`/api/forum/topics/${topicId}`, data);
+    return response.data;
+  },
+
+  // New method for deleting topics
+  deleteTopic: async (topicId) => {
+    const response = await api.delete(`/api/forum/topics/${topicId}`);
+    return response.data;
+  },
+
   followTopic: async (topicId) => {
     const response = await api.post(`/api/forum/topics/${topicId}/follow`);
     return response.data;
@@ -30,6 +42,12 @@ const forumService = {
     const response = await api.post(`/api/forum/topics/${topicId}/replies`, {
       content,
     });
+    return response.data;
+  },
+
+  // New method for deleting replies
+  deleteReply: async (replyId) => {
+    const response = await api.delete(`/api/forum/replies/${replyId}`);
     return response.data;
   },
 

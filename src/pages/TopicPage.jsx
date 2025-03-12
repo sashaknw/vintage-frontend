@@ -1,4 +1,4 @@
-// pages/TopicPage.jsx - Fixed div structure
+// pages/TopicPage.jsx - With user and admin actions
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -38,9 +38,37 @@ const UserAvatar = ({ user, size = "medium" }) => {
   );
 };
 
+// Confirmation dialog component
+const ConfirmationDialog = ({ isOpen, message, onConfirm, onCancel }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+        <h3 className="text-lg font-medium mb-4">Confirm Action</h3>
+        <p className="mb-6">{message}</p>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onCancel}
+            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const TopicPage = () => {
   const { topicId } = useParams();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
 
   const [topic, setTopic] = useState(null);
@@ -49,6 +77,25 @@ const TopicPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showReplyForm, setShowReplyForm] = useState(false);
+  const [editingTopic, setEditingTopic] = useState(false);
+  const [editedTopicContent, setEditedTopicContent] = useState("");
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    message: "",
+    action: null,
+    itemId: null,
+  });
+
+  // Helper functions to check permissions
+  const isTopicOwner =
+    topic && user && topic.author && topic.author._id === user._id;
+  const isAdmin = user && user.isAdmin;
+  const canEditTopic = isTopicOwner;
+  const canDeleteTopic = isAdmin;
+
+  const isReplyOwner = (replyAuthorId) => user && replyAuthorId === user._id;
+  const canDeleteReply = (replyAuthorId) =>
+    isReplyOwner(replyAuthorId) || isAdmin;
 
   // Fetch topic data
   useEffect(() => {
@@ -57,6 +104,7 @@ const TopicPage = () => {
         setLoading(true);
         const data = await forumService.getTopicWithReplies(topicId);
         setTopic(data.topic);
+        setEditedTopicContent(data.topic.content);
         setReplies(data.replies);
 
         // Check if user is following
@@ -147,6 +195,90 @@ const TopicPage = () => {
     }
   };
 
+  // Handle editing a topic
+  const handleEditTopic = async () => {
+    if (!isAuthenticated || !canEditTopic) {
+      return;
+    }
+
+    try {
+      const updatedTopic = await forumService.updateTopic(topicId, {
+        content: editedTopicContent,
+      });
+
+      setTopic({
+        ...topic,
+        content: updatedTopic.content,
+        updatedAt: updatedTopic.updatedAt,
+      });
+
+      setEditingTopic(false);
+    } catch (err) {
+      console.error("Error updating topic:", err);
+    }
+  };
+
+  // Handle deleting a topic
+  const handleDeleteTopic = async () => {
+    if (!isAuthenticated || !canDeleteTopic) {
+      return;
+    }
+
+    try {
+      await forumService.deleteTopic(topicId);
+      navigate("/community");
+    } catch (err) {
+      console.error("Error deleting topic:", err);
+    }
+  };
+
+  // Handle deleting a reply
+  const handleDeleteReply = async (replyId) => {
+    if (!isAuthenticated) {
+      return;
+    }
+
+    try {
+      await forumService.deleteReply(replyId);
+      setReplies(replies.filter((reply) => reply._id !== replyId));
+    } catch (err) {
+      console.error("Error deleting reply:", err);
+    }
+  };
+
+  // Open confirmation dialog
+  const openConfirmation = (action, itemId, message) => {
+    setConfirmDialog({
+      isOpen: true,
+      message,
+      action,
+      itemId,
+    });
+  };
+
+  // Close confirmation dialog
+  const closeConfirmation = () => {
+    setConfirmDialog({
+      isOpen: false,
+      message: "",
+      action: null,
+      itemId: null,
+    });
+  };
+
+  // Handle confirmation
+  const handleConfirmAction = () => {
+    const { action, itemId } = confirmDialog;
+
+    if (action === "deleteTopic") {
+      handleDeleteTopic();
+    } else if (action === "deleteReply") {
+      handleDeleteReply(itemId);
+    }
+
+    closeConfirmation();
+  };
+
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-10 bg-gray-50 min-h-screen">
@@ -175,12 +307,20 @@ const TopicPage = () => {
 
   return (
     <div className="max-w-screen-2xl mx-auto px-8 py-10 bg-black min-h-screen">
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={confirmDialog.isOpen}
+        message={confirmDialog.message}
+        onConfirm={handleConfirmAction}
+        onCancel={closeConfirmation}
+      />
+
       {/* Header Bar */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <Link
             to="/community"
-            className="text-sm font-medium px-3 py-1.5 rounded-full  bg-[#f0ff26] hover:scale-110"
+            className="text-sm font-medium px-3 py-1.5 rounded-full bg-[#f0ff26] hover:scale-110"
           >
             Community
           </Link>
@@ -194,6 +334,22 @@ const TopicPage = () => {
             Topic
           </div>
         </div>
+
+        {/* Admin Actions */}
+        {canDeleteTopic && (
+          <button
+            onClick={() =>
+              openConfirmation(
+                "deleteTopic",
+                null,
+                "Are you sure you want to delete this topic? This action cannot be undone."
+              )
+            }
+            className="text-sm bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
+          >
+            Delete Topic
+          </button>
+        )}
       </div>
 
       {/* Topic Card */}
@@ -201,7 +357,7 @@ const TopicPage = () => {
         {/* Topic Header */}
         <div className="p-6 border-b border-gray-100">
           <div className="flex justify-between items-start mb-4">
-            <h1 className="text-2xl font-bold">{topic.title}</h1>
+            <h1 className="text-2xl font-bold text-left">{topic.title}</h1>
 
             <div className="flex items-center gap-2">
               {topic.isPinned && (
@@ -239,47 +395,86 @@ const TopicPage = () => {
               </div>
             </div>
 
-            <button
-              onClick={handleFollow}
-              className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm ${
-                following
-                  ? "bg-black text-white"
-                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-              }`}
-              disabled={!isAuthenticated}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4"
-                viewBox="0 0 20 20"
-                fill="currentColor"
+            <div className="flex items-center gap-2">
+              {canEditTopic && !editingTopic && (
+                <button
+                  onClick={() => setEditingTopic(true)}
+                  className="bg-gray-100 text-gray-700 hover:bg-gray-200 px-3 py-1.5 rounded-full text-sm"
+                >
+                  Edit
+                </button>
+              )}
+
+              <button
+                onClick={handleFollow}
+                className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm ${
+                  following
+                    ? "bg-black text-white"
+                    : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                }`}
+                disabled={!isAuthenticated}
               >
-                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              {following ? "Following" : "Follow"}
-            </button>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm0-2a6 6 0 100-12 6 6 0 000 12z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                {following ? "Following" : "Follow"}
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Topic Content */}
         <div className="p-6">
-          <div className="prose max-w-none mb-6">
-            {topic.content.split("\n").map((paragraph, idx) => (
-              <p key={idx}>{paragraph}</p>
-            ))}
-          </div>
+          {editingTopic ? (
+            <div className="mb-6">
+              <textarea
+                value={editedTopicContent}
+                onChange={(e) => setEditedTopicContent(e.target.value)}
+                className="w-full p-3 border border-gray-300 rounded-lg min-h-[200px]"
+                placeholder="Edit your topic content..."
+              />
+              <div className="flex justify-end gap-2 mt-2">
+                <button
+                  onClick={() => {
+                    setEditingTopic(false);
+                    setEditedTopicContent(topic.content);
+                  }}
+                  className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleEditTopic}
+                  className="px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="prose max-w-none mb-6">
+              {topic.content.split("\n").map((paragraph, idx) => (
+                <p key={idx}>{paragraph}</p>
+              ))}
+            </div>
+          )}
 
           <div className="flex justify-between items-center pt-4 border-t border-gray-100">
             <div className="text-sm text-gray-500">
               {replies.length} {replies.length === 1 ? "reply" : "replies"}
             </div>
 
-            {!topic.isLocked && (
+            {!topic.isLocked && !editingTopic && (
               <button
                 onClick={() => setShowReplyForm(true)}
                 className="bg-black text-white px-4 py-2 rounded-full text-sm hover:scale-110"
@@ -358,6 +553,22 @@ const TopicPage = () => {
                         </div>
                       </div>
                     </div>
+
+                    {/* Reply actions */}
+                    {canDeleteReply(reply.author?._id) && (
+                      <button
+                        onClick={() =>
+                          openConfirmation(
+                            "deleteReply",
+                            reply._id,
+                            "Are you sure you want to delete this reply? This action cannot be undone."
+                          )
+                        }
+                        className="text-xs text-red-600 hover:text-red-800"
+                      >
+                        Delete
+                      </button>
+                    )}
                   </div>
 
                   <div className="pl-14">
@@ -404,7 +615,7 @@ const TopicPage = () => {
           <div className="mt-6 text-center">
             <button
               onClick={() => setShowReplyForm(true)}
-              className="bg-[#f0ff26]  text-black px-4 py-2 rounded-full text-sm hover:bg-white"
+              className="bg-[#f0ff26] text-black px-4 py-2 rounded-full text-sm hover:bg-white"
               disabled={!isAuthenticated}
             >
               Post a Reply
