@@ -93,8 +93,8 @@ const Home = () => {
           <div className="animate-bounce mb-6">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="64"
-              height="64"
+              width="86"
+              height="86"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -108,15 +108,15 @@ const Home = () => {
               <path d="m17 7 4-4"></path>
             </svg>
           </div>
-          <h2 className="text-2xl font-bold mb-4 text-center">
+          <h2 className="text-8xl font-bold mb-4 text-center leading-tight">
             For Best Experience
           </h2>
-          <p className="text-lg mb-6 text-center">
+          <p className="text-6xl mb-6 text-center">
             Please rotate your device to landscape mode
           </p>
           <button
             onClick={() => setShowOrientationPrompt(false)}
-            className="bg-white text-black font-bold py-2 px-6 rounded-lg"
+            className="bg-white text-black font-bold py-4 px-10 rounded-lg text-xl"
           >
             Continue in Portrait
           </button>
