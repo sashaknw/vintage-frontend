@@ -49,7 +49,7 @@ const TopicList = ({ topics, categoryId, categoryName }) => {
                   )}
                   <Link
                     to={`/community/topic/${topic._id}`}
-                    className="font-medium text-white hover:text-[#feff27] transition-colors"
+                    className="font-medium text-white   hover:text-[#feff27] transition-colors"
                   >
                     {topic.title}
                   </Link>

@@ -171,38 +171,45 @@ const Home = () => {
               local fashion community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/shop" className="w-full">
-                <a
-                  href="#_"
-                  className="relative inline-block text-lg group w-full"
-                >
-                  <span className="relative z-10 block px-5 py-3 sm:py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
-                    <span className="absolute inset-0 w-full h-full px-5 py-3 sm:py-4 rounded-lg bg-gray-50"></span>
-                    <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
-                    <span className="relative">Shop Selection</span>
-                  </span>
-                  <span
-                    className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
-                    data-rounded="rounded-lg"
-                  ></span>
-                </a>
-              </Link>
-              <Link to="/about" className="w-full">
-                <a
-                  href="#_"
-                  className="relative inline-block text-lg group w-full"
-                >
-                  <span className="relative z-10 block px-5 py-3 sm:py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
-                    <span className="absolute inset-0 w-full h-full px-5 py-3 sm:py-4 rounded-lg bg-gray-50"></span>
-                    <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
-                    <span className="relative">About Us</span>
-                  </span>
-                  <span
-                    className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
-                    data-rounded="rounded-lg"
-                  ></span>
-                </a>
-              </Link>
+              {/* Shop Selection button with width constraint */}
+              <div className="w-full sm:w-auto sm:min-w-[180px] sm:max-w-[220px]">
+                <Link to="/shop" className="block w-full">
+                  <a
+                    href="#_"
+                    className="relative inline-block text-lg group w-full"
+                  >
+                    <span className="relative z-10 block px-5 py-3 sm:py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-black rounded-lg group-hover:text-white">
+                      <span className="absolute inset-0 w-full h-full px-5 py-3 sm:py-4 rounded-lg bg-gray-50"></span>
+                      <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-black group-hover:-rotate-180 ease"></span>
+                      <span className="relative">Shop Selection</span>
+                    </span>
+                    <span
+                      className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-black rounded-lg group-hover:mb-0 group-hover:mr-0"
+                      data-rounded="rounded-lg"
+                    ></span>
+                  </a>
+                </Link>
+              </div>
+
+              {/* About Us button with width constraint */}
+              <div className="w-full sm:w-auto sm:min-w-[180px] sm:max-w-[220px]">
+                <Link to="/about" className="block w-full">
+                  <a
+                    href="#_"
+                    className="relative inline-block text-lg group w-full"
+                  >
+                    <span className="relative z-10 block px-5 py-3 sm:py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-black rounded-lg group-hover:text-white">
+                      <span className="absolute inset-0 w-full h-full px-5 py-3 sm:py-4 rounded-lg bg-gray-50"></span>
+                      <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-black group-hover:-rotate-180 ease"></span>
+                      <span className="relative">About Us</span>
+                    </span>
+                    <span
+                      className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-black rounded-lg group-hover:mb-0 group-hover:mr-0"
+                      data-rounded="rounded-lg"
+                    ></span>
+                  </a>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
@@ -271,9 +278,19 @@ const Home = () => {
 
           {/* View All Items Button */}
           <div className="text-center mt-8 sm:mt-10">
-            <Link to="/shop" className="relative inline-block text-lg group">
-              {/* Your existing button */}
-            </Link>
+            <div className="inline-block sm:min-w-[180px] sm:max-w-[220px]">
+              <Link to="/shop" className="relative inline-block text-lg group">
+                <span className="relative z-10 block px-5 py-3 sm:py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-black rounded-lg group-hover:text-white">
+                  <span className="absolute inset-0 w-full h-full px-5 py-3 sm:py-4 rounded-lg bg-gray-50"></span>
+                  <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-black group-hover:-rotate-180 ease"></span>
+                  <span className="relative">View All Items</span>
+                </span>
+                <span
+                  className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-black rounded-lg group-hover:mb-0 group-hover:mr-0"
+                  data-rounded="rounded-lg"
+                ></span>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -355,19 +372,24 @@ const Home = () => {
               className="flex-grow rounded-md px-4 py-3 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-amber-500"
               required
             />
-            <button type="submit">
-              <a href="#_" className="relative inline-block text-lg group">
-                <span className="relative z-10 block px-4 sm:px-5 py-2 sm:py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
-                  <span className="absolute inset-0 w-full h-full px-4 sm:px-5 py-2 sm:py-3 rounded-lg bg-gray-50"></span>
-                  <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
-                  <span className="relative">Subscribe</span>
-                </span>
-                <span
-                  className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
-                  data-rounded="rounded-lg"
-                ></span>
-              </a>
-            </button>
+            <div className="sm:min-w-[120px] sm:max-w-[180px]">
+              <button type="submit" className="w-full">
+                <a
+                  href="#_"
+                  className="relative inline-block text-lg group w-full"
+                >
+                  <span className="relative z-10 block px-4 sm:px-5 py-2 sm:py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-black rounded-lg group-hover:text-white">
+                    <span className="absolute inset-0 w-full h-full px-4 sm:px-5 py-2 sm:py-3 rounded-lg bg-gray-50"></span>
+                    <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-black group-hover:-rotate-180 ease"></span>
+                    <span className="relative">Subscribe</span>
+                  </span>
+                  <span
+                    className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-black rounded-lg group-hover:mb-0 group-hover:mr-0"
+                    data-rounded="rounded-lg"
+                  ></span>
+                </a>
+              </button>
+            </div>
           </form>
         </div>
       </section>

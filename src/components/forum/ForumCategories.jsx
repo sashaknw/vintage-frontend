@@ -97,7 +97,7 @@ const ForumCategories = ({ isDarkTheme = false, cardStyle = false }) => {
                     />
                   </svg>
 
-                  <h3 className="text-xl md:text-2xl font-medium text-white group-hover:text-[#feff27] transition-colors duration-300 z-10">
+                  <h3 className="text-xl md:text-2xl font-medium text-white group-hover:text-[#feff27] transition-colors duration-300 z-10 ">
                     {category.name}
                   </h3>
                 </div>

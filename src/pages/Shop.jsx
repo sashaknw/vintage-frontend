@@ -6,15 +6,12 @@ import FavoriteButton from "../components/FavoriteButton";
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
-    const initialSearchTerm = searchParams.get("search") || "";
-
-
+  const initialSearchTerm = searchParams.get("search") || "";
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
-  
 
   const [filters, setFilters] = useState({
     category: initialCategory,
@@ -117,7 +114,6 @@ const Shop = () => {
       [filterName]: value,
     }));
 
-   
     if (filterName === "category") {
       if (value === "all") {
         searchParams.delete("category");
@@ -128,24 +124,24 @@ const Shop = () => {
     }
   };
 
- const handleSearchChange = (e) => {
-   const value = e.target.value;
-   setSearchTerm(value);
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
 
-   // Update URL search params
-   if (value.trim()) {
-     searchParams.set("search", value.trim());
-   } else {
-     searchParams.delete("search");
-   }
-   setSearchParams(searchParams);
- };
+    // Update URL search params
+    if (value.trim()) {
+      searchParams.set("search", value.trim());
+    } else {
+      searchParams.delete("search");
+    }
+    setSearchParams(searchParams);
+  };
 
- const clearSearch = () => {
-   setSearchTerm("");
-   searchParams.delete("search");
-   setSearchParams(searchParams);
- };
+  const clearSearch = () => {
+    setSearchTerm("");
+    searchParams.delete("search");
+    setSearchParams(searchParams);
+  };
 
   const filterOptions = {
     category: [
@@ -201,6 +197,7 @@ const Shop = () => {
       <h1 className="text-3xl font-serif font-bold text-black mb-8">
         Shop Vintage
       </h1>
+
       {/* Search Bar */}
       <div className="mb-6 relative">
         <input
@@ -208,12 +205,12 @@ const Shop = () => {
           placeholder="Search items..."
           value={searchTerm}
           onChange={handleSearchChange}
-          className="w-full px-4 py-2 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 pr-10"
+          className="w-full px-4 py-2 border-2 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-black"
         />
         {searchTerm && (
           <button
             onClick={clearSearch}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-black"
             aria-label="Clear search"
           >
             <svg
@@ -233,14 +230,15 @@ const Shop = () => {
           </button>
         )}
       </div>
+
       {/* Filters Section */}
-      <div className="border-2 border-black rounded-lg p-6 mb-8">
+      <div className="border-2 border-black rounded-lg p-6 mb-8 bg-white">
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
           {/* Category Filter */}
           <div>
             <label
               htmlFor="category"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-black mb-2"
             >
               Category
             </label>
@@ -248,7 +246,7 @@ const Shop = () => {
               id="category"
               value={filters.category}
               onChange={(e) => handleFilterChange("category", e.target.value)}
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+              className="w-full rounded-md border-2 border-gray-300 focus:border-black focus:ring focus:ring-black focus:ring-opacity-50"
             >
               {filterOptions.category.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -262,7 +260,7 @@ const Shop = () => {
           <div>
             <label
               htmlFor="era"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-black mb-2"
             >
               Era
             </label>
@@ -270,7 +268,7 @@ const Shop = () => {
               id="era"
               value={filters.era}
               onChange={(e) => handleFilterChange("era", e.target.value)}
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+              className="w-full rounded-md border-2 border-gray-300 focus:border-black focus:ring focus:ring-black focus:ring-opacity-50"
             >
               {filterOptions.era.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -284,7 +282,7 @@ const Shop = () => {
           <div>
             <label
               htmlFor="size"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-black mb-2"
             >
               Size
             </label>
@@ -292,7 +290,7 @@ const Shop = () => {
               id="size"
               value={filters.size}
               onChange={(e) => handleFilterChange("size", e.target.value)}
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+              className="w-full rounded-md border-2 border-gray-300 focus:border-black focus:ring focus:ring-black focus:ring-opacity-50"
             >
               {filterOptions.size.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -306,7 +304,7 @@ const Shop = () => {
           <div>
             <label
               htmlFor="condition"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-black mb-2"
             >
               Condition
             </label>
@@ -314,7 +312,7 @@ const Shop = () => {
               id="condition"
               value={filters.condition}
               onChange={(e) => handleFilterChange("condition", e.target.value)}
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+              className="w-full rounded-md border-2 border-gray-300 focus:border-black focus:ring focus:ring-black focus:ring-opacity-50"
             >
               {filterOptions.condition.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -328,7 +326,7 @@ const Shop = () => {
           <div>
             <label
               htmlFor="priceRange"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-black mb-2"
             >
               Price Range
             </label>
@@ -336,7 +334,7 @@ const Shop = () => {
               id="priceRange"
               value={filters.priceRange}
               onChange={(e) => handleFilterChange("priceRange", e.target.value)}
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+              className="w-full rounded-md border-2 border-gray-300 focus:border-black focus:ring focus:ring-black focus:ring-opacity-50"
             >
               {filterOptions.priceRange.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -350,7 +348,7 @@ const Shop = () => {
           <div>
             <label
               htmlFor="sortBy"
-              className="block text-sm font-medium text-gray-700 mb-2"
+              className="block text-sm font-medium text-black mb-2"
             >
               Sort By
             </label>
@@ -358,7 +356,7 @@ const Shop = () => {
               id="sortBy"
               value={filters.sortBy}
               onChange={(e) => handleFilterChange("sortBy", e.target.value)}
-              className="w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring focus:ring-amber-500 focus:ring-opacity-50"
+              className="w-full rounded-md border-2 border-gray-300 focus:border-black focus:ring focus:ring-black focus:ring-opacity-50"
             >
               {filterOptions.sortBy.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -372,15 +370,15 @@ const Shop = () => {
 
       {loading ? (
         <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
         </div>
       ) : error ? (
-        <div className="bg-red-50 p-4 rounded-md">
-          <p className="text-red-800">{error}</p>
+        <div className="bg-red-50 border-2 border-black p-4 rounded-md">
+          <p className="text-black">{error}</p>
         </div>
       ) : items.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500 mb-4">
+          <p className="text-gray-800 mb-4">
             No items found matching your filters.
           </p>
           <button
@@ -395,7 +393,7 @@ const Shop = () => {
               });
               setSearchTerm("");
             }}
-            className="text-amber-700 hover:text-amber-900 underline"
+            className="px-4 py-2 bg-black text-white hover:bg-gray-800 rounded-md"
           >
             Clear filters and try again
           </button>
@@ -406,7 +404,7 @@ const Shop = () => {
             <Link
               key={item._id}
               to={`/item/${item._id}`}
-              className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 relative"
+              className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 relative border border-gray-200"
             >
               <div className="relative">
                 {/* Position the favorite button */}
@@ -418,7 +416,7 @@ const Shop = () => {
                   <img
                     src={item.images[0]}
                     alt={item.name}
-                    className="w-full h-64 object-contain bg-gray-100 transition duration-300 group-hover:scale-105"
+                    className="w-full h-64 object-contain bg-gray-50 transition duration-300 group-hover:scale-105"
                   />
                 </div>
               </div>
@@ -426,17 +424,17 @@ const Shop = () => {
               <div className="p-4">
                 <div className="flex justify-between items-start">
                   <div>
-                    <p className="text-sm text-amber-600 mb-1">
+                    <p className="text-sm text-gray-600 mb-1">
                       {item.era} • {item.size}
                     </p>
-                    <h3 className="text-lg font-medium text-gray-900 mb-1">
+                    <h3 className="text-lg font-medium text-black mb-1">
                       {item.name}
                     </h3>
-                    <p className="font-medium text-amber-700">
+                    <p className="font-medium text-black">
                       €{item.price.toFixed(2)}
                     </p>
                   </div>
-                  <span className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded">
+                  <span className="bg-[#feff26] text-black text-xs px-2 py-1 rounded border border-black">
                     {item.condition}
                   </span>
                 </div>
