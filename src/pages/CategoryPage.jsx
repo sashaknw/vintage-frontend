@@ -1,7 +1,8 @@
-// pages/CategoryPage.jsx - Modern design with black topic cards
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import forumService from "../services/forumService";
+import ForumAdminControls from "../components/forum/ForumAdminControls";
+import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "../helpers/dateUtils";
 
@@ -11,7 +12,8 @@ const CategoryPage = () => {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState("latest"); // "latest", "popular", "oldest"
+  const [filter, setFilter] = useState("latest"); 
+  const { isAdmin } = useAuth();
 
   useEffect(() => {
     const fetchCategoryData = async () => {
@@ -31,7 +33,6 @@ const CategoryPage = () => {
     fetchCategoryData();
   }, [categoryId]);
 
-  // Sort topics based on filter
   const sortedTopics = [...topics].sort((a, b) => {
     if (filter === "latest") {
       return new Date(b.lastActivity) - new Date(a.lastActivity);
@@ -76,7 +77,6 @@ const CategoryPage = () => {
   return (
     <div className="w-full bg-black min-h-screen">
       <div className="max-w-6xl mx-auto px-4 py-10">
-        {/* Header Bar */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center gap-4">
             <Link
@@ -89,16 +89,23 @@ const CategoryPage = () => {
               {category.name}
             </div>
           </div>
+
+          {isAdmin && (
+            <Link
+              to={`/community/category/${categoryId}/edit`}
+              className="text-sm bg-[#feff27] text-black px-4 py-2 rounded-full hover:bg-yellow-300"
+            >
+              Edit Category
+            </Link>
+          )}
         </div>
 
-        {/* Category Header Card - Now with background image */}
         <div
           className="bg-black text-white p-6 rounded-3xl border-2 border-white mb-6 relative overflow-hidden"
           style={{
             position: "relative",
           }}
         >
-          {/* Background Image */}
           <div
             className="absolute inset-0 z-0 opacity-45"
             style={{
@@ -109,7 +116,6 @@ const CategoryPage = () => {
             }}
           ></div>
 
-          {/* Content with higher z-index */}
           <div className="relative z-10">
             <div className="flex justify-between items-start">
               <div>
@@ -118,24 +124,47 @@ const CategoryPage = () => {
                 </div>
                 <p className="text-gray-300 mb-4">{category.description}</p>
 
-                <Link
-                  to={`/community/category/${categoryId}/new`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-[#feff27] text-black rounded-full text-sm hover:bg-yellow-300 transition-colors"
-                >
-                  New Topic
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                <div className="flex gap-2">
+                  <Link
+                    to={`/community/category/${categoryId}/new`}
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#feff27] text-black rounded-full text-sm hover:bg-yellow-300 transition-colors"
                   >
-                    <path
-                      fillRule="evenodd"
-                      d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                </Link>
+                    New Topic
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </Link>
+
+                  {isAdmin && (
+                    <Link
+                      to={`/community/category/${categoryId}/admin-new`}
+                      className="inline-flex items-center gap-2 px-4 py-2 bg-amber-700 text-white rounded-full text-sm hover:bg-amber-800 transition-colors"
+                    >
+                      Admin Post
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-4 w-4"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </Link>
+                  )}
+                </div>
               </div>
 
               <div className="flex flex-col items-end mt-12">
@@ -160,10 +189,15 @@ const CategoryPage = () => {
                 </select>
               </div>
             </div>
+
+            {isAdmin && (
+              <div className="mt-6 border-t border-white/20 pt-4">
+                <ForumAdminControls page="category" categoryId={categoryId} />
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Topics Grid - All Black with White Text */}
         <div className="space-y-4">
           {sortedTopics.length === 0 ? (
             <div className="text-center py-8 bg-black rounded-3xl border-2 border-white">
@@ -189,7 +223,6 @@ const CategoryPage = () => {
                   className="relative group"
                 >
                   <div className="relative flex flex-col items-center justify-center h-24 md:h-28 bg-black rounded-xl border-2 border-white overflow-hidden group-hover:border-transparent transition-all duration-300 px-3">
-                    {/* SVG for animated dashed outline */}
                     <svg className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <rect
                         width="100%"
@@ -205,11 +238,22 @@ const CategoryPage = () => {
                       />
                     </svg>
 
+                    {topic.isAdminPost && (
+                      <span className="absolute top-1 right-1 bg-amber-700 text-white text-xs px-2 py-0.5 rounded-full z-10">
+                        Admin
+                      </span>
+                    )}
+
+                    {topic.isPinned && (
+                      <span className="absolute top-1 left-1 bg-[#feff27] text-black text-xs px-2 py-0.5 rounded-full z-10">
+                        Pinned
+                      </span>
+                    )}
+
                     <h3 className="text-xl md:text-2xl font-medium text-white group-hover:text-[#feff27] transition-colors duration-300 z-10 text-center mb-1">
                       {topic.title}
                     </h3>
 
-                    {/* Small data display at bottom */}
                     <div className="text-xs text-gray-400 z-10 flex items-center gap-2">
                       <span>{topic.replyCount} replies</span>
                       <span>•</span>
@@ -224,7 +268,6 @@ const CategoryPage = () => {
           )}
         </div>
 
-        {/* Pagination (if needed) */}
         {topics.length > 0 && topics.length > 9 && (
           <div className="mt-8 flex justify-center">
             <div className="flex items-center space-x-2">
@@ -239,7 +282,6 @@ const CategoryPage = () => {
           </div>
         )}
 
-        {/* CSS for animated dashed outline */}
         <style jsx="true">{`
           .dash-animation {
             stroke-dashoffset: 0;

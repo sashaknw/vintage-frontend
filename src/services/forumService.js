@@ -11,25 +11,58 @@ const forumService = {
     return response.data;
   },
 
+  createCategory: async (categoryData) => {
+    const response = await api.post("/api/forum/categories", categoryData);
+    return response.data;
+  },
+
+  updateCategory: async (categoryId, categoryData) => {
+    const response = await api.put(
+      `/api/forum/categories/${categoryId}`,
+      categoryData
+    );
+    return response.data;
+  },
+
+  deleteCategory: async (categoryId) => {
+    const response = await api.delete(`/api/forum/categories/${categoryId}`);
+    return response.data;
+  },
+
   getTopicWithReplies: async (topicId) => {
     const response = await api.get(`/api/forum/topics/${topicId}`);
     return response.data;
   },
 
-  createTopic: async (topicData) => {
-    const response = await api.post("/api/forum/topics", topicData);
+  createTopic: async (categoryId, topicData) => {
+    const response = await api.post("/api/forum/topics", {
+      ...topicData,
+      categoryId,
+    });
     return response.data;
   },
 
-  // New method for updating topics
   updateTopic: async (topicId, data) => {
     const response = await api.put(`/api/forum/topics/${topicId}`, data);
     return response.data;
   },
 
-  // New method for deleting topics
   deleteTopic: async (topicId) => {
     const response = await api.delete(`/api/forum/topics/${topicId}`);
+    return response.data;
+  },
+
+  pinTopic: async (topicId, isPinned) => {
+    const response = await api.put(`/api/forum/topics/${topicId}/pin`, {
+      isPinned,
+    });
+    return response.data;
+  },
+
+  lockTopic: async (topicId, isLocked) => {
+    const response = await api.put(`/api/forum/topics/${topicId}/lock`, {
+      isLocked,
+    });
     return response.data;
   },
 
@@ -45,7 +78,6 @@ const forumService = {
     return response.data;
   },
 
-  // New method for deleting replies
   deleteReply: async (replyId) => {
     const response = await api.delete(`/api/forum/replies/${replyId}`);
     return response.data;
@@ -66,6 +98,11 @@ const forumService = {
       `/api/forum/search?query=${encodeURIComponent(query)}`
     );
     return response.data;
+  },
+
+  getCategory: async (categoryId) => {
+    const response = await api.get(`/api/forum/categories/${categoryId}`);
+    return response.data.category;
   },
 };
 

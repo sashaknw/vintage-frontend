@@ -1,13 +1,16 @@
-// pages/Community.jsx - Card-based modern design with video background
+// pages/Community.jsx with admin controls
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import ForumCategories from "../components/forum/ForumCategories";
+import ForumAdminControls from "../components/forum/ForumAdminControls";
+import { useAuth } from "../context/AuthContext";
 import { motion } from "framer-motion";
 
 const Community = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeUsers] = useState(42); // Mock data
   const [totalTopics] = useState(58); // Mock data
+  const { isAdmin } = useAuth();
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -19,7 +22,7 @@ const Community = () => {
   };
 
   return (
-    <div className="max-w-screen-2xl mx-auto px-4 py-10 bg-black min-h-screen">
+    <div className="w-screen-2xl mx-auto px-28 py-10 bg-black min-h-screen">
       {/* Main Content Grid */}
       <div className="grid grid-cols-1 gap-5">
         {/* Main Title Card with Video Background - Full Width */}
@@ -67,20 +70,50 @@ const Community = () => {
                   />
                 </form>
               </div>
+
+              {/* Admin Controls - add topic button */}
+              {isAdmin && (
+                <div className="mt-4">
+                  <Link
+                    to="/community/new-topic"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#feff27] text-black rounded-full text-sm hover:bg-yellow-300 transition-colors"
+                  >
+                    Admin: Add New Topic
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>
         {/* Categories Section */}
         <div className="p-6">
-          <h2 className="text-4xl font-bold mb-4 py-4 text-white text-left">
-            Hot Topics
-          </h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-4xl font-bold py-4 text-white text-left">
+              Hot Topics
+            </h2>
+
+            {/* Admin Controls for Categories */}
+            <ForumAdminControls page="community" />
+          </div>
+
           <ForumCategories cardStyle={true} />
         </div>
         {/* Activity and Guidelines Cards in a row */}
         <div className="grid grid-cols-1 p-6 md:grid-cols-2 gap-5">
           {/* Stats Card */}
-          <div className=" p-6 rounded-3xl border-2  border-white ">
+          <div className="p-6 rounded-3xl border-2 border-white">
             <div className="mb-2 flex justify-between items-center">
               <span className="text-xs font-medium uppercase tracking-wider text-white">
                 FORUM ACTIVITY
@@ -119,7 +152,7 @@ const Community = () => {
 
             <div className="mt-6">
               <div className="flex items-center justify-between mb-2">
-                <div className="text-sm  text-white font-medium">
+                <div className="text-sm text-white font-medium">
                   Latest activity
                 </div>
                 <div className="text-xs text-white">Last 7 days</div>
@@ -137,7 +170,7 @@ const Community = () => {
           </div>
 
           {/* Guidelines Card */}
-          <div className=" p-6 rounded-3xl border-2  border-white  ">
+          <div className="p-6 rounded-3xl border-2 border-white">
             <div className="mb-2 flex justify-between items-center">
               <span className="text-xs text-white font-medium uppercase tracking-wider">
                 GUIDELINES

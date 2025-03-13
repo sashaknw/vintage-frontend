@@ -17,15 +17,24 @@ export const AuthProvider = ({ children }) => {
           const userData = await authService.getCurrentUser();
 
           console.log("User data from verification:", userData);
+          console.log("Is admin flag present?", userData.isAdmin !== undefined);
+          console.log("Is admin value:", userData.isAdmin);
 
-          setUser(userData);
+          const userWithAdmin = {
+            ...userData,
+            isAdmin: userData.isAdmin === true, 
+          };
 
-          localStorage.setItem("userData", JSON.stringify(userData));
+          console.log("Setting user with admin status:", userWithAdmin.isAdmin);
+
+          setUser(userWithAdmin);
+
+          localStorage.setItem("userData", JSON.stringify(userWithAdmin));
         }
       } catch (error) {
         console.error("Auth check error:", error);
         localStorage.removeItem("token");
-        localStorage.removeItem("userData"); // Clear backup data
+        localStorage.removeItem("userData"); 
         setError("Authentication failed");
       } finally {
         setLoading(false);
@@ -40,9 +49,15 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const response = await authService.register(userData);
 
-      setUser(response.user);
+      const userWithAdmin = {
+        ...response.user,
+        isAdmin: response.user.isAdmin === true,
+      };
 
-      localStorage.setItem("userData", JSON.stringify(response.user));
+      console.log("Setting user after register:", userWithAdmin);
+      setUser(userWithAdmin);
+
+      localStorage.setItem("userData", JSON.stringify(userWithAdmin));
 
       setError(null);
       return response;
@@ -59,9 +74,17 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const response = await authService.login({ email, password });
 
-      setUser(response.user);
+      const userWithAdmin = {
+        ...response.user,
+        isAdmin: response.user.isAdmin === true,
+      };
 
-      localStorage.setItem("userData", JSON.stringify(response.user));
+      console.log("Setting user after login:", userWithAdmin);
+      console.log("Admin status:", userWithAdmin.isAdmin);
+
+      setUser(userWithAdmin);
+
+      localStorage.setItem("userData", JSON.stringify(userWithAdmin));
 
       setError(null);
       return response;
@@ -76,7 +99,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     authService.logout();
     setUser(null);
-    localStorage.removeItem("userData"); // Clear backup data
+    localStorage.removeItem("userData"); 
   };
 
   const updateProfile = async (profileData) => {
@@ -92,10 +115,13 @@ export const AuthProvider = ({ children }) => {
 
       const updatedProfile = await authService.updateProfile(profileData);
 
-      setUser((prevUser) => ({
-        ...prevUser,
+      const updatedUser = {
+        ...user,
         ...updatedProfile,
-      }));
+        isAdmin: user?.isAdmin || false,
+      };
+
+      setUser(updatedUser);
 
       if (updatedProfile) {
         const currentData = JSON.parse(
@@ -106,6 +132,7 @@ export const AuthProvider = ({ children }) => {
           JSON.stringify({
             ...currentData,
             ...updatedProfile,
+            isAdmin: user?.isAdmin || false,
           })
         );
       }
@@ -155,7 +182,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Get the public profile of any user
   const getPublicProfile = async (userId) => {
     try {
       return await authService.getPublicProfile(userId);
@@ -164,6 +190,13 @@ export const AuthProvider = ({ children }) => {
       throw err;
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      console.log("Current user state:", user);
+      console.log("isAdmin state:", user.isAdmin);
+    }
+  }, [user]);
 
   return (
     <AuthContext.Provider

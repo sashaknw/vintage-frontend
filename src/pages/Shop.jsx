@@ -2,16 +2,19 @@ import React, { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import api from "../services/api";
 import FavoriteButton from "../components/FavoriteButton";
+import { useAuth } from "../context/AuthContext";
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get("category") || "all";
   const initialSearchTerm = searchParams.get("search") || "";
+  const { isAdmin } = useAuth();
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  const [hoveredItems, setHoveredItems] = useState({});
 
   const [filters, setFilters] = useState({
     category: initialCategory,
@@ -141,6 +144,21 @@ const Shop = () => {
     setSearchTerm("");
     searchParams.delete("search");
     setSearchParams(searchParams);
+  };
+
+  // Handle mouse hover for image switching
+  const handleMouseEnter = (itemId) => {
+    setHoveredItems((prev) => ({
+      ...prev,
+      [itemId]: true,
+    }));
+  };
+
+  const handleMouseLeave = (itemId) => {
+    setHoveredItems((prev) => ({
+      ...prev,
+      [itemId]: false,
+    }));
   };
 
   const filterOptions = {
@@ -376,7 +394,7 @@ const Shop = () => {
         <div className="bg-red-50 border-2 border-black p-4 rounded-md">
           <p className="text-black">{error}</p>
         </div>
-      ) : items.length === 0 ? (
+      ) : items.length === 0 && !isAdmin ? (
         <div className="text-center py-12">
           <p className="text-gray-800 mb-4">
             No items found matching your filters.
@@ -400,11 +418,46 @@ const Shop = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {/* Admin Add Product Card - Only visible to admins */}
+          {isAdmin && (
+            <Link
+              to="/admin/items/new"
+              className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 border-2 border-dashed border-gray-400 flex flex-col items-center justify-center h-full min-h-[300px]"
+            >
+              <div className="text-center p-4">
+                <div className="w-16 h-16 rounded-full bg-[#feff26] flex items-center justify-center mx-auto mb-4">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="w-8 h-8"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-black mb-2">
+                  Add New Product
+                </h3>
+                <p className="text-gray-600">
+                  Click here to add a new vintage item to your store
+                </p>
+              </div>
+            </Link>
+          )}
+
+          {/* Item Cards */}
           {items.map((item) => (
             <Link
               key={item._id}
               to={`/item/${item._id}`}
               className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 relative border border-gray-200"
+              onMouseEnter={() => handleMouseEnter(item._id)}
+              onMouseLeave={() => handleMouseLeave(item._id)}
             >
               <div className="relative">
                 {/* Position the favorite button */}
@@ -413,11 +466,22 @@ const Shop = () => {
                 </div>
 
                 <div className="aspect-w-3 aspect-h-4 overflow-hidden">
-                  <img
-                    src={item.images[0]}
-                    alt={item.name}
-                    className="w-full h-64 object-contain bg-gray-50 transition duration-300 group-hover:scale-105"
-                  />
+                  {/* Show second image on hover if available */}
+                  {hoveredItems[item._id] &&
+                  item.images &&
+                  item.images.length > 1 ? (
+                    <img
+                      src={item.images[1]}
+                      alt={`${item.name} - second view`}
+                      className="w-full h-64 object-contain bg-gray-50 transition duration-300"
+                    />
+                  ) : (
+                    <img
+                      src={item.images[0]}
+                      alt={item.name}
+                      className="w-full h-64 object-contain bg-gray-50 transition duration-300 group-hover:scale-105"
+                    />
+                  )}
                 </div>
               </div>
 

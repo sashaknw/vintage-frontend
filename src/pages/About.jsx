@@ -355,7 +355,7 @@ const isInView = useInView(typingRef, { once: false, amount: 0.5 });
               </p>
               <div className="my-8 flex justify-center w-full">
                 <iframe
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3309.2150343571793!2d-15.445666124779786!3d28.0839734759687!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xc4095cf73d04eef%3A0xbb60972ca3a1dd7b!2sC.%20Felipe%20Martel%2C%205%2C%2035015%20Las%20Palmas%20de%20Gran%20Canaria%2C%20Las%20Palmas!5e1!3m2!1sen!2ses!4v1741795399886!5m2!1sen!2ses"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3086.380933705936!2d-15.425345429567809!3d28.09720516775024!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xc40959472d9d73d%3A0x1b93980aa08d5745!2sC%2F%20Fama%2C%2030%2C%2035015%20Las%20Palmas%20de%20Gran%20Canaria%2C%20Las%20Palmas!5e1!3m2!1sen!2ses!4v1741861552283!5m2!1sen!2ses"
                   width="70%"
                   height="200"
                   style={{ border: 0 }}

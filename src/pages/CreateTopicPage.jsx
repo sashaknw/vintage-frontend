@@ -63,10 +63,10 @@ const CreateTopicPage = () => {
       setIsSubmitting(true);
       setError(null);
 
-      const newTopic = await forumService.createTopic({
+      const newTopic = await forumService.createTopic(categoryId, {
         title: formData.title,
         content: formData.content,
-        categoryId,
+        
       });
 
       // Redirect to the new topic

@@ -14,13 +14,11 @@ const Home = () => {
   );
   const [showOrientationPrompt, setShowOrientationPrompt] = useState(false);
 
-  // Check device orientation on mount and when window resizes
   useEffect(() => {
     const checkOrientation = () => {
       const portrait = window.innerHeight > window.innerWidth;
       setIsPortrait(portrait);
 
-      // Only show orientation prompt on mobile devices in portrait mode
       const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       setShowOrientationPrompt(isMobile && portrait);
     };
@@ -65,7 +63,7 @@ const Home = () => {
     return (
       <div className="flex justify-center items-center h-screen">
         <TypeAnimation
-          sequence={["vintage vault...", 3000, "loading...", 5000]}
+          sequence={["vintage vault...", 2000, "loading...", 5000]}
           wrapper="span"
           speed={20}
           cursor={true}
@@ -123,15 +121,13 @@ const Home = () => {
         </div>
       )}
 
-      {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden">
-        {/* Video Background - Mobile Optimized */}
         <div className="absolute top-0 left-0 w-full h-full">
           <video
             autoPlay
             loop
             muted
-            playsInline // Important for iOS
+            playsInline 
             className="absolute top-0 left-0 w-full h-full object-cover"
             style={{
               objectPosition: isPortrait ? "center" : "center",
@@ -145,7 +141,6 @@ const Home = () => {
           </video>
         </div>
 
-        {/* Overlay */}
         <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
 
         {/* Content */}
@@ -155,7 +150,7 @@ const Home = () => {
               <TypeAnimation
                 sequence={[
                   "Timeless Style, Sustainable Fashion",
-                  2000,
+                  3000,
                   "Like-minded Community & Spaces",
                   2000,
                 ]}
@@ -171,7 +166,6 @@ const Home = () => {
               local fashion community.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Shop Selection button with width constraint */}
               <div className="w-full sm:w-auto sm:min-w-[180px] sm:max-w-[220px]">
                 <Link to="/shop" className="block w-full">
                   <a
@@ -191,9 +185,8 @@ const Home = () => {
                 </Link>
               </div>
 
-              {/* About Us button with width constraint */}
               <div className="w-full sm:w-auto sm:min-w-[180px] sm:max-w-[220px]">
-                <Link to="/about" className="block w-full">
+                <Link to="/community" className="block w-full">
                   <a
                     href="#_"
                     className="relative inline-block text-lg group w-full"
@@ -201,7 +194,7 @@ const Home = () => {
                     <span className="relative z-10 block px-5 py-3 sm:py-4 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-black rounded-lg group-hover:text-white">
                       <span className="absolute inset-0 w-full h-full px-5 py-3 sm:py-4 rounded-lg bg-gray-50"></span>
                       <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-black group-hover:-rotate-180 ease"></span>
-                      <span className="relative">About Us</span>
+                      <span className="relative">Community</span>
                     </span>
                     <span
                       className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-black rounded-lg group-hover:mb-0 group-hover:mr-0"
@@ -239,12 +232,10 @@ const Home = () => {
                   to={`/item/${item._id || item.id}`}
                   className="group bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 relative block h-full"
                 >
-                  {/* Add FavoriteButton component with proper positioning */}
                   <div className="relative">
                     <FavoriteButton itemId={item._id || item.id} />
 
                     <div className="aspect-w-3 aspect-h-4 overflow-hidden">
-                      {/* Primary image */}
                       <img
                         src={item.image || (item.images && item.images[0])}
                         alt={item.name}
@@ -276,7 +267,6 @@ const Home = () => {
             ))}
           </div>
 
-          {/* View All Items Button */}
           <div className="text-center mt-8 sm:mt-10">
             <div className="inline-block sm:min-w-[180px] sm:max-w-[220px]">
               <Link to="/shop" className="relative inline-block text-lg group">
@@ -316,7 +306,6 @@ const Home = () => {
                 className="relative group"
               >
                 <div className="relative flex items-center justify-center h-14 sm:h-16 md:h-20 rounded-xl border-2 border-white overflow-hidden group-hover:border-transparent transition-all duration-300">
-                  {/* SVG for animated dashed outline */}
                   <svg className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <rect
                       width="100%"

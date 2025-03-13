@@ -1,13 +1,17 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { AuthProvider } from "./context/AuthProvider";
 import { CartProvider } from "./context/CartContext";
+import { useAuth } from "./context/AuthContext";
 
-// Layout Components
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
-// Pages
 import Home from "./pages/Home";
 import Shop from "./pages/Shop";
 import ItemDetails from "./pages/ItemDetails";
@@ -30,9 +34,31 @@ import CreateTopicPage from "./pages/CreateTopicPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import FollowedTopicsPage from "./pages/FollowedTopicsPage";
 
+import NewCategoryPage from "./pages/NewCategoryPage";
+import AdminNewTopicPage from "./pages/AdminNewTopicPage";
+import EditCategoryPage from "./pages/EditCategoryPage";
+import AdminNewItem from "./components/AdminNewItem";
 
-// Protected Route Component
+
 import ProtectedRoute from "./components/ProtectedRoute";
+
+const AdminRoute = ({ children }) => {
+  return (
+    <ProtectedRoute>
+      <AdminOnlyRoute>{children}</AdminOnlyRoute>
+    </ProtectedRoute>
+  );
+};
+
+const AdminOnlyRoute = ({ children }) => {
+  const { isAdmin } = useAuth();
+
+  if (!isAdmin) {
+    return <Navigate to="/community" />;
+  }
+
+  return children;
+};
 
 function App() {
   return (
@@ -42,7 +68,7 @@ function App() {
           <Navbar />
           <main className="flex-grow">
             <Routes>
-              {/* Public Routes */}
+              {/* Public routes */}
               <Route path="/" element={<Home />} />
               <Route path="/shop" element={<Shop />} />
               <Route path="/item/:id" element={<ItemDetails />} />
@@ -69,7 +95,7 @@ function App() {
               />
               <Route path="/profile/:userId" element={<PublicProfile />} />
 
-              {/* Protected Routes */}
+              {/* Protected  */}
               <Route
                 path="/account"
                 element={
@@ -92,6 +118,48 @@ function App() {
                   <ProtectedRoute>
                     <Favorites />
                   </ProtectedRoute>
+                }
+              />
+
+              {/* Admin  */}
+              <Route
+                path="/community/new-category"
+                element={
+                  <AdminRoute>
+                    <NewCategoryPage />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/community/new-topic"
+                element={
+                  <AdminRoute>
+                    <AdminNewTopicPage />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/community/category/:categoryId/admin-new"
+                element={
+                  <AdminRoute>
+                    <AdminNewTopicPage />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/community/category/:categoryId/edit"
+                element={
+                  <AdminRoute>
+                    <EditCategoryPage />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/items/new"
+                element={
+                  <AdminRoute>
+                    <AdminNewItem />
+                  </AdminRoute>
                 }
               />
 

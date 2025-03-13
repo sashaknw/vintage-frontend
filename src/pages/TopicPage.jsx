@@ -1,14 +1,12 @@
-// pages/TopicPage.jsx - With user and admin actions
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import forumService from "../services/forumService";
 import { formatDistanceToNow, formatDate } from "../helpers/dateUtils";
 import ReplyForm from "../components/forum/ReplyForm";
+import ForumAdminControls from "../components/forum/ForumAdminControls";
 
-// User avatar component that displays either a profile image or initials
 const UserAvatar = ({ user, size = "medium" }) => {
-  // Size classes based on the size prop
   const sizeClasses = {
     small: "w-8 h-8 text-xs",
     medium: "w-10 h-10 text-sm",
@@ -38,7 +36,6 @@ const UserAvatar = ({ user, size = "medium" }) => {
   );
 };
 
-// Confirmation dialog component
 const ConfirmationDialog = ({ isOpen, message, onConfirm, onCancel }) => {
   if (!isOpen) return null;
 
@@ -68,7 +65,7 @@ const ConfirmationDialog = ({ isOpen, message, onConfirm, onCancel }) => {
 
 const TopicPage = () => {
   const { topicId } = useParams();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const [topic, setTopic] = useState(null);
@@ -86,18 +83,15 @@ const TopicPage = () => {
     itemId: null,
   });
 
-  // Helper functions to check permissions
   const isTopicOwner =
     topic && user && topic.author && topic.author._id === user._id;
-  const isAdmin = user && user.isAdmin;
-  const canEditTopic = isTopicOwner;
-  const canDeleteTopic = isAdmin;
+  const canEditTopic = isTopicOwner || isAdmin;
+  const canDeleteTopic = isTopicOwner || isAdmin; 
 
   const isReplyOwner = (replyAuthorId) => user && replyAuthorId === user._id;
   const canDeleteReply = (replyAuthorId) =>
-    isReplyOwner(replyAuthorId) || isAdmin;
+    isReplyOwner(replyAuthorId) || isAdmin; 
 
-  // Fetch topic data
   useEffect(() => {
     const fetchTopicData = async () => {
       try {
@@ -109,7 +103,6 @@ const TopicPage = () => {
 
         // Check if user is following
         if (isAuthenticated && data.topic.followers) {
-          // This is a placeholder - in a real app, you'd check against the user ID
           setFollowing(false);
         }
       } catch (err) {
@@ -123,7 +116,6 @@ const TopicPage = () => {
     fetchTopicData();
   }, [topicId, isAuthenticated]);
 
-  // Handle following a topic
   const handleFollow = async () => {
     if (!isAuthenticated) {
       navigate("/login", { state: { from: `/community/topic/${topicId}` } });
@@ -138,7 +130,6 @@ const TopicPage = () => {
     }
   };
 
-  // Handle posting a reply
   const handleReply = async (content) => {
     if (!isAuthenticated) {
       navigate("/login", { state: { from: `/community/topic/${topicId}` } });
@@ -149,7 +140,6 @@ const TopicPage = () => {
       const newReply = await forumService.createReply(topicId, content);
       setReplies([...replies, newReply]);
 
-      // Update topic to reflect new activity
       setTopic({
         ...topic,
         lastActivity: new Date().toISOString(),
@@ -163,7 +153,6 @@ const TopicPage = () => {
     }
   };
 
-  // Handle liking a reply
   const handleLike = async (replyId) => {
     if (!isAuthenticated) {
       navigate("/login", { state: { from: `/community/topic/${topicId}` } });
@@ -173,14 +162,12 @@ const TopicPage = () => {
     try {
       const response = await forumService.likeReply(replyId);
 
-      // Update the replies state to reflect the new like status
       setReplies(
         replies.map((reply) => {
           if (reply._id === replyId) {
-            // Create a new likes array based on the response
             const updatedLikes = response.liked
-              ? [...(reply.likes || []), "currentUserId"] // Add current user ID
-              : (reply.likes || []).filter((id) => id !== "currentUserId"); // Remove current user ID
+              ? [...(reply.likes || []), "currentUserId"] 
+              : (reply.likes || []).filter((id) => id !== "currentUserId");
 
             return {
               ...reply,
@@ -195,7 +182,6 @@ const TopicPage = () => {
     }
   };
 
-  // Handle editing a topic
   const handleEditTopic = async () => {
     if (!isAuthenticated || !canEditTopic) {
       return;
@@ -218,7 +204,40 @@ const TopicPage = () => {
     }
   };
 
-  // Handle deleting a topic
+  const handlePinTopic = async () => {
+    if (!isAdmin) return;
+
+    try {
+      const updatedTopic = await forumService.pinTopic(
+        topicId,
+        !topic.isPinned
+      );
+      setTopic({
+        ...topic,
+        isPinned: updatedTopic.isPinned,
+      });
+    } catch (err) {
+      console.error("Error pinning topic:", err);
+    }
+  };
+
+  const handleLockTopic = async () => {
+    if (!isAdmin) return;
+
+    try {
+      const updatedTopic = await forumService.lockTopic(
+        topicId,
+        !topic.isLocked
+      );
+      setTopic({
+        ...topic,
+        isLocked: updatedTopic.isLocked,
+      });
+    } catch (err) {
+      console.error("Error locking topic:", err);
+    }
+  };
+
   const handleDeleteTopic = async () => {
     if (!isAuthenticated || !canDeleteTopic) {
       return;
@@ -232,7 +251,6 @@ const TopicPage = () => {
     }
   };
 
-  // Handle deleting a reply
   const handleDeleteReply = async (replyId) => {
     if (!isAuthenticated) {
       return;
@@ -246,7 +264,6 @@ const TopicPage = () => {
     }
   };
 
-  // Open confirmation dialog
   const openConfirmation = (action, itemId, message) => {
     setConfirmDialog({
       isOpen: true,
@@ -256,7 +273,6 @@ const TopicPage = () => {
     });
   };
 
-  // Close confirmation dialog
   const closeConfirmation = () => {
     setConfirmDialog({
       isOpen: false,
@@ -266,7 +282,6 @@ const TopicPage = () => {
     });
   };
 
-  // Handle confirmation
   const handleConfirmAction = () => {
     const { action, itemId } = confirmDialog;
 
@@ -281,9 +296,9 @@ const TopicPage = () => {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-10 bg-gray-50 min-h-screen">
+      <div className="max-w-6xl mx-auto px-4 py-10 bg-black min-h-screen">
         <div className="py-8 text-center">
-          <p className="text-gray-500">Loading topic...</p>
+          <p className="text-gray-300">Loading topic...</p>
         </div>
       </div>
     );
@@ -291,12 +306,12 @@ const TopicPage = () => {
 
   if (error || !topic) {
     return (
-      <div className="max-w-6xl mx-auto px-4 py-10 bg-gray-50 min-h-screen">
+      <div className="max-w-6xl mx-auto px-4 py-10 bg-black min-h-screen">
         <div className="py-8 text-center">
           <p className="text-red-600">{error || "Topic not found"}</p>
           <Link
             to="/community"
-            className="text-black hover:underline mt-4 inline-block"
+            className="text-white hover:text-[#feff27] mt-4 inline-block transition-colors"
           >
             Back to Forum
           </Link>
@@ -307,7 +322,6 @@ const TopicPage = () => {
 
   return (
     <div className="max-w-screen-2xl mx-auto px-8 py-10 bg-black min-h-screen">
-      {/* Confirmation Dialog */}
       <ConfirmationDialog
         isOpen={confirmDialog.isOpen}
         message={confirmDialog.message}
@@ -315,7 +329,6 @@ const TopicPage = () => {
         onCancel={closeConfirmation}
       />
 
-      {/* Header Bar */}
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-4">
           <Link
@@ -330,31 +343,29 @@ const TopicPage = () => {
           >
             {topic.category.name}
           </Link>
-          <div className="bg-black text-white px-3 py-1.5 text-sm font-medium rounded-full">
+          <div className="bg-black text-white px-3 py-1.5 text-sm font-medium rounded-full border border-white">
             Topic
           </div>
         </div>
 
-        {/* Admin Actions */}
-        {canDeleteTopic && (
-          <button
-            onClick={() =>
+        {isAdmin && (
+          <ForumAdminControls
+            page="topic"
+            topicId={topicId}
+            onDeleteTopic={() =>
               openConfirmation(
                 "deleteTopic",
                 null,
                 "Are you sure you want to delete this topic? This action cannot be undone."
               )
             }
-            className="text-sm bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700"
-          >
-            Delete Topic
-          </button>
+            onEditTopic={() => setEditingTopic(true)}
+          />
         )}
       </div>
 
-      {/* Topic Card */}
+      {/* topic card */}
       <div className="mb-6 bg-white rounded-3xl border border-gray-200 overflow-hidden">
-        {/* Topic Header */}
         <div className="p-6 border-b border-gray-100">
           <div className="flex justify-between items-start mb-4">
             <h1 className="text-2xl font-bold text-left">{topic.title}</h1>
@@ -396,13 +407,55 @@ const TopicPage = () => {
             </div>
 
             <div className="flex items-center gap-2">
-              {canEditTopic && !editingTopic && (
+              {canEditTopic && !editingTopic && !isAdmin && (
                 <button
                   onClick={() => setEditingTopic(true)}
                   className="bg-gray-100 text-gray-700 hover:bg-gray-200 px-3 py-1.5 rounded-full text-sm"
                 >
                   Edit
                 </button>
+              )}
+
+              {isAdmin && (
+                <div className="flex gap-2">
+                  <button
+                    onClick={handlePinTopic}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm ${
+                      topic.isPinned
+                        ? "bg-black text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M4 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm9 1a1 1 0 10-2 0v6a1 1 0 102 0V6zm-4 1a1 1 0 10-2 0v4a1 1 0 102 0V7z" />
+                    </svg>
+                    {topic.isPinned ? "Unpin" : "Pin"}
+                  </button>
+
+                  <button
+                    onClick={handleLockTopic}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm ${
+                      topic.isLocked
+                        ? "bg-gray-500 text-white"
+                        : "bg-gray-100 text-gray-700 hover:bg-gray-200"
+                    }`}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" />
+                    </svg>
+                    {topic.isLocked ? "Unlock" : "Lock"}
+                  </button>
+                </div>
               )}
 
               <button
@@ -433,7 +486,6 @@ const TopicPage = () => {
           </div>
         </div>
 
-        {/* Topic Content */}
         <div className="p-6">
           {editingTopic ? (
             <div className="mb-6">
@@ -474,23 +526,26 @@ const TopicPage = () => {
               {replies.length} {replies.length === 1 ? "reply" : "replies"}
             </div>
 
-            {!topic.isLocked && !editingTopic && (
+            {(!topic.isLocked || isAdmin) && !editingTopic && (
               <button
                 onClick={() => setShowReplyForm(true)}
                 className="bg-black text-white px-4 py-2 rounded-full text-sm hover:scale-110"
                 disabled={!isAuthenticated}
               >
-                Reply to Topic
+                {isAdmin && topic.isLocked
+                  ? "Reply as Admin"
+                  : "Reply to Topic"}
               </button>
             )}
           </div>
         </div>
       </div>
 
-      {/* Reply Form */}
       {showReplyForm && (
         <div className="bg-white rounded-3xl border border-gray-200 p-6 mb-6">
-          <h3 className="text-lg font-medium mb-4">Post a Reply</h3>
+          <h3 className="text-lg font-medium mb-4">
+            {isAdmin ? "Post a Reply as Admin" : "Post a Reply"}
+          </h3>
           <ReplyForm
             onSubmit={handleReply}
             onCancel={() => setShowReplyForm(false)}
@@ -498,7 +553,6 @@ const TopicPage = () => {
         </div>
       )}
 
-      {/* Replies */}
       <div className="space-y-4 p-10 ">
         <h2 className="text-2xl font-bold text-white">Replies</h2>
 
@@ -508,15 +562,18 @@ const TopicPage = () => {
               No replies yet. Be the first to reply!
             </p>
 
-            {!showReplyForm && !topic.isLocked && (
-              <button
-                onClick={() => setShowReplyForm(true)}
-                className="mt-4 bg-black text-white px-4 py-2 rounded-full text-sm hover:bg-gray-800"
-                disabled={!isAuthenticated}
-              >
-                Post a Reply
-              </button>
-            )}
+            {(!showReplyForm && !topic.isLocked) ||
+              (isAdmin && !showReplyForm && (
+                <button
+                  onClick={() => setShowReplyForm(true)}
+                  className="mt-4 bg-black text-white px-4 py-2 rounded-full text-sm hover:bg-gray-800"
+                  disabled={!isAuthenticated}
+                >
+                  {isAdmin && topic.isLocked
+                    ? "Post a Reply as Admin"
+                    : "Post a Reply"}
+                </button>
+              ))}
           </div>
         ) : (
           <div className="space-y-4">
@@ -547,6 +604,11 @@ const TopicPage = () => {
                           ) : (
                             "Unknown"
                           )}
+                          {reply.author && reply.author.isAdmin && (
+                            <span className="ml-2 bg-amber-700 text-white text-xs px-2 py-0.5 rounded-full">
+                              Admin
+                            </span>
+                          )}
                         </div>
                         <div className="text-xs text-gray-500">
                           {formatDistanceToNow(new Date(reply.createdAt))}
@@ -554,14 +616,15 @@ const TopicPage = () => {
                       </div>
                     </div>
 
-                    {/* Reply actions */}
                     {canDeleteReply(reply.author?._id) && (
                       <button
                         onClick={() =>
                           openConfirmation(
                             "deleteReply",
                             reply._id,
-                            "Are you sure you want to delete this reply? This action cannot be undone."
+                            isAdmin && !isReplyOwner(reply.author?._id)
+                              ? "Are you sure you want to delete this user's reply? This action cannot be undone."
+                              : "Are you sure you want to delete this reply? This action cannot be undone."
                           )
                         }
                         className="text-xs text-red-600 hover:text-red-800"
@@ -610,18 +673,21 @@ const TopicPage = () => {
           </div>
         )}
 
-        {/* Reply Button at Bottom */}
-        {!showReplyForm && !topic.isLocked && replies.length > 0 && (
-          <div className="mt-6 text-center">
-            <button
-              onClick={() => setShowReplyForm(true)}
-              className="bg-[#f0ff26] text-black px-4 py-2 rounded-full text-sm hover:bg-white"
-              disabled={!isAuthenticated}
-            >
-              Post a Reply
-            </button>
-          </div>
-        )}
+        {!showReplyForm &&
+          (!topic.isLocked || isAdmin) &&
+          replies.length > 0 && (
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setShowReplyForm(true)}
+                className="bg-[#f0ff26] text-black px-4 py-2 rounded-full text-sm hover:bg-white"
+                disabled={!isAuthenticated}
+              >
+                {isAdmin && topic.isLocked
+                  ? "Post a Reply as Admin"
+                  : "Post a Reply"}
+              </button>
+            </div>
+          )}
       </div>
     </div>
   );
