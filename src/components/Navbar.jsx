@@ -57,7 +57,6 @@ const Navbar = () => {
     };
   }, [isSearchOpen]);
 
-  // Get the user's initial for fallback
   const getUserInitial = () => {
     if (user && user.name) {
       return user.name.charAt(0).toUpperCase();
@@ -68,12 +67,11 @@ const Navbar = () => {
     return "U";
   };
 
-  // Check if user has a profile picture
   const hasProfilePicture =
     user && user.profilePicture && user.profilePicture.trim() !== "";
 
   return (
-    <nav className="bg-white shadow-md relative z-50">
+    <nav className="bg-white text-black shadow-md relative z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
@@ -87,7 +85,6 @@ const Navbar = () => {
               </Link>
             </div>
 
-            {/* Desktop Navigation */}
             <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
               <Link
                 to="/"
@@ -124,7 +121,6 @@ const Navbar = () => {
 
           {/* Right side nav items */}
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            {/* Search Icon and Expandable Search Bar */}
             <div className="relative">
               <button
                 aria-label="Search"
@@ -147,7 +143,7 @@ const Navbar = () => {
                 </svg>
               </button>
 
-              {/* Expanding Search Bar */}
+              {/* search baar */}
               <div
                 className={`absolute right-0 top-0 mt-10 transition-all duration-300 ease-in-out overflow-hidden ${
                   isSearchOpen
@@ -165,7 +161,7 @@ const Navbar = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search for vintage items..."
-                    className="px-3 py-2 w-full focus:outline-none focus:ring-1 focus:ring-amber-500 text-sm"
+                    className="px-3 py-2 w-full focus:outline-none focus:ring-1 focus:ring-[#feff26] text-sm"
                   />
                   <button
                     type="submit"
@@ -189,7 +185,6 @@ const Navbar = () => {
                 </form>
               </div>
             </div>
-            {/* Cart Icon */}
             <Link
               to="/cart"
               className="p-1 ml-3 rounded-full text-black-800 hover:scale-110 focus:outline-none relative"
@@ -208,7 +203,6 @@ const Navbar = () => {
                   d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                 ></path>
               </svg>
-              {/* Cart counter */}
               {cartItemCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-[#feff26] text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                   {cartItemCount}
@@ -216,7 +210,6 @@ const Navbar = () => {
               )}
             </Link>
 
-            {/* User Menu */}
             {user ? (
               <div className="ml-3 relative">
                 <div>
@@ -231,7 +224,7 @@ const Navbar = () => {
                         className="h-8 w-8 rounded-full object-cover border border-gray-200"
                       />
                     ) : (
-                      <div className="h-8 w-8 rounded-full bg-amber-500 flex items-center justify-center text-black">
+                      <div className="h-8 w-8 rounded-full bg-[#feff26] flex items-center justify-center text-black">
                         {getUserInitial()}
                       </div>
                     )}
@@ -242,26 +235,26 @@ const Navbar = () => {
                   <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-xl py-1 bg-white ring-1 ring-black ring-opacity-5 z-50">
                     <Link
                       to="/account"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-black hover:text-white cursor-pointer transition-colors duration-150"
                     >
                       Your Profile
                     </Link>
 
                     <Link
                       to="/favorites"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-black hover:text-white cursor-pointer transition-colors duration-150"
                     >
                       Favorites
                     </Link>
                     <Link
                       to="/community/followed"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-black hover:text-white cursor-pointer transition-colors duration-150"
                     >
                       My Topics
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-amber-100 hover:text-amber-700 cursor-pointer transition-colors duration-150"
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-black hover:text-white cursor-pointer transition-colors duration-150"
                     >
                       Sign out
                     </button>
@@ -285,11 +278,10 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
           <div className="flex items-center sm:hidden">
             <button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-amber-800 hover:text-black hover:bg-[#fd6c55]"
+              className="inline-flex items-center justify-center p-2 rounded-md text-black hover:text-black hover:bg-[#feff26]"
             >
               <svg
                 className={`${isMenuOpen ? "hidden" : "block"} h-6 w-6`}
@@ -324,44 +316,42 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Mobile menu */}
       <div className={`${isMenuOpen ? "block" : "hidden"} sm:hidden`}>
         <div className="pt-2 pb-3 space-y-1">
           <Link
             to="/"
-            className="text-amber-800 hover:bg-amber-100 block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
+            className="text-black hover:bg-[#feff26] block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
           >
             Home
           </Link>
           <Link
             to="/shop"
-            className="text-amber-800 hover:bg-amber-100 block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
+            className="text-black hover:bg-[#feff26] block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
           >
             Shop
           </Link>
           <Link
             to="/categories"
-            className="text-amber-800 hover:bg-amber-100 block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
+            className="text-black hover:bg-[#feff26] block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
           >
             Categories
           </Link>
           <Link
             to="/about"
-            className="text-amber-800 hover:bg-amber-100 block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
+            className="text-black hover:bg-[#feff26] block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
           >
             About
           </Link>
           <Link
             to="/community"
-            className="text-amber-800 hover:bg-amber-100 block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
+            className="text-black hover:bg-[#feff26] block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium"
           >
             Community
           </Link>
         </div>
 
-        {/* Mobile user menu */}
         {user ? (
-          <div className="pt-4 pb-3 border-t border-amber-200">
+          <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center px-4">
               <div className="flex-shrink-0">
                 {hasProfilePicture ? (
@@ -371,16 +361,16 @@ const Navbar = () => {
                     className="h-10 w-10 rounded-full object-cover border border-gray-200"
                   />
                 ) : (
-                  <div className="h-10 w-10 rounded-full bg-amber-700 flex items-center justify-center text-white font-medium">
+                  <div className="h-10 w-10 rounded-full bg-[#feff26] flex items-center justify-center text-black font-medium">
                     {getUserInitial()}
                   </div>
                 )}
               </div>
               <div className="ml-3">
-                <div className="text-base font-medium text-amber-900">
+                <div className="text-base font-medium text-black">
                   {user.name || user.email}
                 </div>
-                <div className="text-sm font-medium text-[#feff26]">
+                <div className="text-sm font-medium text-gray-600">
                   {user.email}
                 </div>
               </div>
@@ -388,43 +378,43 @@ const Navbar = () => {
             <div className="mt-3 space-y-1">
               <Link
                 to="/account"
-                className="block px-4 py-2 text-base font-medium text-amber-800 hover:bg-amber-100"
+                className="block px-4 py-2 text-base font-medium text-black hover:bg-[#feff26]"
               >
                 Your Profile
               </Link>
 
               <Link
                 to="/favorites"
-                className="block px-4 py-2 text-base font-medium text-amber-800 hover:bg-amber-100"
+                className="block px-4 py-2 text-base font-medium text-black hover:bg-[#feff26]"
               >
                 Favorites
               </Link>
               <Link
                 to="/community/followed"
-                className="block px-4 py-2 text-base font-medium text-amber-800 hover:bg-amber-100"
+                className="block px-4 py-2 text-base font-medium text-black hover:bg-[#feff26]"
               >
                 My Topics
               </Link>
               <button
                 onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 text-base font-medium text-amber-800 hover:bg-amber-100"
+                className="block w-full text-left px-4 py-2 text-base font-medium text-black hover:bg-[#feff26]"
               >
                 Sign out
               </button>
             </div>
           </div>
         ) : (
-          <div className="pt-4 pb-3 border-t border-amber-200">
+          <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center justify-center space-x-4 px-4">
               <Link
                 to="/login"
-                className="text-amber-800 font-medium hover:text-[#feff26]"
+                className="text-black font-medium hover:text-[#feff26]"
               >
                 Login
               </Link>
               <Link
                 to="/register"
-                className="bg-amber-700 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-amber-800"
+                className="bg-black text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800"
               >
                 Sign Up
               </Link>

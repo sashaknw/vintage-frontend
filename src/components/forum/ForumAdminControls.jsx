@@ -39,44 +39,7 @@ const ForumAdminControls = ({
         </div>
       );
 
-    case "category":
-      return (
-        <div className="flex gap-2 mt-4">
-          <Link
-            to={`/community/category/${categoryId}/new`}
-            className="bg-[#feff27] text-black px-4 py-2 rounded-full text-sm font-medium hover:bg-yellow-300 transition-colors flex items-center gap-1"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Add Topic as Admin
-          </Link>
-          <button className="bg-amber-700 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-amber-800 transition-colors flex items-center gap-1">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-4 w-4"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Pin Topics
-          </button>
-        </div>
-      );
+    
 
     case "topic":
       return (

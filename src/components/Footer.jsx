@@ -4,10 +4,8 @@ import { Link, useLocation } from "react-router-dom";
 const Footer = () => {
   const location = useLocation();
 
-  // Determine if the footer should use dark theme based on current page
   const isDarkTheme = ["/community"].includes(location.pathname);
 
-  // Dynamic theme classes
   const themeClasses = {
     background: isDarkTheme ? "bg-black" : "bg-white",
     text: isDarkTheme ? "text-white" : "text-black",
@@ -18,16 +16,13 @@ const Footer = () => {
   return (
     <footer className={`${themeClasses.background} ${themeClasses.text} py-8`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Compact Footer with Responsive Layout */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-sm">
-          {/* Company Info */}
           <div className="col-span-2 sm:col-span-1">
             <h3 className="text-lg font-bold mb-2">vintage vault</h3>
             <p className={`text-xs ${themeClasses.mutedText} mb-4`}>
               Curated vintage fashion for the discerning collector.
             </p>
 
-            {/* Social Media - Moved up in mobile view */}
             <div className="flex space-x-4">
               <a
                 href="#"
@@ -66,7 +61,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Quick Links - Condensed */}
           <div className="col-span-1">
             <h4 className="text-sm font-medium mb-2">Quick Links</h4>
             <ul className="space-y-1">
@@ -102,7 +96,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Customer Service - Condensed */}
           <div className="col-span-1">
             <h4 className="text-sm font-medium mb-2">Support</h4>
             <ul className="space-y-1">
@@ -130,7 +123,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Newsletter - Styled to match site design */}
           <div className="col-span-2 sm:col-span-1">
             <h4 className="text-sm font-medium mb-2">Newsletter</h4>
             <form>
@@ -163,7 +155,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Section - Simplified */}
         <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-800">
           <p className={`text-xs ${themeClasses.mutedText} text-center`}>
             &copy; {new Date().getFullYear()} Vintage Vault

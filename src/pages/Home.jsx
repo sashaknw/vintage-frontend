@@ -61,7 +61,7 @@ const Home = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center text-black items-center h-screen">
         <TypeAnimation
           sequence={["vintage vault...", 2000, "loading...", 5000]}
           wrapper="span"
@@ -210,7 +210,7 @@ const Home = () => {
 
       {/* Featured Items */}
       <section className="py-12 sm:py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl  mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-serif font-bold text-center text-black-900 mb-8 sm:mb-12">
             Featured Pieces
           </h2>

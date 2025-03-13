@@ -10,33 +10,9 @@ const NewCategoryPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    icon: "🔍", 
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-
-  const iconOptions = [
-    "🔍",
-    "💡",
-    "💬",
-    "🛍️",
-    "👕",
-    "👖",
-    "👗",
-    "👔",
-    "🧥",
-    "👠",
-    "🎩",
-    "👜",
-    "🎒",
-    "💼",
-    "🧳",
-    "📚",
-    "🎮",
-    "🎵",
-    "🎬",
-    "🎨",
-  ];
 
   useEffect(() => {
     if (!isAuthenticated || !isAdmin) {
@@ -49,13 +25,6 @@ const NewCategoryPage = () => {
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
-  };
-
-  const handleIconSelect = (icon) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      icon,
     }));
   };
 
@@ -85,11 +54,10 @@ const NewCategoryPage = () => {
   return (
     <div className="w-full bg-black min-h-screen">
       <div className="max-w-4xl mx-auto px-4 py-10">
-       
         <div className="flex items-center gap-4 mb-6">
           <Link
             to="/community"
-            className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white"
+            className="text-sm font-medium px-3 py-1.5 rounded-full bg-[#feff27] text-black hover:scale-110 transition-transform"
           >
             Back to Community
           </Link>
@@ -98,7 +66,7 @@ const NewCategoryPage = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl overflow-hidden">
+        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden">
           <div className="p-6 border-b border-gray-200">
             <h1 className="text-2xl font-bold">Create New Category</h1>
             <p className="text-gray-600 mt-1">
@@ -126,13 +94,13 @@ const NewCategoryPage = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#feff27]"
                 placeholder="e.g., Vintage Fashion"
                 required
               />
             </div>
 
-            <div className="mb-4">
+            <div className="mb-6">
               <label
                 htmlFor="description"
                 className="block text-gray-700 font-medium mb-2"
@@ -144,48 +112,23 @@ const NewCategoryPage = () => {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 min-h-[120px]"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#feff27] min-h-[120px]"
                 placeholder="Describe what this category is about..."
                 required
               ></textarea>
             </div>
 
-            <div className="mb-6">
-              <label className="block text-gray-700 font-medium mb-2">
-                Select an Icon
-              </label>
-              <div className="flex flex-wrap gap-2">
-                {iconOptions.map((icon) => (
-                  <button
-                    key={icon}
-                    type="button"
-                    onClick={() => handleIconSelect(icon)}
-                    className={`w-10 h-10 text-xl flex items-center justify-center rounded-md hover:bg-gray-100 ${
-                      formData.icon === icon
-                        ? "bg-amber-100 border-2 border-amber-500"
-                        : "border border-gray-300"
-                    }`}
-                  >
-                    {icon}
-                  </button>
-                ))}
-              </div>
-              <div className="mt-2 text-gray-600 text-sm">
-                Selected icon: <span className="text-xl">{formData.icon}</span>
-              </div>
-            </div>
-
             <div className="flex justify-end gap-2">
               <Link
                 to="/community"
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-4 py-2 bg-[#feff27] text-black rounded-md hover:bg-yellow-300 ${
+                className={`px-4 py-2 bg-black text-white rounded-full hover:bg-gray-800 ${
                   isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >

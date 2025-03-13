@@ -1,18 +1,24 @@
-// components/forum/TopicList.jsx
 import React from "react";
 import { Link } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
+import { useAuth } from "../context/AuthContext";
 
 const TopicList = ({ topics, categoryId, categoryName }) => {
+  const { isAdmin } = useAuth();
+
   if (!topics || topics.length === 0) {
     return (
       <div className="text-center py-8 bg-black rounded-3xl border-2 border-white p-6">
         <p className="text-white mb-4">No topics yet in this category.</p>
         <Link
-          to={`/community/category/${categoryId}/new`}
+          to={
+            isAdmin
+              ? `/community/category/${categoryId}/admin-new`
+              : `/community/category/${categoryId}/new`
+          }
           className="inline-block px-4 py-2 bg-[#feff27] text-black rounded-full font-medium hover:bg-yellow-300 transition-colors"
         >
-          Be the first to start a topic
+          {isAdmin ? "Create Admin Topic" : "Be the first to start a topic"}
         </Link>
       </div>
     );
@@ -23,9 +29,15 @@ const TopicList = ({ topics, categoryId, categoryName }) => {
       <div className="p-6 border-b border-white/20">
         <div className="flex justify-between items-center">
           <h2 className="text-xl font-medium text-white">{categoryName}</h2>
-          <Link to={`/community/category/${categoryId}/new`}>
+          <Link
+            to={
+              isAdmin
+                ? `/community/category/${categoryId}/admin-new`
+                : `/community/category/${categoryId}/new`
+            }
+          >
             <button className="px-4 py-2 bg-[#feff27] text-black rounded-full font-medium hover:bg-yellow-300 transition-colors">
-              New Topic
+              {isAdmin ? "Admin Topic" : "New Topic"}
             </button>
           </Link>
         </div>
@@ -49,7 +61,7 @@ const TopicList = ({ topics, categoryId, categoryName }) => {
                   )}
                   <Link
                     to={`/community/topic/${topic._id}`}
-                    className="font-medium text-white   hover:text-[#feff27] transition-colors"
+                    className="font-medium text-white hover:text-[#feff27] transition-colors"
                   >
                     {topic.title}
                   </Link>

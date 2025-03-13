@@ -10,7 +10,6 @@ const ItemDetails = () => {
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [hoveringImage, setHoveringImage] = useState(false);
 
@@ -30,14 +29,10 @@ const ItemDetails = () => {
     fetchItem();
   }, [id]);
 
-  const handleQuantityChange = (e) => {
-    setQuantity(parseInt(e.target.value));
-  };
-
   const handleAddToCart = () => {
     if (item) {
-      addToCart(item, quantity);
-      alert(`Added ${quantity} ${item.name} to cart`);
+      addToCart(item, 1);
+      alert(`Added ${item.name} to cart`);
     }
   };
 
@@ -51,7 +46,6 @@ const ItemDetails = () => {
     if (currentImageIndex > 0) {
       setCurrentImageIndex(currentImageIndex - 1);
     } else {
-      // Wrap to the last image
       setCurrentImageIndex(item.images.length - 1);
     }
   };
@@ -62,7 +56,6 @@ const ItemDetails = () => {
     if (currentImageIndex < item.images.length - 1) {
       setCurrentImageIndex(currentImageIndex + 1);
     } else {
-      // Wrap to the first image
       setCurrentImageIndex(0);
     }
   };
@@ -70,7 +63,7 @@ const ItemDetails = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#feff26]"></div>
       </div>
     );
   }
@@ -80,10 +73,7 @@ const ItemDetails = () => {
       <div className="text-center py-12">
         <h2 className="text-2xl text-red-600 mb-4">Error</h2>
         <p className="mb-4">{error}</p>
-        <Link
-          to="/shop"
-          className="text-amber-700 hover:text-amber-900 underline"
-        >
+        <Link to="/shop" className="text-white hover:text-[#feff26] underline">
           Return to shop
         </Link>
       </div>
@@ -93,19 +83,16 @@ const ItemDetails = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Item Images */}
         <div>
           <div
             className="bg-gray-100 rounded-lg overflow-hidden mb-4 relative"
             onMouseEnter={() => setHoveringImage(true)}
             onMouseLeave={() => setHoveringImage(false)}
           >
-            {/* Favorite button */}
             <div className="absolute top-4 right-4 z-10">
               <FavoriteButton itemId={item._id} />
             </div>
 
-            {/* Previous image arrow */}
             <button
               onClick={goToPreviousImage}
               className={`absolute left-2 top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white bg-opacity-60 flex items-center justify-center z-10 transition-opacity duration-300 ${
@@ -129,7 +116,6 @@ const ItemDetails = () => {
               </svg>
             </button>
 
-            {/* Next image arrow */}
             <button
               onClick={goToNextImage}
               className={`absolute right-2 top-1/2 transform -translate-y-1/2 w-10 h-10 rounded-full bg-white bg-opacity-60 flex items-center justify-center z-10 transition-opacity duration-300 ${
@@ -153,20 +139,17 @@ const ItemDetails = () => {
               </svg>
             </button>
 
-            {/* Current image */}
             <img
               src={item.images[currentImageIndex]}
               alt={item.name}
-              className="w-full h-[500px] object-cover"
+              className="w-full h-[500px] object-contain"
             />
 
-            {/* Image counter indicator */}
             <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-50 text-white text-xs rounded-full px-2 py-1">
               {currentImageIndex + 1} / {item.images.length}
             </div>
           </div>
 
-          {/* Image thumbnails */}
           <div className="flex space-x-2 overflow-x-auto">
             {item.images.map((image, index) => (
               <button
@@ -174,7 +157,7 @@ const ItemDetails = () => {
                 onClick={() => changeImage(index)}
                 className={`w-20 h-20 flex-shrink-0 rounded-md overflow-hidden ${
                   currentImageIndex === index
-                    ? "border-2 border-amber-500"
+                    ? "border-2 border-[#feff26]"
                     : "border border-gray-200"
                 }`}
               >
@@ -188,14 +171,19 @@ const ItemDetails = () => {
           </div>
         </div>
 
-        {/* Item Details */}
         <div>
           <nav className="flex mb-4 text-sm">
-            <Link to="/" className="text-amber-600 hover:text-amber-800">
+            <Link
+              to="/"
+              className="text-white bg-black px-2 py-1 rounded-md hover:text-white"
+            >
               Home
             </Link>
             <span className="mx-2 text-gray-500">/</span>
-            <Link to="/shop" className="text-amber-600 hover:text-amber-800">
+            <Link
+              to="/shop"
+              className="text-white bg-black px-2 py-1 rounded-md hover:text-white"
+            >
               Shop
             </Link>
             <span className="mx-2 text-gray-500">/</span>
@@ -203,9 +191,7 @@ const ItemDetails = () => {
           </nav>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{item.name}</h1>
-          <p className="text-2xl text-amber-700 mb-4">
-            €{item.price.toFixed(2)}
-          </p>
+          <p className="text-2xl text-black mb-4">€{item.price.toFixed(2)}</p>
 
           <div className="border-t border-b border-gray-200 py-4 my-4">
             <div className="grid grid-cols-2 gap-4 text-sm">
@@ -226,7 +212,6 @@ const ItemDetails = () => {
             </div>
           </div>
 
-          {/* Detailed Description Section */}
           <div className="mb-6">
             <h2 className="text-xl font-semibold text-gray-900 mb-3">
               Item Description
@@ -234,7 +219,6 @@ const ItemDetails = () => {
             <p className="text-gray-700 leading-relaxed">{item.description}</p>
           </div>
 
-          {/* Additional Details (Optional) */}
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <h3 className="text-lg font-medium text-gray-900 mb-2">
               Vintage Details
@@ -247,31 +231,13 @@ const ItemDetails = () => {
             </ul>
           </div>
 
-          <div className="flex items-center mb-6">
-            <label htmlFor="quantity" className="mr-4 text-gray-700">
-              Quantity:
-            </label>
-            <select
-              id="quantity"
-              value={quantity}
-              onChange={handleQuantityChange}
-              className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500"
-            >
-              {[...Array(5).keys()].map((num) => (
-                <option key={num + 1} value={num + 1}>
-                  {num + 1}
-                </option>
-              ))}
-            </select>
-          </div>
-
           <button
             onClick={handleAddToCart}
             disabled={!item.inStock}
-            className={`w-full py-3 px-6 rounded-md text-white font-medium ${
+            className={`w-full py-3 px-6 rounded-md font-medium ${
               item.inStock
-                ? "bg-amber-700 hover:bg-amber-800"
-                : "bg-gray-400 cursor-not-allowed"
+                ? "bg-black text-white hover:bg-white hover:text-black hover:border-2 hover:border-black"
+                : "bg-gray-400 text-white cursor-not-allowed"
             }`}
           >
             {item.inStock ? "Add to Cart" : "Out of Stock"}

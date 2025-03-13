@@ -102,14 +102,14 @@ const AdminNewTopicPage = () => {
         <div className="flex items-center gap-4 mb-6">
           <Link
             to="/community"
-            className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white"
+            className="text-sm font-medium px-3 py-1.5 rounded-full bg-[#feff26] text-black hover:scale-110 transition-transform"
           >
             Community
           </Link>
           {selectedCategory && (
             <Link
               to={`/community/category/${selectedCategory}`}
-              className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white"
+              className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white hover:scale-110 transition-transform"
             >
               {categories.find((c) => c._id === selectedCategory)?.name ||
                 "Category"}
@@ -120,7 +120,7 @@ const AdminNewTopicPage = () => {
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl overflow-hidden">
+        <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden">
           <div className="p-6 border-b border-gray-200">
             <h1 className="text-2xl font-bold">Create New Topic as Admin</h1>
             <p className="text-gray-600 mt-1">
@@ -146,7 +146,7 @@ const AdminNewTopicPage = () => {
                 id="category"
                 value={selectedCategory}
                 onChange={handleCategoryChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#feff26]"
                 required
               >
                 <option value="">Select a category</option>
@@ -171,7 +171,7 @@ const AdminNewTopicPage = () => {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#feff26]"
                 placeholder="Enter a descriptive title..."
                 required
               />
@@ -189,7 +189,7 @@ const AdminNewTopicPage = () => {
                 name="content"
                 value={formData.content}
                 onChange={handleChange}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 min-h-[200px]"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#feff26] min-h-[200px]"
                 placeholder="Write your topic content here..."
                 required
               ></textarea>
@@ -203,7 +203,7 @@ const AdminNewTopicPage = () => {
                   name="isPinned"
                   checked={formData.isPinned}
                   onChange={handleChange}
-                  className="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-[#feff26] focus:ring-[#feff26] border-gray-300 rounded"
                 />
                 <label htmlFor="isPinned" className="ml-2 block text-gray-700">
                   Pin this topic to the top
@@ -221,14 +221,14 @@ const AdminNewTopicPage = () => {
                     ? `/community/category/${selectedCategory}`
                     : "/community"
                 }
-                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                className="px-4 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`px-4 py-2 bg-amber-700 text-white rounded-md hover:bg-amber-800 ${
+                className={`px-4 py-2 bg-black text-white rounded-full hover:bg-white hover:border-2 hover:border-black hover:text-black ${
                   isSubmitting ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >

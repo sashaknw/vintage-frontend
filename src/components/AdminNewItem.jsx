@@ -94,8 +94,9 @@ const AdminNewItem = () => {
           const imageFormData = new FormData();
           imageFormData.append("image", imageFiles[i]);
 
+          // Fixed endpoint for image upload - changed from /api/upload to /api/items/upload
           const imageUploadResponse = await api.post(
-            "/api/upload",
+            "/api/items/upload",
             imageFormData,
             {
               headers: {

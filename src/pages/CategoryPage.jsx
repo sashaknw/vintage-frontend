@@ -12,7 +12,7 @@ const CategoryPage = () => {
   const [topics, setTopics] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState("latest"); 
+  const [filter, setFilter] = useState("latest");
   const { isAdmin } = useAuth();
 
   useEffect(() => {
@@ -144,26 +144,6 @@ const CategoryPage = () => {
                     </svg>
                   </Link>
 
-                  {isAdmin && (
-                    <Link
-                      to={`/community/category/${categoryId}/admin-new`}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-amber-700 text-white rounded-full text-sm hover:bg-amber-800 transition-colors"
-                    >
-                      Admin Post
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </Link>
-                  )}
                 </div>
               </div>
 
@@ -222,7 +202,7 @@ const CategoryPage = () => {
                   to={`/community/topic/${topic._id}`}
                   className="relative group"
                 >
-                  <div className="relative flex flex-col items-center justify-center h-24 md:h-28 bg-black rounded-xl border-2 border-white overflow-hidden group-hover:border-transparent transition-all duration-300 px-3">
+                  <div className="relative flex flex-col items-center justify-center h-32 md:h-40 bg-black rounded-xl border-2 border-white overflow-hidden group-hover:border-transparent transition-all duration-300 px-4 py-3">
                     <svg className="absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <rect
                         width="100%"
@@ -239,22 +219,29 @@ const CategoryPage = () => {
                     </svg>
 
                     {topic.isAdminPost && (
-                      <span className="absolute top-1 right-1 bg-amber-700 text-white text-xs px-2 py-0.5 rounded-full z-10">
+                      <span className="absolute top-2 right-2 bg-amber-700 text-white text-xs px-2 py-0.5 rounded-full z-10">
                         Admin
                       </span>
                     )}
 
                     {topic.isPinned && (
-                      <span className="absolute top-1 left-1 bg-[#feff27] text-black text-xs px-2 py-0.5 rounded-full z-10">
-                        Pinned
+                      <span className="absolute top-2 left-2 z-10">
+                        <img
+                          src="/pin.svg"
+                          alt="Pinned"
+                          className="h-5 w-5"
+                          title="Pinned Topic"
+                        />
                       </span>
                     )}
 
-                    <h3 className="text-xl md:text-2xl font-medium text-white group-hover:text-[#feff27] transition-colors duration-300 z-10 text-center mb-1">
-                      {topic.title}
-                    </h3>
+                    <div className="mt-3 mb-2 z-10">
+                      <h3 className="text-xl md:text-2xl font-medium text-white group-hover:text-[#feff27] transition-colors duration-300 z-10 text-center">
+                        {topic.title}
+                      </h3>
+                    </div>
 
-                    <div className="text-xs text-gray-400 z-10 flex items-center gap-2">
+                    <div className="text-s text-gray-400 z-10 flex items-center gap-2 mt-auto">
                       <span>{topic.replyCount} replies</span>
                       <span>•</span>
                       <span>
