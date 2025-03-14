@@ -43,7 +43,6 @@ const ForumCategories = ({ isDarkTheme = false, cardStyle = false }) => {
     );
   }
 
-  // Variants for animation
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -59,7 +58,6 @@ const ForumCategories = ({ isDarkTheme = false, cardStyle = false }) => {
     show: { opacity: 1, y: 0 },
   };
 
-  // Card-style categories for modern design - ALL BLACK
   if (cardStyle) {
     return (
       <>
@@ -105,7 +103,6 @@ const ForumCategories = ({ isDarkTheme = false, cardStyle = false }) => {
           ))}
         </motion.div>
 
-        {/* CSS for animated dashed outline */}
         <style jsx="true">{`
           .dash-animation {
             stroke-dashoffset: 0;
@@ -122,7 +119,6 @@ const ForumCategories = ({ isDarkTheme = false, cardStyle = false }) => {
     );
   }
 
-  // Updated list style to match Community theme
   return (
     <motion.div
       className="w-full space-y-6"
