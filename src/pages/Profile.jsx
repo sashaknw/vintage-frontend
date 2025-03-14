@@ -12,7 +12,6 @@ const Profile = () => {
     show: false,
   });
 
-  // Form state
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -22,7 +21,6 @@ const Profile = () => {
     profilePicture: "",
   });
 
-  // Mock orders data
   const [orders, setOrders] = useState([
     {
       id: "ORD-12345",
@@ -45,7 +43,6 @@ const Profile = () => {
     },
   ]);
 
-  // Load user data into form when component mounts or when user data changes
   useEffect(() => {
     if (user) {
       setFormData({
@@ -69,7 +66,6 @@ const Profile = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Handle confirmation dialog for logout and delete account
   const handleConfirmationDialog = (action) => {
     setShowConfirmation({ action, show: true });
   };
@@ -91,7 +87,6 @@ const Profile = () => {
     e.preventDefault();
     setMessage({ type: "", text: "" });
 
-    // Validation: only check password match if new password is provided
     if (
       formData.newPassword &&
       formData.newPassword !== formData.confirmPassword
@@ -125,7 +120,6 @@ const Profile = () => {
       setMessage({ type: "success", text: "Profile updated successfully" });
       setIsEditing(false);
 
-      // Reset only password fields
       setFormData({
         ...formData,
         currentPassword: "",
@@ -202,7 +196,6 @@ const Profile = () => {
       </h1>
 
       <div className="bg-white shadow-sm rounded-lg overflow-hidden border border-gray-100">
-        {/* Profile Navigation Tabs */}
         <div className="border-b border-gray-100">
           <nav className="flex -mb-px">
             <button
@@ -238,7 +231,6 @@ const Profile = () => {
           </nav>
         </div>
 
-        {/* Account Settings Tab */}
         {activeTab === "account" && (
           <div className="p-6">
             <div className="flex justify-between items-center mb-6">
@@ -255,7 +247,6 @@ const Profile = () => {
               )}
             </div>
 
-            {/* Success/Error Message */}
             {message.text && (
               <div
                 className={`p-4 mb-6 rounded-md ${
@@ -268,7 +259,6 @@ const Profile = () => {
               </div>
             )}
 
-            {/* Profile Picture (Always Visible) */}
             <div className="flex items-center justify-center mb-6">
               <div className="relative">
                 {user.profilePicture ? (
@@ -291,7 +281,6 @@ const Profile = () => {
 
             {isEditing ? (
               <form onSubmit={handleSubmit}>
-                {/* Profile Picture URL field */}
                 <div className="mb-6">
                   <label
                     htmlFor="profilePicture"
@@ -320,7 +309,6 @@ const Profile = () => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Username field */}
                   <div>
                     <label
                       htmlFor="username"
@@ -339,7 +327,6 @@ const Profile = () => {
                     />
                   </div>
 
-                  {/* Email field */}
                   <div>
                     <label
                       htmlFor="email"
@@ -367,7 +354,6 @@ const Profile = () => {
                     Leave blank if you don't want to change your password.
                   </p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Current password field */}
                     <div>
                       <label
                         htmlFor="currentPassword"
@@ -432,7 +418,6 @@ const Profile = () => {
                     onClick={() => {
                       setIsEditing(false);
                       setMessage({ type: "", text: "" });
-                      // Reset form to current user data
                       if (user) {
                         setFormData({
                           username: user.username || user.name || "",
@@ -509,7 +494,6 @@ const Profile = () => {
                   </div>
                 </div>
 
-                {/* Delete Account Option */}
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
                     <svg
@@ -543,7 +527,6 @@ const Profile = () => {
           </div>
         )}
 
-        {/* Orders Tab */}
         {activeTab === "orders" && (
           <div className="p-6">
             <h2 className="text-xl font-medium text-black mb-6">
@@ -585,7 +568,6 @@ const Profile = () => {
                     key={order.id}
                     className="bg-gray-50 rounded-lg p-6 border border-gray-100"
                   >
-                    {/* Order details remain the same */}
                     <div className="flex flex-wrap justify-between items-start mb-4">
                       <div>
                         <h3 className="text-lg font-medium text-black">
@@ -686,7 +668,6 @@ const Profile = () => {
           </div>
         )}
 
-        {/* Addresses Tab */}
         {activeTab === "addresses" && (
           <div className="p-6">
             <div className="flex justify-between items-center mb-6">
@@ -734,7 +715,6 @@ const Profile = () => {
         )}
       </div>
 
-      {/* Confirmation Modal */}
       {showConfirmation.show && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">

@@ -174,7 +174,6 @@ const EditCategoryPage = () => {
               ></textarea>
             </div>
 
-            {/* Submit and Delete Buttons */}
             <div className="flex justify-between">
               <button
                 type="button"

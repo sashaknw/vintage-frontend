@@ -1,4 +1,3 @@
-// authService.js - API calls
 import api from "./api";
 
 const authService = {

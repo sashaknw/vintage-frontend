@@ -10,7 +10,6 @@ const FavoriteButton = ({ itemId, initialIsFavorite = false }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Check if this item is already in favorites when component mounts
     const checkIfFavorite = async () => {
       if (!user) return;
 

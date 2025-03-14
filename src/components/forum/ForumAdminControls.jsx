@@ -13,7 +13,6 @@ const ForumAdminControls = ({
 
   if (!isAdmin) return null;
 
-  // Different controls based on the current page
   switch (page) {
     case "community":
       return (

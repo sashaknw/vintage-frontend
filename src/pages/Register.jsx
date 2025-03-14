@@ -27,7 +27,6 @@ const Register = () => {
     e.preventDefault();
     setFormError("");
 
-    // Validation
     if (!formData.name || !formData.email || !formData.password) {
       setFormError("All fields are required");
       return;
@@ -46,7 +45,6 @@ const Register = () => {
     try {
       setFormSubmitting(true);
 
-      // Send only the required fields (name, email, password)
      const userData = {
        name: formData.name,
        email: formData.email,
@@ -54,7 +52,6 @@ const Register = () => {
      };
       await register(userData);
 
-      // Redirect to home page after successful registration
       navigate("/");
     } catch (err) {
       console.error("Registration submission error:", err);

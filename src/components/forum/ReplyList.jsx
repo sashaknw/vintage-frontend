@@ -1,4 +1,3 @@
-// components/forum/ReplyList.jsx
 import React from "react";
 import { useAuth } from "../../context/AuthContext";
 import { formatDistanceToNow } from "../../helpers/dateUtils";
@@ -24,8 +23,6 @@ const ReplyList = ({ replies, onLike }) => {
 
       <div className="divide-y">
         {replies.map((reply) => {
-          // Check if the current user has liked this reply
-          // We need to check if the user exists, if likes array exists, and if user ID is in the array
           const hasLiked =
             isAuthenticated &&
             reply.likes &&

@@ -3,7 +3,6 @@ import { Link, useParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 
-// User avatar component
 const UserAvatar = ({ user, size = "medium" }) => {
   const sizeClasses = {
     small: "w-8 h-8 text-xs",
@@ -290,7 +289,6 @@ const PublicProfile = () => {
           </div>
         )}
 
-        {/* Favorites Tab */}
         {activeTab === "favorites" && (
           <div className="bg-white rounded-3xl border border-gray-200 p-6">
             <div className="flex justify-between items-center mb-6">

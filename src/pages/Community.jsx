@@ -23,11 +23,8 @@ const Community = () => {
 
   return (
     <div className="w-screen-2xl mx-auto px-28 py-10 bg-black min-h-screen">
-      {/* Main Content Grid */}
       <div className="grid grid-cols-1 gap-5">
-        {/* Main Title Card with Video Background - Full Width */}
         <div className="relative p-6 rounded-3xl overflow-hidden h-96">
-          {/* Video Background */}
           <div className="absolute inset-0 mx-6 h-full">
             <video
               className="w-full h-full object-cover rounded-3xl"
@@ -40,16 +37,12 @@ const Community = () => {
                 src="https://res.cloudinary.com/dlkmeyasv/video/upload/v1741611395/shopping_xkucaq.mp4"
                 type="video/mp4"
               />
-              {/* Fallback background if video doesn't load */}
               <div className="absolute inset-0 bg-black"></div>
             </video>
-            {/* Overlay to ensure text is readable */}
             <div className="absolute inset-0 bg-black bg-opacity-50 rounded-3xl"></div>
           </div>
 
-          {/* Content */}
           <div className="relative z-10 mx-6 flex flex-col h-full">
-            {/* Top section with title */}
             <div>
               <h1 className="text-4xl font-bold mb-1 text-white">
                 Community Forum
@@ -58,7 +51,6 @@ const Community = () => {
                 Connect with fellow vintage enthusiasts and share your style
                 journey
               </p>
-              {/* search */}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mt-auto">
                 <form onSubmit={handleSearch} className="flex-grow max-w-md">
                   <input
@@ -71,7 +63,6 @@ const Community = () => {
                 </form>
               </div>
 
-              {/* Admin Controls - add topic button */}
               {isAdmin && (
                 <div className="mt-4">
                   <Link
@@ -97,22 +88,18 @@ const Community = () => {
             </div>
           </div>
         </div>
-        {/* Categories Section */}
         <div className="p-6">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-4xl font-bold py-4 text-white text-left">
               Hot Topics
             </h2>
 
-            {/* Admin Controls for Categories */}
             <ForumAdminControls page="community" />
           </div>
 
           <ForumCategories cardStyle={true} />
         </div>
-        {/* Activity and Guidelines Cards in a row */}
         <div className="grid grid-cols-1 p-6 md:grid-cols-2 gap-5">
-          {/* Stats Card */}
           <div className="p-6 rounded-3xl border-2 border-white">
             <div className="mb-2 flex justify-between items-center">
               <span className="text-xs font-medium uppercase tracking-wider text-white">
@@ -169,7 +156,6 @@ const Community = () => {
             </div>
           </div>
 
-          {/* Guidelines Card */}
           <div className="p-6 rounded-3xl border-2 border-white">
             <div className="mb-2 flex justify-between items-center">
               <span className="text-xs text-white font-medium uppercase tracking-wider">

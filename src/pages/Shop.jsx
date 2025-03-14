@@ -318,7 +318,6 @@ const Shop = () => {
             </select>
           </div>
 
-          {/* Condition Filter */}
           <div>
             <label
               htmlFor="condition"
@@ -340,7 +339,6 @@ const Shop = () => {
             </select>
           </div>
 
-          {/* Price Range Filter */}
           <div>
             <label
               htmlFor="priceRange"
@@ -362,7 +360,6 @@ const Shop = () => {
             </select>
           </div>
 
-          {/* Sort By */}
           <div>
             <label
               htmlFor="sortBy"
@@ -418,7 +415,6 @@ const Shop = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {/* Admin Add Product Card - Only visible to admins */}
           {isAdmin && (
             <Link
               to="/admin/items/new"
@@ -450,7 +446,6 @@ const Shop = () => {
             </Link>
           )}
 
-          {/* Item Cards */}
           {items.map((item) => (
             <Link
               key={item._id}
@@ -460,13 +455,11 @@ const Shop = () => {
               onMouseLeave={() => handleMouseLeave(item._id)}
             >
               <div className="relative">
-                {/* Position the favorite button */}
                 <div className="absolute top-2 right-2 z-10">
                   <FavoriteButton itemId={item._id} />
                 </div>
 
                 <div className="aspect-w-3 aspect-h-4 overflow-hidden">
-                  {/* Show second image on hover if available */}
                   {hoveredItems[item._id] &&
                   item.images &&
                   item.images.length > 1 ? (

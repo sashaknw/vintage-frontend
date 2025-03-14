@@ -7,7 +7,6 @@ const Categories = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Predefined category details
   const CATEGORY_DETAILS = {
     tops: {
       description: "Vintage t-shirts, blouses, and shirts",
@@ -41,14 +40,12 @@ const Categories = () => {
         const response = await api.get("/api/items");
         const items = response.data;
 
-        // Calculate category counts and find representative images
         const categoriesData = Object.keys(CATEGORY_DETAILS).map(
           (categoryKey) => {
             const categoryItems = items.filter(
               (item) => item.category === categoryKey
             );
 
-            // Get up to 2 images for each category (for the hover effect)
             const categoryImages = [];
             if (categoryItems.length > 0 && categoryItems[0].images && categoryItems[0].images.length > 0) {
               categoryImages.push(categoryItems[0].images[0]);
@@ -56,14 +53,11 @@ const Categories = () => {
               categoryImages.push("https://via.placeholder.com/600x400");
             }
 
-            // Try to get a second image from another item in the category
             if (categoryItems.length > 1 && categoryItems[1].images && categoryItems[1].images.length > 0) {
               categoryImages.push(categoryItems[1].images[0]);
             } else if (categoryItems.length > 0 && categoryItems[0].images && categoryItems[0].images.length > 1) {
-              // Or use the second image of the first item if available
               categoryImages.push(categoryItems[0].images[1]);
             } else {
-              // Fallback to the first image if no second is available
               categoryImages.push(categoryImages[0]);
             }
 
@@ -120,14 +114,12 @@ const Categories = () => {
           >
             <div className="overflow-hidden rounded-lg shadow-md transition duration-300 hover:shadow-xl">
               <div className="relative h-64 bg-gray-50">
-                {/* Primary image */}
                 <img
                   src={category.images[0]}
                   alt={category.name}
                   className="w-full h-full object-contain transition duration-300 group-hover:opacity-0"
                 />
                 
-                {/* Secondary image (shown on hover) */}
                 {category.images[1] && (
                   <img
                     src={category.images[1]}

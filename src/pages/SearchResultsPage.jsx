@@ -1,4 +1,3 @@
-// pages/SearchResultsPage.jsx - Search results
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import forumService from "../services/forumService";

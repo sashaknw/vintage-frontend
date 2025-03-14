@@ -85,7 +85,6 @@ const Home = () => {
 
   return (
     <div>
-      {/* Orientation Prompt for Mobile */}
       {showOrientationPrompt && (
         <div className="fixed inset-0 bg-black bg-opacity-80 z-50 flex flex-col items-center justify-center text-white p-6">
           <div className="animate-bounce mb-6">
@@ -143,7 +142,6 @@ const Home = () => {
 
         <div className="absolute inset-0 bg-black opacity-40 z-10"></div>
 
-        {/* Content */}
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
           <div className="bg-white bg-opacity-10 p-4 sm:p-12 rounded-2xl w-full max-w-xl backdrop-blur-md space-y-6 sm:space-y-12">
             <h1 className="text-3xl sm:text-5xl font-serif font-bold text-slate-100 mb-4 sm:mb-6">
@@ -208,7 +206,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Items */}
       <section className="py-12 sm:py-16 bg-white">
         <div className="max-w-7xl  mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl sm:text-3xl font-serif font-bold text-center text-black-900 mb-8 sm:mb-12">
@@ -285,7 +282,6 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Categories Preview */}
       <section className="py-12 sm:py-16 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-4 lg:px-12">
           <h2 className="text-2xl sm:text-3xl font-serif font-bold text-center text-white mb-8 sm:mb-12">

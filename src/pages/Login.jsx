@@ -25,7 +25,7 @@ const Login = () => {
     e.preventDefault();
     setFormError("");
 
-    // Simple validation
+  
     if (!formData.email || !formData.password) {
       setFormError("Email and password are required");
       return;
@@ -35,7 +35,7 @@ const Login = () => {
       setFormSubmitting(true);
       await login(formData.email, formData.password);
 
-      // Redirect to home page after successful login
+      //redirect to home
       navigate("/");
     } catch (err) {
       console.error("Login submission error:", err);

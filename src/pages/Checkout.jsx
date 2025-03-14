@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 const Checkout = () => {
 
 
-  // Mock cart data
   const cartItems = [
     {
       id: "1",
@@ -24,7 +23,6 @@ const Checkout = () => {
     },
   ];
 
-  // Calculate totals
   const subtotal = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
@@ -33,7 +31,6 @@ const Checkout = () => {
   const tax = subtotal * 0.1; // 10% tax rate
   const total = subtotal + shipping + tax;
 
-  // Form state
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -71,7 +68,6 @@ const Checkout = () => {
   const placeOrder = () => {
     setIsSubmitting(true);
 
-    // Simulate API call
     setTimeout(() => {
       setIsSubmitting(false);
       setOrderComplete(true);
@@ -136,7 +132,6 @@ const Checkout = () => {
         Checkout
       </h1>
 
-      {/* Progress Indicator */}
       <div className="mb-8">
         <div className="flex items-center justify-between">
           <div
@@ -195,10 +190,8 @@ const Checkout = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Form */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-md overflow-hidden">
-            {/* Step 1: Shipping */}
             {step === 1 && (
               <div className="p-6">
                 <h2 className="text-xl font-medium text-gray-900 mb-6">
@@ -328,7 +321,6 @@ const Checkout = () => {
               </div>
             )}
 
-            {/* Step 2: Payment */}
             {step === 2 && (
               <div className="p-6">
                 <h2 className="text-xl font-medium text-gray-900 mb-6">
@@ -550,7 +542,6 @@ const Checkout = () => {
           </div>
         </div>
 
-        {/* Order Summary */}
         <div>
           <div className="bg-white rounded-lg shadow-md p-6 sticky top-8">
             <h2 className="text-lg font-medium text-gray-900 mb-6">

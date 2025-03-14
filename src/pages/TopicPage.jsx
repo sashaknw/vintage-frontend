@@ -101,7 +101,6 @@ const TopicPage = () => {
         setEditedTopicContent(data.topic.content);
         setReplies(data.replies);
 
-        // Check if user is following
         if (isAuthenticated && data.topic.followers) {
           setFollowing(false);
         }

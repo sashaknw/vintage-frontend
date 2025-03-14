@@ -14,7 +14,6 @@ const Cart = () => {
   const shipping = 8.95;
   const total = subtotal + shipping;
 
-  // Navigate to checkout
   const handleCheckout = () => {
     navigate("/checkout");
   };
@@ -61,7 +60,6 @@ const Cart = () => {
       </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cart Items */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100">
             <ul className="divide-y divide-gray-100">

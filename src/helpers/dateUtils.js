@@ -1,5 +1,4 @@
-// helpers/dateUtils.js
-// Date formatting utilities to replace date-fns
+
 
 /**
  * Format a date to show how long ago it was in a human-readable format

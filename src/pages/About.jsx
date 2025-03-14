@@ -49,7 +49,6 @@ const isInView = useInView(typingRef, { once: false, amount: 0.5 });
 
   return (
     <div>
-      {/* Hero Section */}
       <section className="relative py-16 bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -307,7 +306,7 @@ const isInView = useInView(typingRef, { once: false, amount: 0.5 });
               transition={{ duration: 0.6, delay: 0.3 }}
             >
               <h2 className="text-2xl sm:text-3xl font-serif font-bold text-black mb-6">
-                Meet the Team
+                Who we are
               </h2>
               <p className="text-base sm:text-lg mb-10">
                 Our small but dedicated team brings together expertise in

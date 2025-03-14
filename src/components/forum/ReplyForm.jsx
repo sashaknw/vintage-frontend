@@ -1,4 +1,3 @@
-// components/forum/ReplyForm.jsx
 import React, { useState } from "react";
 
 const ReplyForm = ({ onSubmit, onCancel, initialContent = "" }) => {
