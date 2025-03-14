@@ -1,5 +1,5 @@
 
-# Vintage Vault 👗 (scroll down for version in SP)
+# Vintage Vault 👗
 
 ## Description
 Vintage Vault is a digital marketplace for vintage clothing and accessories. The platform offers an intuitive and visually appealing shopping experience for vintage fashion enthusiasts, combined with community forum for sharing fashion tips and discoveries.
