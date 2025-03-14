@@ -1,7 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
-  darkMode: false,
+  darkMode: "class",
   theme: {
     extend: {
       colors: {
@@ -42,9 +42,12 @@ module.exports = {
       },
     },
   },
+  // Configure daisyUI with specific theme only
   daisyui: {
-    themes: ["light"],
-    darkTheme: "light",
+    themes: false, // Disable daisyUI theming completely
+    darkTheme: false, // Prevent automatic dark theme
+    base: true, // Keep base styles
+    utils: true, // Keep utility classes
   },
   plugins: [require("daisyui")],
 };
