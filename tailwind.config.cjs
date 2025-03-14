@@ -1,10 +1,19 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
+  darkMode: false,
   theme: {
     extend: {
       colors: {
         black: "#131417",
+        slate: {
+          100: "#f8fafc",
+          200: "#e2e8f0",
+        },
+        gray: {
+          50: "#f9fafb",
+          900: "#111827",
+        },
       },
       fontFamily: {
         sans: [
@@ -21,6 +30,7 @@ module.exports = {
         ],
         marker: ['"Permanent Marker"', "cursive"],
         golos: ['"Golos Text"', "Roboto"],
+        serif: ["Georgia", "Cambria", "Times New Roman", "serif"],
       },
       keyframes: {
         dash: {
@@ -31,6 +41,10 @@ module.exports = {
         dash: "dash 1.5s linear infinite",
       },
     },
+  },
+  daisyui: {
+    themes: ["light"],
+    darkTheme: "light",
   },
   plugins: [require("daisyui")],
 };
