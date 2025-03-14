@@ -3,6 +3,9 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      colors: {
+        black: "#131417",
+      },
       fontFamily: {
         sans: [
           '"DM Sans"',
@@ -29,9 +32,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    require("daisyui")
-  ],
-  
-
+  plugins: [require("daisyui")],
 };

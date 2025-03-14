@@ -15,16 +15,16 @@ const Carousel = ({ items }) => {
     setCurrentSlide(index);
   };
 
-  const goToPrevSlide = () => {
-    setCurrentSlide((prev) => (prev === 0 ? items.length - 1 : prev - 1));
-  };
+//   const goToPrevSlide = () => {
+//     setCurrentSlide((prev) => (prev === 0 ? items.length - 1 : prev - 1));
+//   };
 
-  const goToNextSlide = () => {
-    setCurrentSlide((prev) => (prev === items.length - 1 ? 0 : prev + 1));
-  };
+//   const goToNextSlide = () => {
+//     setCurrentSlide((prev) => (prev === items.length - 1 ? 0 : prev + 1));
+//   };
 
   return (
-    <div className="relative w-full overflow-hidden">
+    <div className="relative w-full overflow-hidden ">
       <div
         className="flex transition-transform duration-500 ease-in-out"
         style={{
@@ -42,7 +42,7 @@ const Carousel = ({ items }) => {
               src={
                 item.imageUrl || item.image || (item.images && item.images[0])
               }
-              className="w-full object-cover h-80"
+              className="w-full object-cover h-96"
               alt={item.name || `Slide ${index + 1}`}
             />
 
@@ -51,7 +51,6 @@ const Carousel = ({ items }) => {
         ))}
       </div>
 
-      {/* Slide indicators */}
       <div className="absolute bottom-4 flex justify-center w-full gap-2 z-10">
         {items.map((_, index) => (
           <button
