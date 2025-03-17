@@ -44,8 +44,8 @@ module.exports = {
   },
   // Configure daisyUI with specific theme only
   daisyui: {
-    themes: false, // Disable daisyUI theming completely
-    darkTheme: false, // Prevent automatic dark theme
+    themes: ["light"], // Use light theme only
+    darkTheme: "light", // Force light theme even when system prefers dark
     base: true, // Keep base styles
     utils: true, // Keep utility classes
   },

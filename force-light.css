@@ -1,0 +1,48 @@
+:root {
+    color-scheme: light only !important;
+}
+
+html {
+    background-color: #ffffff !important;
+}
+
+body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: light only !important;
+    }
+
+    html,
+    body,
+    #root {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+
+    [data-theme] {
+        background-color: initial !important;
+        color: initial !important;
+    }
+}
+
+.dark,
+[data-theme="dark"] {
+    background-color: initial !important;
+    color: initial !important;
+}
+
+.dark\:bg-black {
+    background-color: initial !important;
+}
+
+.dark\:text-white {
+    color: initial !important;
+}
+
+.dark\:border-gray-700 {
+    border-color: initial !important;
+}
