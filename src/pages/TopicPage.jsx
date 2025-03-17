@@ -341,40 +341,48 @@ const TopicPage = () => {
           onCancel={closeConfirmation}
         />
 
-        <div className="flex justify-between items-center mb-6">
-          <div className="flex items-center gap-4">
-            <Link
-              to="/community"
-              className="text-sm font-medium px-3 py-1.5 rounded-full bg-[#f0ff26] hover:scale-110"
-            >
-              Community
-            </Link>
-            <Link
-              to={`/community/category/${topic.category._id}`}
-              className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white hover:scale-110"
-            >
-              {topic.category.name}
-            </Link>
-            <div className="bg-black text-white px-3 py-1.5 text-sm font-medium rounded-full border border-white">
-              Topic
-            </div>
-          </div>
 
-          {isAdmin && (
-            <ForumAdminControls
-              page="topic"
-              topicId={topicId}
-              onDeleteTopic={() =>
-                openConfirmation(
-                  "deleteTopic",
-                  null,
-                  "Are you sure you want to delete this topic? This action cannot be undone."
-                )
-              }
-              onEditTopic={() => setEditingTopic(true)}
-            />
-          )}
-        </div>
+<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+  <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+    <Link
+      to="/community"
+      className="text-sm font-medium px-3 py-1.5 rounded-full bg-[#f0ff26] hover:scale-110 whitespace-nowrap"
+    >
+      Community
+    </Link>
+    
+    {topic.category && (
+      <Link
+        to={`/community/category/${topic.category._id}`}
+        className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white hover:scale-110 min-w-[120px] max-w-[200px] text-center truncate"
+        title={topic.category.name} 
+      >
+        {topic.category.name}
+      </Link>
+    )}
+    
+    <div className="bg-black text-white px-3 py-1.5 text-sm font-medium rounded-full border border-white whitespace-nowrap">
+      Topic
+    </div>
+  </div>
+
+  {isAdmin && (
+    <ForumAdminControls
+      page="topic"
+      topicId={topicId}
+      onDeleteTopic={() =>
+        openConfirmation(
+          "deleteTopic",
+          null,
+          "Are you sure you want to delete this topic? This action cannot be undone."
+        )
+      }
+      onEditTopic={() => setEditingTopic(true)}
+    />
+  )}
+</div>
+
+       
 
         {/* topic card */}
         <div className="mb-6 bg-white rounded-3xl border border-gray-200 overflow-hidden">
@@ -614,7 +622,7 @@ const TopicPage = () => {
                               "Unknown"
                             )}
                             {reply.author && reply.author.isAdmin && (
-                              <span className="ml-2 bg-amber-700 text-white text-xs px-2 py-0.5 rounded-full">
+                              <span className="ml-2 bg-[#feff27] text-black text-xs px-2 py-0.5 rounded-full">
                                 Admin
                               </span>
                             )}
@@ -636,9 +644,13 @@ const TopicPage = () => {
                                 : "Are you sure you want to delete this reply? This action cannot be undone."
                             )
                           }
-                          className="text-xs text-red-600 hover:text-red-800"
+                          className="text-red-600 hover:text-red-800"
                         >
-                          Delete
+                          <img
+                            src="/delete-icon.svg"
+                            alt="Delete"
+                            className="w-5 h-5"
+                          />
                         </button>
                       )}
                     </div>
@@ -658,6 +670,7 @@ const TopicPage = () => {
                             : "text-gray-500 hover:text-black"
                         }`}
                       >
+                        {/* little heart */}
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           className={`h-4 w-4 ${

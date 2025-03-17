@@ -219,7 +219,7 @@ const CategoryPage = () => {
                     </svg>
 
                     {topic.isAdminPost && (
-                      <span className="absolute top-2 right-2 bg-amber-700 text-white text-xs px-2 py-0.5 rounded-full z-10">
+                      <span className="absolute top-2 right-2 bg-[#feff27] text-black text-xs px-2 py-0.5 rounded-full z-10">
                         Admin
                       </span>
                     )}

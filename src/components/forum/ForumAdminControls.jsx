@@ -79,7 +79,7 @@ const ForumAdminControls = ({
               Delete Topic
             </button>
           )}
-          <button className="bg-amber-700 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-amber-800 transition-colors flex items-center gap-1">
+          {/* <button className="bg-amber-700 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-amber-800 transition-colors flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -93,8 +93,8 @@ const ForumAdminControls = ({
               />
             </svg>
             Pin Topic
-          </button>
-          <button className="bg-gray-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors flex items-center gap-1">
+          </button> */}
+          {/* <button className="bg-gray-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-700 transition-colors flex items-center gap-1">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -108,7 +108,7 @@ const ForumAdminControls = ({
               />
             </svg>
             Lock Topic
-          </button>
+          </button> */}
         </div>
       );
 

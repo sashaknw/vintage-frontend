@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import ReplyForm from "./ReplyForm";
-import ReplyList from "./ReplyList";
 import { formatDistanceToNow } from "../../helpers/dateUtils";
 
 const UserAvatar = ({ user, size = "medium" }) => {
@@ -35,22 +34,54 @@ const UserAvatar = ({ user, size = "medium" }) => {
   );
 };
 
+const ConfirmationDialog = ({ isOpen, message, onConfirm, onCancel }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-4 max-w-sm w-full">
+        <h3 className="text-lg font-medium mb-3">Confirm Action</h3>
+        <p className="mb-4">{message}</p>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onCancel}
+            className="px-3 py-1.5 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="px-3 py-1.5 bg-red-600 text-white rounded-md hover:bg-red-700"
+          >
+            Confirm
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const TopicDetail = ({
   topic,
   replies,
   onFollow,
   onReply,
   onLike,
+  onDeleteReply,
   following = false,
 }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [showReplyForm, setShowReplyForm] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    message: "",
+    replyId: null,
+  });
 
   const handleReplyClick = () => {
     if (isAuthenticated) {
       setShowReplyForm(true);
     } else {
-      
       alert("Please log in to reply");
     }
   };
@@ -72,10 +103,47 @@ const TopicDetail = ({
     }
   };
 
+  const handleDeleteReply = (replyId) => {
+    setConfirmDialog({
+      isOpen: true,
+      message:
+        "Are you sure you want to delete this reply? This action cannot be undone.",
+      replyId,
+    });
+  };
+
+  const confirmDeleteReply = () => {
+    onDeleteReply(confirmDialog.replyId);
+    setConfirmDialog({
+      isOpen: false,
+      message: "",
+      replyId: null,
+    });
+  };
+
+  const cancelDeleteReply = () => {
+    setConfirmDialog({
+      isOpen: false,
+      message: "",
+      replyId: null,
+    });
+  };
+
+  const canDeleteReply = (replyAuthor) => {
+    if (!user || !isAuthenticated) return false;
+    return user._id === replyAuthor?._id || user.isAdmin;
+  };
+
   return (
     <div className="space-y-6">
+      <ConfirmationDialog
+        isOpen={confirmDialog.isOpen}
+        message={confirmDialog.message}
+        onConfirm={confirmDeleteReply}
+        onCancel={cancelDeleteReply}
+      />
+
       <div className="bg-white rounded-lg shadow overflow-hidden">
-        {/* Topic Header */}
         <div className="p-4 border-b">
           <h1 className="text-2xl font-medium text-black">{topic.title}</h1>
           <div className="mt-3 flex items-center">
@@ -84,7 +152,7 @@ const TopicDetail = ({
               {topic.author ? (
                 <Link
                   to={`/profile/${topic.author._id}`}
-                  className="font-medium text-gray-900 hover:text-amber-700 transition-colors"
+                  className="font-medium text-gray-900 hover:underline "
                 >
                   {topic.author.name || "Unknown"}
                 </Link>
@@ -175,7 +243,6 @@ const TopicDetail = ({
           </div>
         </div>
 
-        {/* Topic Content */}
         <div className="p-6">
           <div
             className="prose max-w-none"
@@ -186,7 +253,6 @@ const TopicDetail = ({
         </div>
       </div>
 
-      {/* Reply Form */}
       {showReplyForm && (
         <div className="bg-white rounded-lg shadow overflow-hidden p-4">
           <h3 className="text-lg font-medium text-amber-900 mb-4">
@@ -200,9 +266,111 @@ const TopicDetail = ({
       )}
 
       {/* Replies */}
-      <ReplyList replies={replies} onLike={onLike} />
+      <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="p-4 border-b">
+          <h2 className="text-lg font-medium text-amber-900">
+            Replies ({replies.length})
+          </h2>
+        </div>
 
-      {/* Reply Button at Bottom */}
+        {replies.length === 0 ? (
+          <div className="p-6 text-center">
+            <p className="text-gray-500">
+              No replies yet. Be the first to reply!
+            </p>
+          </div>
+        ) : (
+          <div className="divide-y">
+            {replies.map((reply) => {
+              const hasLiked =
+                isAuthenticated &&
+                reply.likes &&
+                Array.isArray(reply.likes) &&
+                user &&
+                reply.likes.some((id) => id === user._id);
+
+              return (
+                <div key={reply._id} className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0">
+                      <UserAvatar user={reply.author} size="medium" />
+                    </div>
+                    <div className="flex-grow">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h3 className="font-medium text-black">
+                            {reply.author?.name || "Unknown"}
+                          </h3>
+                          <span className="text-sm text-gray-500">
+                            {formatDistanceToNow(
+                              new Date(reply.createdAt || Date.now())
+                            )}
+                          </span>
+                        </div>
+                        {canDeleteReply(reply.author) && (
+                          <button
+                            onClick={() => handleDeleteReply(reply._id)}
+                            className="text-gray-400 hover:text-red-600 transition-colors"
+                            aria-label="Delete reply"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              className="w-5 h-5"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M3 6h18"></path>
+                              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+                              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                      <div className="mt-2 text-gray-700 whitespace-pre-line">
+                        {reply.content}
+                      </div>
+                      <div className="mt-3">
+                        <button
+                          onClick={() =>
+                            isAuthenticated && onLike && onLike(reply._id)
+                          }
+                          disabled={!isAuthenticated}
+                          className={`flex items-center gap-1 text-sm ${
+                            hasLiked
+                              ? "text-amber-700"
+                              : "text-gray-500 hover:text-amber-700"
+                          }`}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className={`h-4 w-4 ${
+                              hasLiked ? "fill-amber-700" : "fill-gray-500"
+                            }`}
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          {reply.likes?.length || 0}{" "}
+                          {reply.likes?.length === 1 ? "Like" : "Likes"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
       {!showReplyForm && !topic.isLocked && (
         <div className="text-center">
           <button

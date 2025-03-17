@@ -10,7 +10,7 @@ const TopicList = ({ topics, categoryId, categoryName }) => {
     return (
       <div className="text-center py-8 bg-black rounded-3xl border-2 border-white p-6">
         <p className="text-white mb-4">No topics yet in this category.</p>
-        <Link
+        {/* <Link
           to={
             isAdmin
               ? `/community/category/${categoryId}/admin-new`
@@ -19,7 +19,7 @@ const TopicList = ({ topics, categoryId, categoryName }) => {
           className="inline-block px-4 py-2 bg-[#feff27] text-black rounded-full font-medium hover:bg-yellow-300 transition-colors"
         >
           {isAdmin ? "Create Admin Topic" : "Be the first to start a topic"}
-        </Link>
+        </Link> */}
       </div>
     );
   }

@@ -25,7 +25,7 @@ const ReplyForm = ({ onSubmit, onCancel, initialContent = "" }) => {
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 min-h-[120px]"
+          className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#feff27] min-h-[120px]"
           placeholder="Write your reply here..."
           required
         ></textarea>
@@ -35,7 +35,7 @@ const ReplyForm = ({ onSubmit, onCancel, initialContent = "" }) => {
           <button
             type="button"
             onClick={onCancel}
-            className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+            className="px-4 py-2  bg-white border-2 border-black text-black rounded-md hover:bg-red-600"
           >
             Cancel
           </button>
@@ -43,7 +43,7 @@ const ReplyForm = ({ onSubmit, onCancel, initialContent = "" }) => {
         <button
           type="submit"
           disabled={isSubmitting || !content.trim()}
-          className={`px-4 py-2 bg-amber-700 text-white rounded-md ${
+          className={`px-4 py-2 bg-white border-2 border-black text-black rounded-md hover:bg-[#feff27] ${
             isSubmitting || !content.trim()
               ? "opacity-70 cursor-not-allowed"
               : "hover:bg-amber-800"
