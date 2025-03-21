@@ -5,6 +5,7 @@ import forumService from "../services/forumService";
 import { formatDistanceToNow, formatDate } from "../helpers/dateUtils";
 import ReplyForm from "../components/forum/ReplyForm";
 import ForumAdminControls from "../components/forum/ForumAdminControls";
+import FlaggedContentNotice from "../components/forum/FlaggedContentNotice";
 
 const UserAvatar = ({ user, size = "medium" }) => {
   const sizeClasses = {
@@ -74,6 +75,8 @@ const TopicPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showReplyForm, setShowReplyForm] = useState(false);
+  const [flaggedReplyContent, setFlaggedReplyContent] = useState(null);
+  const [pendingReplyContent, setPendingReplyContent] = useState("");
   const [editingTopic, setEditingTopic] = useState(false);
   const [editedTopicContent, setEditedTopicContent] = useState("");
   const [confirmDialog, setConfirmDialog] = useState({
@@ -136,8 +139,18 @@ const TopicPage = () => {
     }
 
     try {
-      const newReply = await forumService.createReply(topicId, content);
-      setReplies([...replies, newReply]);
+      setPendingReplyContent(content);
+
+      const response = await forumService.createReply(topicId, content);
+
+      // Check if response indicates flagged content
+      if (response.flaggedContent) {
+        setFlaggedReplyContent(response.flaggedContent);
+        return null; // Return null to prevent ReplyForm from clearing
+      }
+
+      // If no moderation issues, add the reply
+      setReplies([...replies, response]);
 
       setTopic({
         ...topic,
@@ -145,11 +158,51 @@ const TopicPage = () => {
       });
 
       setShowReplyForm(false);
-      return newReply;
+      setPendingReplyContent("");
+      return response;
     } catch (err) {
       console.error("Error posting reply:", err);
       throw err;
     }
+  };
+
+  // Handle submitting flagged content anyway
+  const handleSubmitReplyAnyway = async () => {
+    try {
+      const response = await forumService.createReply(
+        topicId,
+        pendingReplyContent,
+        {
+          acknowledgedIssues: true,
+        }
+      );
+
+      setReplies([...replies, response]);
+
+      setTopic({
+        ...topic,
+        lastActivity: new Date().toISOString(),
+      });
+
+      setFlaggedReplyContent(null);
+      setPendingReplyContent("");
+      setShowReplyForm(false);
+    } catch (err) {
+      console.error("Error posting reply:", err);
+    }
+  };
+
+  // Handle modifying flagged content
+  const handleModifyReply = (modifiedContent) => {
+    setPendingReplyContent(modifiedContent);
+    setFlaggedReplyContent(null);
+  };
+
+  // Handle canceling the reply
+  const handleCancelFlaggedReply = () => {
+    setFlaggedReplyContent(null);
+    setPendingReplyContent("");
+    setShowReplyForm(false);
   };
 
   const handleReplyButtonClick = () => {
@@ -341,48 +394,45 @@ const TopicPage = () => {
           onCancel={closeConfirmation}
         />
 
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+            <Link
+              to="/community"
+              className="text-sm font-medium px-3 py-1.5 rounded-full bg-[#f0ff26] hover:scale-110 whitespace-nowrap"
+            >
+              Community
+            </Link>
 
-<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
-  <div className="flex flex-wrap items-center gap-2 sm:gap-4">
-    <Link
-      to="/community"
-      className="text-sm font-medium px-3 py-1.5 rounded-full bg-[#f0ff26] hover:scale-110 whitespace-nowrap"
-    >
-      Community
-    </Link>
-    
-    {topic.category && (
-      <Link
-        to={`/community/category/${topic.category._id}`}
-        className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white hover:scale-110 min-w-[120px] max-w-[200px] text-center truncate"
-        title={topic.category.name} 
-      >
-        {topic.category.name}
-      </Link>
-    )}
-    
-    <div className="bg-black text-white px-3 py-1.5 text-sm font-medium rounded-full border border-white whitespace-nowrap">
-      Topic
-    </div>
-  </div>
+            {topic.category && (
+              <Link
+                to={`/community/category/${topic.category._id}`}
+                className="text-sm font-medium px-3 py-1.5 rounded-full border border-gray-300 bg-white hover:scale-110 min-w-[120px] max-w-[200px] text-center truncate"
+                title={topic.category.name}
+              >
+                {topic.category.name}
+              </Link>
+            )}
 
-  {isAdmin && (
-    <ForumAdminControls
-      page="topic"
-      topicId={topicId}
-      onDeleteTopic={() =>
-        openConfirmation(
-          "deleteTopic",
-          null,
-          "Are you sure you want to delete this topic? This action cannot be undone."
-        )
-      }
-      onEditTopic={() => setEditingTopic(true)}
-    />
-  )}
-</div>
+            <div className="bg-black text-white px-3 py-1.5 text-sm font-medium rounded-full border border-white whitespace-nowrap">
+              Topic
+            </div>
+          </div>
 
-       
+          {isAdmin && (
+            <ForumAdminControls
+              page="topic"
+              topicId={topicId}
+              onDeleteTopic={() =>
+                openConfirmation(
+                  "deleteTopic",
+                  null,
+                  "Are you sure you want to delete this topic? This action cannot be undone."
+                )
+              }
+              onEditTopic={() => setEditingTopic(true)}
+            />
+          )}
+        </div>
 
         {/* topic card */}
         <div className="mb-6 bg-white rounded-3xl border border-gray-200 overflow-hidden">
@@ -564,10 +614,23 @@ const TopicPage = () => {
             <h3 className="text-lg font-medium mb-4">
               {isAdmin ? "Post a Reply as Admin" : "Post a Reply"}
             </h3>
-            <ReplyForm
-              onSubmit={handleReply}
-              onCancel={() => setShowReplyForm(false)}
-            />
+
+            {flaggedReplyContent ? (
+              <FlaggedContentNotice
+                contentType="reply"
+                issues={flaggedReplyContent.issues}
+                onSubmitAnyway={handleSubmitReplyAnyway}
+                onModify={handleModifyReply}
+                onCancel={handleCancelFlaggedReply}
+                originalContent={pendingReplyContent}
+              />
+            ) : (
+              <ReplyForm
+                onSubmit={handleReply}
+                onCancel={() => setShowReplyForm(false)}
+                initialContent={pendingReplyContent}
+              />
+            )}
           </div>
         )}
 

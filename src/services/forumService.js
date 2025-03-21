@@ -71,9 +71,10 @@ const forumService = {
     return response.data;
   },
 
-  createReply: async (topicId, content) => {
+  createReply: async (topicId, content, options = {}) => {
     const response = await api.post(`/api/forum/topics/${topicId}/replies`, {
       content,
+      ...options,
     });
     return response.data;
   },
