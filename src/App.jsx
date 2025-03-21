@@ -38,6 +38,7 @@ import NewCategoryPage from "./pages/NewCategoryPage";
 import AdminNewTopicPage from "./pages/AdminNewTopicPage";
 import EditCategoryPage from "./pages/EditCategoryPage";
 import AdminNewItem from "./components/AdminNewItem";
+import ModerationDashboard from "./components/forum/ModerationDashboard";
 
 
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -127,6 +128,14 @@ function App() {
                 element={
                   <AdminRoute>
                     <NewCategoryPage />
+                  </AdminRoute>
+                }
+              />
+              <Route
+                path="/admin/moderation"
+                element={
+                  <AdminRoute>
+                    <ModerationDashboard />
                   </AdminRoute>
                 }
               />

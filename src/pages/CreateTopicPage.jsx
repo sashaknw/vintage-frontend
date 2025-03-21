@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import forumService from "../services/forumService";
+import FlaggedContentNotice from "../components/forum/FlaggedContentNotice";
 
 const CreateTopicPage = () => {
   const { categoryId } = useParams();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAdmin } = useAuth();
 
   const [category, setCategory] = useState(null);
   const [formData, setFormData] = useState({
@@ -16,6 +17,8 @@ const CreateTopicPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const [flaggedContent, setFlaggedContent] = useState(null);
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -60,17 +63,55 @@ const CreateTopicPage = () => {
       setIsSubmitting(true);
       setError(null);
 
-      const newTopic = await forumService.createTopic(categoryId, {
+      const response = await forumService.createTopic(categoryId, {
         title: formData.title,
         content: formData.content,
       });
 
-      navigate(`/community/topic/${newTopic._id}`);
+      if (response.flaggedContent) {
+        setFlaggedContent(response.flaggedContent);
+        setIsSubmitting(false);
+        return;
+      }
+
+      navigate(`/community/topic/${response._id}`);
     } catch (err) {
       console.error("Error creating topic:", err);
       setError(err.response?.data?.message || "Failed to create topic");
       setIsSubmitting(false);
     }
+  };
+
+  const handleSubmitAnyway = async () => {
+    try {
+      setIsSubmitting(true);
+
+      const response = await forumService.createTopic(categoryId, {
+        title: formData.title,
+        content: formData.content,
+        acknowledgedIssues: true,
+      });
+
+      navigate(`/community/topic/${response._id}`);
+    } catch (err) {
+      console.error("Error creating topic:", err);
+      setError(err.response?.data?.message || "Failed to create topic");
+      setIsSubmitting(false);
+    }
+  };
+
+ 
+  const handleModifyContent = (modifiedContent) => {
+    setFormData({
+      ...formData,
+      content: modifiedContent,
+    });
+    setFlaggedContent(null);
+  };
+
+ 
+  const handleCancel = () => {
+    setFlaggedContent(null);
   };
 
   if (loading) {
@@ -97,6 +138,53 @@ const CreateTopicPage = () => {
             >
               Back to Forum
             </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // notice for flagged content
+  if (flaggedContent) {
+    return (
+      <div className="w-full bg-black min-h-screen">
+        <div className="max-w-6xl mx-auto px-4 py-10">
+          <div className="mb-6">
+            <Link
+              to={`/community/category/${categoryId}`}
+              className="text-white hover:text-[#feff26] flex items-center transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-1"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Back to {category?.name || "Category"}
+            </Link>
+            <h1 className="text-3xl font-bold text-white mt-2">
+              Create New Topic
+            </h1>
+            <p className="text-gray-400 mt-1">
+              in {category?.name || "Category"}
+            </p>
+          </div>
+
+          <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden p-6">
+            <FlaggedContentNotice
+              contentType="topic"
+              issues={flaggedContent.issues}
+              onSubmitAnyway={handleSubmitAnyway}
+              onModify={handleModifyContent}
+              onCancel={handleCancel}
+              originalContent={formData.content}
+            />
           </div>
         </div>
       </div>
