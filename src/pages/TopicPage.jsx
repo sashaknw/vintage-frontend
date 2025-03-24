@@ -91,32 +91,39 @@ const TopicPage = () => {
   const canEditTopic = isTopicOwner || isAdmin;
   const canDeleteTopic = isTopicOwner || isAdmin;
 
-  const isReplyOwner = (replyAuthorId) => user && replyAuthorId === user._id;
+const isReplyOwner = (replyAuthorId) =>
+  user && replyAuthorId && replyAuthorId.toString() === user._id.toString();
   const canDeleteReply = (replyAuthorId) =>
     isReplyOwner(replyAuthorId) || isAdmin;
 
-  useEffect(() => {
-    const fetchTopicData = async () => {
-      try {
-        setLoading(true);
-        const data = await forumService.getTopicWithReplies(topicId);
-        setTopic(data.topic);
-        setEditedTopicContent(data.topic.content);
-        setReplies(data.replies);
+  
+    useEffect(() => {
+      const fetchTopicData = async () => {
+        try {
+          setLoading(true);
+          const data = await forumService.getTopicWithReplies(topicId);
+          setTopic(data.topic);
+          setEditedTopicContent(data.topic.content);
 
-        if (isAuthenticated && data.topic.followers) {
-          setFollowing(false);
+          const visibleReplies = data.replies.filter(
+            (reply) => reply.visible || (isAdmin && reply.pendingModeration) // Admins can see pending content
+          );
+
+          setReplies(visibleReplies);
+
+          if (isAuthenticated && data.topic.followers) {
+            setFollowing(false);
+          }
+        } catch (err) {
+          console.error("Error fetching topic:", err);
+          setError("Failed to load topic");
+        } finally {
+          setLoading(false);
         }
-      } catch (err) {
-        console.error("Error fetching topic:", err);
-        setError("Failed to load topic");
-      } finally {
-        setLoading(false);
-      }
-    };
+      };
 
-    fetchTopicData();
-  }, [topicId, isAuthenticated]);
+      fetchTopicData();
+    }, [topicId, isAuthenticated, isAdmin]);
 
   const handleFollow = async () => {
     if (!isAuthenticated) {
@@ -166,7 +173,6 @@ const TopicPage = () => {
     }
   };
 
-  // Handle submitting flagged content anyway
   const handleSubmitReplyAnyway = async () => {
     try {
       const response = await forumService.createReply(
@@ -176,6 +182,15 @@ const TopicPage = () => {
           acknowledgedIssues: true,
         }
       );
+
+      if (response.pendingModeration) {
+        setFlaggedReplyContent(null);
+        setPendingReplyContent("");
+        setShowReplyForm(false);
+
+        alert("Your reply has been submitted and is pending moderation.");
+        return;
+      }
 
       setReplies([...replies, response]);
 
@@ -192,13 +207,11 @@ const TopicPage = () => {
     }
   };
 
-  // Handle modifying flagged content
   const handleModifyReply = (modifiedContent) => {
     setPendingReplyContent(modifiedContent);
     setFlaggedReplyContent(null);
   };
 
-  // Handle canceling the reply
   const handleCancelFlaggedReply = () => {
     setFlaggedReplyContent(null);
     setPendingReplyContent("");

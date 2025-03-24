@@ -12,12 +12,10 @@ const FlaggedContentNotice = ({
   const [editedContent, setEditedContent] = useState(originalContent);
   const [isEditing, setIsEditing] = useState(false);
 
-  // Handle submitting the modified content
   const handleSubmitModified = () => {
     onModify(editedContent);
   };
 
-  // Generate a brief summary of issues
   const getIssueSummary = () => {
     const issueTypes = issues.map((issue) => issue.type);
     const uniqueTypes = [...new Set(issueTypes)];
@@ -45,9 +43,9 @@ const FlaggedContentNotice = ({
   };
 
   return (
-    <div className="bg-amber-50 border border-amber-300 rounded-lg p-4 mb-4">
+    <div className="bg-black border-2 border-white rounded-lg p-4 mb-4">
       <div className="flex items-start gap-3">
-        <div className="text-amber-500 flex-shrink-0 mt-1">
+        <div className="text-[#feff27] flex-shrink-0 mt-1">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -65,16 +63,16 @@ const FlaggedContentNotice = ({
         </div>
 
         <div className="flex-grow">
-          <h3 className="font-medium text-amber-800 mb-1">
+          <h3 className="font-medium text-white mb-1">
             Your {contentType} may not meet our community guidelines
           </h3>
 
-          <p className="text-sm text-amber-700 mb-3">
+          <p className="text-sm text-gray-300 mb-3">
             Our AI moderator has flagged this content for {getIssueSummary()}.
             Please review our{" "}
             <Link
               to="/community/guidelines"
-              className="underline hover:text-amber-800"
+              className="underline text-[#feff27] hover:text-white"
             >
               community guidelines
             </Link>
@@ -83,10 +81,10 @@ const FlaggedContentNotice = ({
 
           {issues.length > 0 && (
             <div className="mb-3">
-              <p className="text-sm font-medium text-amber-800 mb-1">
+              <p className="text-sm font-medium text-white mb-1">
                 Issues detected:
               </p>
-              <ul className="list-disc pl-5 text-sm text-amber-700">
+              <ul className="list-disc pl-5 text-sm text-gray-300">
                 {issues.map((issue, idx) => (
                   <li key={idx}>{issue.explanation}</li>
                 ))}
@@ -99,20 +97,20 @@ const FlaggedContentNotice = ({
               <textarea
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
-                className="w-full p-3 border border-amber-300 rounded-md h-32 focus:ring-amber-500 focus:border-amber-500"
+                className="w-full p-3 bg-gray-800 border border-gray-600 text-white rounded-md h-32 focus:ring-[#feff27] focus:border-[#feff27]"
                 placeholder="Edit your content..."
               />
 
               <div className="flex flex-wrap gap-2 mt-3">
                 <button
                   onClick={handleSubmitModified}
-                  className="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700"
+                  className="px-4 py-2 bg-[#feff27] text-black rounded-full text-sm hover:bg-white"
                 >
                   Submit Edited Version
                 </button>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="px-4 py-2 bg-white border border-amber-300 text-amber-700 rounded-md hover:bg-amber-50"
+                  className="px-4 py-2 bg-transparent border border-white text-white rounded-full text-sm hover:bg-white/10"
                 >
                   Cancel Editing
                 </button>
@@ -122,30 +120,30 @@ const FlaggedContentNotice = ({
             <div className="flex flex-wrap gap-2 mt-3">
               <button
                 onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700"
+                className="px-4 py-2 bg-[#feff27] text-black rounded-full text-sm hover:bg-white"
               >
                 Edit My {contentType}
               </button>
 
               <button
                 onClick={onSubmitAnyway}
-                className="px-4 py-2 bg-white border border-amber-300 text-amber-700 rounded-md hover:bg-amber-50"
+                className="px-4 py-2 bg-transparent border border-white text-white rounded-full text-sm hover:bg-white/10"
               >
                 Submit Anyway for Review
               </button>
 
               <button
                 onClick={onCancel}
-                className="px-4 py-2 bg-white text-gray-600 rounded-md hover:bg-gray-100"
+                className="px-4 py-2 bg-transparent text-gray-300 rounded-full text-sm hover:bg-white/10"
               >
                 Cancel
               </button>
             </div>
           )}
 
-          <p className="text-xs text-amber-600 mt-3">
-            Content submitted with issues flagged will be reviewed by our
-            moderation team before appearing in the community.
+          <p className="text-xs text-gray-400 mt-3">
+            Content submitted with issues will be reviewed by our moderation
+            team before appearing.
           </p>
         </div>
       </div>

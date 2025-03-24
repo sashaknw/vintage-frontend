@@ -1,5 +1,3 @@
-// components/admin/ModerationDashboard.jsx
-//to components/forum/ModerationDashboard.jsx
 import React, { useState, useEffect } from "react";
 import {
   getPendingModerations,
@@ -9,6 +7,35 @@ import {
   getModerationSettings,
   updateModerationSettings,
 } from "../../services/moderationService";
+
+// Notification component for action feedback
+const Notification = ({ message, type, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 5000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
+
+  const bgColor =
+    type === "success"
+      ? "bg-green-100 border-green-400 text-green-700"
+      : "bg-red-100 border-red-400 text-red-700";
+
+  return (
+    <div
+      className={`${bgColor} px-4 py-3 rounded border mb-4 flex justify-between items-center`}
+    >
+      <span>{message}</span>
+      <button
+        onClick={onClose}
+        className="ml-4 text-gray-500 hover:text-gray-800"
+      >
+        ×
+      </button>
+    </div>
+  );
+};
 
 const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -29,21 +56,28 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
     return `${Math.round(score * 100)}%`;
   };
 
-  // Get color class based on moderation score
   const getScoreColorClass = (score) => {
     if (score >= 0.7) return "text-red-600";
     if (score >= 0.4) return "text-orange-500";
     return "text-green-600";
   };
 
-  // Request AI suggestion for improving the content
   const handleGetSuggestion = async () => {
     try {
       setIsLoadingSuggestion(true);
       const response = await getContentImprovement(item._id);
-      setSuggestionContent(response.data.suggestedImprovement);
-      setEditedContent(response.data.suggestedImprovement);
-      setShowSuggestion(true);
+      const suggestedImprovement =
+        response.data?.data?.suggestedImprovement ||
+        response.data?.suggestedImprovement;
+
+      if (suggestedImprovement) {
+        setSuggestionContent(suggestedImprovement);
+        setEditedContent(suggestedImprovement);
+        setShowSuggestion(true);
+      } else {
+        throw new Error("No suggestion received from server");
+      }
+
       setIsLoadingSuggestion(false);
     } catch (error) {
       console.error("Error getting suggestion:", error);
@@ -51,13 +85,11 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
     }
   };
 
-  // Handle editing content
   const handleEditContent = () => {
     setIsEditing(true);
     setEditedContent(suggestionContent || getContent());
   };
 
-  // Handle saving edited content
   const handleSaveEdit = () => {
     onModify(item._id, editedContent);
     setIsEditing(false);
@@ -68,9 +100,11 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
       <div className="flex justify-between">
         <div>
           <h3 className="text-lg font-semibold">
-            {item.contentType === "ForumTopic" ? "Topic: " : "Reply: "}
+            {item.contentType === "topic" ? "Topic: " : "Reply: "}
             <span className="font-normal">
-              {item.contentId?.title || item.originalContent.substring(0, 30)}
+              {item.contentId?.title ||
+                item.originalContent?.substring(0, 30) ||
+                "Unknown content"}
               ...
             </span>
           </h3>
@@ -104,22 +138,24 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
             </div>
           </div>
 
-          {item.issues && item.issues.length > 0 && (
-            <div className="mb-4">
-              <h4 className="font-medium mb-1">Detected Issues:</h4>
-              <ul className="list-disc pl-5 text-sm">
-                {item.issues.map((issue, idx) => (
-                  <li key={idx} className="mb-1">
-                    <strong className="capitalize">{issue.type}:</strong>{" "}
-                    {issue.explanation}
-                    <span className="ml-1 text-gray-500">
-                      (Severity: {formatScore(issue.severity)})
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          {item.issues &&
+            Array.isArray(item.issues) &&
+            item.issues.length > 0 && (
+              <div className="mb-4">
+                <h4 className="font-medium mb-1">Detected Issues:</h4>
+                <ul className="list-disc pl-5 text-sm">
+                  {item.issues.map((issue, idx) => (
+                    <li key={idx} className="mb-1">
+                      <strong className="capitalize">{issue.type}:</strong>{" "}
+                      {issue.explanation}
+                      <span className="ml-1 text-gray-500">
+                        (Severity: {formatScore(issue.severity)})
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
           {isEditing ? (
             <div className="mb-4">
@@ -202,6 +238,7 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
 
 const ModerationSettings = ({ settings, onUpdateSettings }) => {
   const [formData, setFormData] = useState(settings);
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     setFormData(settings);
@@ -222,7 +259,10 @@ const ModerationSettings = ({ settings, onUpdateSettings }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsSaving(true);
     onUpdateSettings(formData);
+    // The parent component will update the state and notify the user
+    setTimeout(() => setIsSaving(false), 500);
   };
 
   return (
@@ -310,9 +350,12 @@ const ModerationSettings = ({ settings, onUpdateSettings }) => {
         <div className="flex justify-end mt-4">
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            disabled={isSaving}
+            className={`px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 ${
+              isSaving ? "opacity-50 cursor-not-allowed" : ""
+            }`}
           >
-            Save Settings
+            {isSaving ? "Saving..." : "Save Settings"}
           </button>
         </div>
       </form>
@@ -346,27 +389,85 @@ const ModerationDashboard = () => {
   const [report, setReport] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [notification, setNotification] = useState(null);
 
-  // Load data on initial render
+  // Show notification
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type });
+  };
+
+  // Clear notification
+  const clearNotification = () => {
+    setNotification(null);
+  };
+
   useEffect(() => {
     fetchData();
   }, [activeTab]);
 
-  // Fetch data based on active tab
   const fetchData = async () => {
     try {
       setLoading(true);
       setError(null);
 
       if (activeTab === "queue") {
-        const response = await getPendingModerations();
-        setPendingItems(response.data);
+        try {
+          const response = await getPendingModerations();
+          console.log("Moderation response:", response);
+
+          if (response && response.data) {
+            if (response.data.data && Array.isArray(response.data.data)) {
+              setPendingItems(response.data.data);
+            } else if (Array.isArray(response.data)) {
+              setPendingItems(response.data);
+            } else {
+              setPendingItems([]);
+              console.warn(
+                "Received data in unexpected format:",
+                response.data
+              );
+            }
+          } else {
+            setPendingItems([]);
+          }
+        } catch (err) {
+          console.error("Error in getPendingModerations:", err);
+          setPendingItems([]);
+          setError(
+            "Failed to load moderation queue. The service might be unavailable."
+          );
+        }
       } else if (activeTab === "settings") {
-        const response = await getModerationSettings();
-        setSettings(response.data);
+        try {
+          const response = await getModerationSettings();
+          console.log("Settings response:", response);
+
+          // Try to extract settings data from different possible structures
+          const settingsData = response.data?.data || response.data;
+
+          if (settingsData) {
+            console.log("Setting data to:", settingsData);
+            setSettings(settingsData);
+          } else {
+            console.warn("No settings data found in response:", response);
+          }
+        } catch (err) {
+          console.error("Error in getModerationSettings:", err);
+          setError("Failed to load settings. Using defaults.");
+        }
       } else if (activeTab === "report") {
-        const response = await getModerationReport();
-        setReport(response.data.report);
+        try {
+          const response = await getModerationReport();
+          const reportData =
+            response.data?.data?.report ||
+            response.data?.report ||
+            "No moderation report available.";
+
+          setReport(reportData);
+        } catch (err) {
+          console.error("Error in getModerationReport:", err);
+          setReport("Failed to load moderation report.");
+        }
       }
 
       setLoading(false);
@@ -377,7 +478,6 @@ const ModerationDashboard = () => {
     }
   };
 
-  // Handle decision to approve content
   const handleApprove = async (id) => {
     try {
       await processModerationDecision(
@@ -386,13 +486,14 @@ const ModerationDashboard = () => {
         "Content approved by moderator"
       );
       setPendingItems(pendingItems.filter((item) => item._id !== id));
+      showNotification("Content approved successfully");
     } catch (error) {
       console.error("Error approving content:", error);
       setError("Failed to approve content");
+      showNotification("Failed to approve content", "error");
     }
   };
 
-  // Handle decision to reject content
   const handleReject = async (id) => {
     try {
       await processModerationDecision(
@@ -401,13 +502,14 @@ const ModerationDashboard = () => {
         "Content rejected by moderator"
       );
       setPendingItems(pendingItems.filter((item) => item._id !== id));
+      showNotification("Content rejected successfully");
     } catch (error) {
       console.error("Error rejecting content:", error);
       setError("Failed to reject content");
+      showNotification("Failed to reject content", "error");
     }
   };
 
-  // Handle decision to modify content
   const handleModify = async (id, modifiedContent) => {
     try {
       await processModerationDecision(
@@ -417,21 +519,37 @@ const ModerationDashboard = () => {
         modifiedContent
       );
       setPendingItems(pendingItems.filter((item) => item._id !== id));
+      showNotification("Content modified and approved successfully");
     } catch (error) {
       console.error("Error modifying content:", error);
       setError("Failed to modify content");
+      showNotification("Failed to modify content", "error");
     }
   };
 
-  // Handle updating settings
   const handleUpdateSettings = async (newSettings) => {
     try {
+      console.log("Sending settings update:", newSettings);
       const response = await updateModerationSettings(newSettings);
-      setSettings(response.data);
-      setError(null);
+      console.log("Settings update response:", response);
+
+      // Try to extract settings from different possible structures
+      const updatedSettings = response.data?.data || response.data;
+
+      if (updatedSettings) {
+        console.log("Updated settings:", updatedSettings);
+        setSettings(updatedSettings);
+        showNotification("Settings updated successfully");
+      } else {
+        console.warn("No updated settings in response:", response);
+        // Even if we can't extract settings, still update local state with what we sent
+        setSettings(newSettings);
+        showNotification("Settings saved");
+      }
     } catch (error) {
       console.error("Error updating settings:", error);
       setError("Failed to update settings");
+      showNotification("Failed to update settings", "error");
     }
   };
 
@@ -446,6 +564,14 @@ const ModerationDashboard = () => {
           Refresh
         </button>
       </div>
+
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={clearNotification}
+        />
+      )}
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -465,7 +591,7 @@ const ModerationDashboard = () => {
               }`}
             >
               Moderation Queue
-              {pendingItems.length > 0 && (
+              {Array.isArray(pendingItems) && pendingItems.length > 0 && (
                 <span className="ml-2 bg-blue-100 text-blue-800 py-0.5 px-2 rounded-full text-xs">
                   {pendingItems.length}
                 </span>
@@ -507,11 +633,12 @@ const ModerationDashboard = () => {
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold">Moderation Queue</h2>
                 <span className="text-sm text-gray-500">
-                  {pendingItems.length} items awaiting review
+                  {Array.isArray(pendingItems) ? pendingItems.length : 0} items
+                  awaiting review
                 </span>
               </div>
 
-              {pendingItems.length === 0 ? (
+              {!Array.isArray(pendingItems) || pendingItems.length === 0 ? (
                 <div className="bg-white rounded-lg shadow-md p-8 text-center">
                   <p className="text-lg text-gray-600">
                     The moderation queue is empty!
