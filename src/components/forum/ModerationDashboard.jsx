@@ -46,11 +46,16 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   const getContent = () => {
+    if (item.originalContent) {
+      return item.originalContent;
+    }
     if (item.contentId?.content) {
       return item.contentId.content;
     }
-    return item.originalContent || "";
+    return "";
   };
+
+
 
   const getAuthorName = () => {
     if (item.contentId?.author?.name) {
