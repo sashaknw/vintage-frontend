@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import {
   getPendingModerations,
   processModerationDecision,
@@ -8,7 +9,6 @@ import {
   updateModerationSettings,
 } from "../../services/moderationService";
 
-// Notification component for action feedback
 const Notification = ({ message, type, onClose }) => {
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -50,6 +50,20 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
       return item.contentId.content;
     }
     return item.originalContent || "";
+  };
+
+  const getAuthorName = () => {
+    if (item.contentId?.author?.name) {
+      return item.contentId.author.name;
+    }
+    if (item.contentId?.author?.username) {
+      return item.contentId.author.username;
+    }
+    if (typeof item.author === "object" && item.author?.name) {
+      return item.author.name;
+    }
+    console.log("Moderation item structure:", item);
+    return "Unknown author";
   };
 
   const formatScore = (score) => {
@@ -96,7 +110,7 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+    <div className="bg-white rounded-3xl border-2 border-black p-6 mb-4">
       <div className="flex justify-between">
         <div>
           <h3 className="text-lg font-semibold">
@@ -119,11 +133,14 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
             <span className="text-sm text-gray-500">
               Posted: {new Date(item.createdAt).toLocaleString()}
             </span>
+            <span className="text-sm text-gray-500">
+              Author: {getAuthorName()}
+            </span>
           </div>
         </div>
         <button
           onClick={() => setShowDetails(!showDetails)}
-          className="text-blue-600 hover:text-blue-800"
+          className="bg-black text-white border border-white px-4 py-2 rounded-full text-sm font-medium hover:bg-white hover:text-black hover:border-black transition-colors flex items-center gap-1"
         >
           {showDetails ? "Hide Details" : "Show Details"}
         </button>
@@ -133,7 +150,7 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
         <div className="mt-4">
           <div className="mb-4">
             <h4 className="font-medium mb-1">Original Content:</h4>
-            <div className="p-3 bg-gray-50 rounded border border-gray-200 whitespace-pre-line">
+            <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 whitespace-pre-line">
               {getContent()}
             </div>
           </div>
@@ -163,18 +180,18 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
               <textarea
                 value={editedContent}
                 onChange={(e) => setEditedContent(e.target.value)}
-                className="w-full p-2 border border-gray-300 rounded h-40"
+                className="w-full p-3 border border-gray-300 rounded-xl h-40"
               />
               <div className="flex space-x-2 mt-2">
                 <button
                   onClick={handleSaveEdit}
-                  className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                  className="px-4 py-2 bg-black text-white border border-white rounded-full hover:bg-white hover:text-black transition-colors"
                 >
                   Save Changes
                 </button>
                 <button
                   onClick={() => setIsEditing(false)}
-                  className="px-3 py-1 bg-gray-200 text-gray-800 rounded hover:bg-gray-300"
+                  className="px-4 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300"
                 >
                   Cancel
                 </button>
@@ -185,48 +202,96 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
               {showSuggestion && suggestionContent && (
                 <div className="mb-4">
                   <h4 className="font-medium mb-1">Suggested Improvement:</h4>
-                  <div className="p-3 bg-blue-50 rounded border border-blue-200 whitespace-pre-line">
+                  <div className="p-3 bg-[#fafff0] rounded-xl border border-[#f0ff26] whitespace-pre-line">
                     {suggestionContent}
                   </div>
                   <button
                     onClick={handleEditContent}
-                    className="mt-2 text-sm text-blue-600 hover:text-blue-800"
+                    className="mt-2 px-3 py-1 bg-[#f0ff26] text-black rounded-full hover:bg-white transition-colors text-sm"
                   >
                     Use This Suggestion as Starting Point
                   </button>
                 </div>
               )}
 
-              <div className="flex flex-wrap gap-2 mt-4">
-                <button
-                  onClick={() => onApprove(item._id)}
-                  className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={() => onReject(item._id)}
-                  className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
-                >
-                  Reject
-                </button>
-                <button
-                  onClick={handleEditContent}
-                  className="px-3 py-1 bg-yellow-600 text-white rounded hover:bg-yellow-700"
-                >
-                  Modify
-                </button>
-                {!showSuggestion && (
+              <div className="flex flex-col gap-3 mt-4">
+                <div className="flex gap-3">
                   <button
-                    onClick={handleGetSuggestion}
-                    disabled={isLoadingSuggestion}
-                    className={`px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 ${
-                      isLoadingSuggestion ? "opacity-50 cursor-not-allowed" : ""
-                    }`}
+                    onClick={() => onApprove(item._id)}
+                    className="px-4 py-2 rounded-3xl bg-green-600 text-white border  hover:bg-white hover:text-green-600 hover:border-green-600 transition-colors"
                   >
-                    {isLoadingSuggestion ? "Loading..." : "Get AI Suggestion"}
+                    Approve
                   </button>
-                )}
+                  <button
+                    onClick={() => onReject(item._id)}
+                    className="px-4 py-2 rounded-3xl bg-red-600 text-white border border-red-600 hover:bg-white hover:text-red-600 transition-colors"
+                  >
+                    Reject
+                  </button>
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={handleEditContent}
+                    className="px-4 py-2 rounded-3xl bg-black text-white border border-white hover:bg-white hover:text-black hover:border-black transition-colors"
+                  >
+                    Modify Content
+                  </button>
+
+                  {!showSuggestion && (
+                    <motion.button
+                      onClick={handleGetSuggestion}
+                      disabled={isLoadingSuggestion}
+                      className={`px-4 py-2 rounded-3xl bg-white text-black border border-black  font-medium ${
+                        isLoadingSuggestion
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
+                      }`}
+                      whileHover={{
+                        scale: 1.05,
+                        backgroundColor: "#ffffff",
+                        color: "#000000",
+                        boxShadow: "0px 0px 8px rgba(0, 0, 0, 0.5)",
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 300,
+                        damping: 10,
+                      }}
+                    >
+                      {isLoadingSuggestion ? (
+                        <span className="flex items-center">
+                          <motion.span
+                            className="inline-block h-4 w-4 rounded-full bg-black mr-2"
+                            animate={{ scale: [1, 1.2, 1] }}
+                            transition={{ repeat: Infinity, duration: 1 }}
+                          />
+                          Loading...
+                        </span>
+                      ) : (
+                        <span className="flex items-center">
+                          <motion.svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 mr-2"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            animate={{ rotate: [0, 15, -15, 0] }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M13 10V3L4 14h7v7l9-11h-7z"
+                            />
+                          </motion.svg>
+                          Get AI Suggestion
+                        </span>
+                      )}
+                    </motion.button>
+                  )}
+                </div>
               </div>
             </>
           )}

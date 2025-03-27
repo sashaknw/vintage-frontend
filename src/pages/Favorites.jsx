@@ -62,12 +62,12 @@ const Favorites = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-serif font-bold text-black mb-8">
-          My Favorites
-        </h1>
-        <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-amber-500"></div>
+      <div className="w-full bg-black min-h-screen">
+        <div className="max-w-screen-2xl mx-auto px-8 py-10">
+          <h1 className="text-3xl font-bold text-white mb-8">My Favorites</h1>
+          <div className="flex justify-center items-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#f0ff26]"></div>
+          </div>
         </div>
       </div>
     );
@@ -75,20 +75,20 @@ const Favorites = () => {
 
   if (!user) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-serif font-bold text-black mb-8">
-          My Favorites
-        </h1>
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <h2 className="text-lg font-medium text-gray-900 mb-4">
-            Please log in to view your favorites
-          </h2>
-          <Link
-            to="/login"
-            className="inline-block bg-amber-700 hover:bg-amber-800 text-white px-6 py-3 rounded-md font-medium transition"
-          >
-            Login
-          </Link>
+      <div className="w-full bg-black min-h-screen">
+        <div className="max-w-screen-2xl mx-auto px-8 py-10">
+          <h1 className="text-3xl font-bold text-white mb-8">My Favorites</h1>
+          <div className="bg-white rounded-3xl border border-gray-200 p-8 text-center">
+            <h2 className="text-lg font-medium text-gray-900 mb-4">
+              Please log in to view your favorites
+            </h2>
+            <Link
+              to="/login"
+              className="bg-black text-white border border-white px-6 py-3 rounded-full font-medium hover:bg-white hover:text-black transition-colors"
+            >
+              Login
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -96,12 +96,12 @@ const Favorites = () => {
 
   if (error) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <h1 className="text-3xl font-serif font-bold text-black mb-8">
-          My Favorites
-        </h1>
-        <div className="bg-red-50 p-4 rounded-md">
-          <p className="text-red-800">{error}</p>
+      <div className="w-full bg-black min-h-screen">
+        <div className="max-w-screen-2xl mx-auto px-8 py-10">
+          <h1 className="text-3xl font-bold text-white mb-8">My Favorites</h1>
+          <div className="bg-red-600 text-white p-6 rounded-3xl">
+            <p>{error}</p>
+          </div>
         </div>
       </div>
     );
@@ -110,139 +110,126 @@ const Favorites = () => {
   const sortedFavorites = sortFavorites(favorites);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-serif font-bold text-black mb-8">
-        My Favorites
-      </h1>
+    <div className="w-full bg-white min-h-screen">
+      <div className="max-w-screen-2xl mx-auto px-8 py-10">
+        <h1 className="text-3xl font-bold text-black mb-8">My Favorites</h1>
 
-      {favorites.length === 0 ? (
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <svg
-            className="mx-auto h-16 w-16 text-amber-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-            ></path>
-          </svg>
-          <h2 className="mt-4 text-lg font-medium text-gray-900">
-            No favorites yet
-          </h2>
-          <p className="mt-2 text-gray-600 mb-6">
-            Start adding items to your favorites while you browse our
-            collection.
-          </p>
-          <Link to="/shop">
-            <a href="#_" className="relative inline-block text-lg group">
-              <span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
-                <span className="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
-                <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
-                <span className="relative">See Collection</span>
-              </span>
-              <span
-                className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0"
-                data-rounded="rounded-lg"
-              ></span>
-            </a>
-          </Link>
-        </div>
-      ) : (
-        <>
-          <div className="mb-6 flex justify-between items-center">
-            <p className="text-gray-600">
-              {favorites.length} {favorites.length === 1 ? "item" : "items"}
+        {favorites.length === 0 ? (
+          <div className="bg-white rounded-3xl border border-gray-600 p-8 text-center">
+            <svg
+              className="mx-auto h-16 w-16 text-[#f0ff26]"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+            <h2 className="mt-4 text-xl font-medium text-gray-900">
+              No favorites yet
+            </h2>
+            <p className="mt-2 text-gray-600 mb-6">
+              Start adding items to your favorites while you browse our
+              collection.
             </p>
-
-            <div className="flex items-center">
-              <select
-                className="border border-gray-300 rounded-md shadow-sm px-4 py-2 bg-white text-gray-700 hover:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500"
-                value={sortBy}
-                onChange={handleSortChange}
-              >
-                <option value="date">Sort by: Date Added</option>
-                <option value="priceLow">Sort by: Price Low to High</option>
-                <option value="priceHigh">Sort by: Price High to Low</option>
-                <option value="name">Sort by: Name</option>
-              </select>
-            </div>
+            <Link
+              to="/shop"
+              className="bg-black text-white border border-black px-6 py-3 rounded-full font-medium hover:bg-[#f0ff26] hover:text-black transition-colors inline-block"
+            >
+              Browse Collection
+            </Link>
           </div>
+        ) : (
+          <>
+            <div className="mb-6 flex justify-between items-center">
+              <p className="text-white">
+                {favorites.length} {favorites.length === 1 ? "item" : "items"}
+              </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {sortedFavorites.map((item) => (
-              <div
-                key={item.id}
-                className="group relative bg-white rounded-lg shadow-md overflow-hidden"
-              >
-                <Link to={`/item/${item.id}`} className="block">
-                  <div className="aspect-w-1 aspect-h-1 w-full overflow-hidden bg-gray-200">
-                    <img
-                      src={item.image}
-                      alt={item.name}
-                      className="w-full h-64 object-cover object-center group-hover:opacity-75 transition-opacity"
-                    />
-                  </div>
+              <div className="flex items-center">
+                <select
+                  className="border border-gray-200 rounded-full px-4 py-2 bg-black text-white hover:border-[#f0ff26] focus:outline-none focus:ring-2 focus:ring-[#f0ff26]"
+                  value={sortBy}
+                  onChange={handleSortChange}
+                >
+                  <option value="date">Sort by: Date Added</option>
+                  <option value="priceLow">Sort by: Price Low to High</option>
+                  <option value="priceHigh">Sort by: Price High to Low</option>
+                  <option value="name">Sort by: Name</option>
+                </select>
+              </div>
+            </div>
 
-                  <div className="p-4">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="text-sm text-amber-600 mb-1">
-                          {item.era} • {item.size}
-                        </p>
-                        <h3 className="text-lg font-medium text-gray-900">
-                          {item.name}
-                        </h3>
-                        <p className="mt-1 font-medium text-amber-700">
-                          €{item.price.toFixed(2)}
-                        </p>
-                      </div>
-                      <span className="bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded">
-                        {item.condition}
-                      </span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {sortedFavorites.map((item) => (
+                <div
+                  key={item.id}
+                  className="group bg-white rounded-3xl border border-gray-200 overflow-hidden relative"
+                >
+                  <Link to={`/item/${item.id}`} className="block">
+                    <div className="w-full h-[300px] overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
+                      />
                     </div>
-                  </div>
-                </Link>
 
-                <div className="p-4 pt-0 border-t border-gray-200 flex justify-between">
-                  <Link
-                    to={`/item/${item.id}`}
-                    className="text-amber-700 hover:text-amber-900 text-sm font-medium"
-                  >
-                    View Details
+                    <div className="p-6">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-sm text-gray-500 mb-1">
+                            {item.era} • {item.size}
+                          </p>
+                          <h3 className="text-lg font-medium text-black line-clamp-1">
+                            {item.name}
+                          </h3>
+                          <p className="mt-1 font-medium text-black">
+                            €{item.price.toFixed(2)}
+                          </p>
+                        </div>
+                        <span className="bg-[#f0ff26] text-black text-xs px-3 py-1 rounded-full">
+                          {item.condition}
+                        </span>
+                      </div>
+                    </div>
                   </Link>
+
+                  <div className="p-6 pt-0 border-t border-gray-100 flex justify-between items-center">
+                    <Link
+                      to={`/item/${item.id}`}
+                      className="text-black border border-black px-6 py-2 rounded-3xl hover:text-white hover:bg-black text-sm font-medium transition-colors"
+                    >
+                      View Details
+                    </Link>
+                    <button
+                      onClick={() => removeFavorite(item.id)}
+                      className="text-sm text-red-600 hover:text-black transition-colors"
+                      aria-label={`Remove ${item.name} from favorites`}
+                    >
+                      Remove
+                    </button>
+                  </div>
+
                   <button
                     onClick={() => removeFavorite(item.id)}
-                    className="text-sm text-red-600 hover:text-red-800"
+                    className="absolute top-3 right-3 p-2 rounded-full bg-white shadow-sm text-red-600 hover:text-black transition-colors"
                     aria-label={`Remove ${item.name} from favorites`}
                   >
-                    Remove
+                    <svg
+                      className="h-5 w-5"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                    </svg>
                   </button>
                 </div>
-
-                <button
-                  onClick={() => removeFavorite(item.id)}
-                  className="absolute top-2 right-2 p-1.5 rounded-full bg-white shadow-sm text-red-600 hover:text-amber-600"
-                  aria-label={`Remove ${item.name} from favorites`}
-                >
-                  <svg
-                    className="h-5 w-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
-                  </svg>
-                </button>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
+              ))}
+            </div>
+          </>
+        )}
+      </div>
     </div>
   );
 };

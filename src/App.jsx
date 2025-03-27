@@ -1,10 +1,5 @@
-import React from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import React, { lazy, Suspense } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthProvider";
 import { CartProvider } from "./context/CartContext";
 import { useAuth } from "./context/AuthContext";
@@ -12,47 +7,57 @@ import { useAuth } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
-import Home from "./pages/Home";
-import Shop from "./pages/Shop";
-import ItemDetails from "./pages/ItemDetails";
-import Categories from "./pages/Categories";
-import About from "./pages/About";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import PublicProfile from "./components/PublicProfile";
-import Profile from "./pages/Profile";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
+const LoadingSpinner = () => (
+  <div className="w-full h-screen flex justify-center items-center bg-black">
+    <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-[#feff27]"></div>
+  </div>
+);
 
-import Favorites from "./pages/Favorites";
-import NotFound from "./pages/NotFound";
+// Lazy-loaded ones
+const Home = lazy(() => import("./pages/Home"));
+const Shop = lazy(() => import("./pages/Shop"));
+const ItemDetails = lazy(() => import("./pages/ItemDetails"));
+const Categories = lazy(() => import("./pages/Categories"));
+const About = lazy(() => import("./pages/About"));
+const Login = lazy(() => import("./pages/Login"));
+const Register = lazy(() => import("./pages/Register"));
+const PublicProfile = lazy(() => import("./components/PublicProfile"));
+const Profile = lazy(() => import("./pages/Profile"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Checkout = lazy(() => import("./pages/Checkout"));
+const Favorites = lazy(() => import("./pages/Favorites"));
+const NotFound = lazy(() => import("./pages/NotFound"));
 
-import Community from "./pages/Community";
-import CategoryPage from "./pages/CategoryPage";
-import TopicPage from "./pages/TopicPage";
-import CreateTopicPage from "./pages/CreateTopicPage";
-import SearchResultsPage from "./pages/SearchResultsPage";
-import FollowedTopicsPage from "./pages/FollowedTopicsPage";
+const Community = lazy(() => import("./pages/Community"));
+const CategoryPage = lazy(() => import("./pages/CategoryPage"));
+const TopicPage = lazy(() => import("./pages/TopicPage"));
+const CreateTopicPage = lazy(() => import("./pages/CreateTopicPage"));
+const SearchResultsPage = lazy(() => import("./pages/SearchResultsPage"));
+const FollowedTopicsPage = lazy(() => import("./pages/FollowedTopicsPage"));
+const NewCategoryPage = lazy(() => import("./pages/NewCategoryPage"));
+const AdminNewTopicPage = lazy(() => import("./pages/AdminNewTopicPage"));
+const EditCategoryPage = lazy(() => import("./pages/EditCategoryPage"));
+const AdminNewItem = lazy(() => import("./components/AdminNewItem"));
+const ModerationDashboard = lazy(() =>
+  import("./components/forum/ModerationDashboard")
+);
 
-import NewCategoryPage from "./pages/NewCategoryPage";
-import AdminNewTopicPage from "./pages/AdminNewTopicPage";
-import EditCategoryPage from "./pages/EditCategoryPage";
-import AdminNewItem from "./components/AdminNewItem";
-import ModerationDashboard from "./components/forum/ModerationDashboard";
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated } = useAuth();
 
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
 
-import ProtectedRoute from "./components/ProtectedRoute";
-
-const AdminRoute = ({ children }) => {
-  return (
-    <ProtectedRoute>
-      <AdminOnlyRoute>{children}</AdminOnlyRoute>
-    </ProtectedRoute>
-  );
+  return children;
 };
 
-const AdminOnlyRoute = ({ children }) => {
-  const { isAdmin } = useAuth();
+const AdminRoute = ({ children }) => {
+  const { isAuthenticated, isAdmin } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
 
   if (!isAdmin) {
     return <Navigate to="/community" />;
@@ -61,6 +66,92 @@ const AdminOnlyRoute = ({ children }) => {
   return children;
 };
 
+const routes = [
+  // Publiqueee
+  { path: "/", element: <Home />, isPrivate: false },
+  { path: "/shop", element: <Shop />, isPrivate: false },
+  { path: "/item/:id", element: <ItemDetails />, isPrivate: false },
+  { path: "/categories", element: <Categories />, isPrivate: false },
+  { path: "/about", element: <About />, isPrivate: false },
+  { path: "/login", element: <Login />, isPrivate: false },
+  { path: "/register", element: <Register />, isPrivate: false },
+  { path: "/cart", element: <Cart />, isPrivate: false },
+  { path: "/profile/:userId", element: <PublicProfile />, isPrivate: false },
+
+  { path: "/community", element: <Community />, isPrivate: false },
+  {
+    path: "/community/category/:categoryId",
+    element: <CategoryPage />,
+    isPrivate: false,
+  },
+  {
+    path: "/community/topic/:topicId",
+    element: <TopicPage />,
+    isPrivate: false,
+  },
+  {
+    path: "/community/search",
+    element: <SearchResultsPage />,
+    isPrivate: false,
+  },
+
+  // Protected ones
+  { path: "/account", element: <Profile />, isPrivate: true },
+  { path: "/checkout", element: <Checkout />, isPrivate: true },
+  { path: "/favorites", element: <Favorites />, isPrivate: true },
+  {
+    path: "/community/category/:categoryId/new",
+    element: <CreateTopicPage />,
+    isPrivate: true,
+  },
+  {
+    path: "/community/followed",
+    element: <FollowedTopicsPage />,
+    isPrivate: true,
+  },
+
+  // Adminnnnnn
+  {
+    path: "/community/new-category",
+    element: <NewCategoryPage />,
+    isPrivate: true,
+    isAdmin: true,
+  },
+  {
+    path: "/admin/moderation",
+    element: <ModerationDashboard />,
+    isPrivate: true,
+    isAdmin: true,
+  },
+  {
+    path: "/community/new-topic",
+    element: <AdminNewTopicPage />,
+    isPrivate: true,
+    isAdmin: true,
+  },
+  {
+    path: "/community/category/:categoryId/admin-new",
+    element: <AdminNewTopicPage />,
+    isPrivate: true,
+    isAdmin: true,
+  },
+  {
+    path: "/community/category/:categoryId/edit",
+    element: <EditCategoryPage />,
+    isPrivate: true,
+    isAdmin: true,
+  },
+  {
+    path: "/admin/items/new",
+    element: <AdminNewItem />,
+    isPrivate: true,
+    isAdmin: true,
+  },
+
+  // 404 
+  { path: "*", element: <NotFound />, isPrivate: false },
+];
+
 function App() {
   return (
     <AuthProvider>
@@ -68,113 +159,27 @@ function App() {
         <div className="flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-grow">
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={<Home />} />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/item/:id" element={<ItemDetails />} />
-              <Route path="/categories" element={<Categories />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/cart" element={<Cart />} />
+            <Suspense fallback={<LoadingSpinner />}>
+              <Routes>
+                {routes.map((route) => {
+                  let element = route.element;
 
-              <Route path="/community" element={<Community />} />
-              <Route
-                path="/community/category/:categoryId"
-                element={<CategoryPage />}
-              />
-              <Route
-                path="/community/category/:categoryId/new"
-                element={<CreateTopicPage />}
-              />
-              <Route path="/community/topic/:topicId" element={<TopicPage />} />
-              <Route path="/community/search" element={<SearchResultsPage />} />
-              <Route
-                path="/community/followed"
-                element={<FollowedTopicsPage />}
-              />
-              <Route path="/profile/:userId" element={<PublicProfile />} />
+                  if (route.isPrivate && route.isAdmin) {
+                    element = <AdminRoute>{element}</AdminRoute>;
+                  } else if (route.isPrivate) {
+                    element = <ProtectedRoute>{element}</ProtectedRoute>;
+                  }
 
-              {/* Protected  */}
-              <Route
-                path="/account"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/checkout"
-                element={
-                  <ProtectedRoute>
-                    <Checkout />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/favorites"
-                element={
-                  <ProtectedRoute>
-                    <Favorites />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Admin  */}
-              <Route
-                path="/community/new-category"
-                element={
-                  <AdminRoute>
-                    <NewCategoryPage />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/moderation"
-                element={
-                  <AdminRoute>
-                    <ModerationDashboard />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/community/new-topic"
-                element={
-                  <AdminRoute>
-                    <AdminNewTopicPage />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/community/category/:categoryId/admin-new"
-                element={
-                  <AdminRoute>
-                    <AdminNewTopicPage />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/community/category/:categoryId/edit"
-                element={
-                  <AdminRoute>
-                    <EditCategoryPage />
-                  </AdminRoute>
-                }
-              />
-              <Route
-                path="/admin/items/new"
-                element={
-                  <AdminRoute>
-                    <AdminNewItem />
-                  </AdminRoute>
-                }
-              />
-
-              {/* 404 Route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+                  return (
+                    <Route
+                      key={route.path}
+                      path={route.path}
+                      element={element}
+                    />
+                  );
+                })}
+              </Routes>
+            </Suspense>
           </main>
           <Footer />
         </div>

@@ -77,6 +77,7 @@ const TopicPage = () => {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [flaggedReplyContent, setFlaggedReplyContent] = useState(null);
   const [pendingReplyContent, setPendingReplyContent] = useState("");
+  const [replyFormPosition, setReplyFormPosition] = useState("topic"); 
   const [editingTopic, setEditingTopic] = useState(false);
   const [editedTopicContent, setEditedTopicContent] = useState("");
   const [confirmDialog, setConfirmDialog] = useState({
@@ -91,39 +92,46 @@ const TopicPage = () => {
   const canEditTopic = isTopicOwner || isAdmin;
   const canDeleteTopic = isTopicOwner || isAdmin;
 
-const isReplyOwner = (replyAuthorId) =>
-  user && replyAuthorId && replyAuthorId.toString() === user._id.toString();
+  const isReplyOwner = (replyAuthorId) => {
+    if (!user || !user._id || !replyAuthorId) {
+      return false;
+    }
+    const userIdStr = String(user._id);
+    const authorIdStr = String(replyAuthorId);
+
+    return userIdStr === authorIdStr;
+  };
+
   const canDeleteReply = (replyAuthorId) =>
     isReplyOwner(replyAuthorId) || isAdmin;
 
-  
-    useEffect(() => {
-      const fetchTopicData = async () => {
-        try {
-          setLoading(true);
-          const data = await forumService.getTopicWithReplies(topicId);
-          setTopic(data.topic);
-          setEditedTopicContent(data.topic.content);
+  useEffect(() => {
+    const fetchTopicData = async () => {
+      try {
+        setLoading(true);
+        const data = await forumService.getTopicWithReplies(topicId);
+        setTopic(data.topic);
+        setEditedTopicContent(data.topic.content);
 
-          const visibleReplies = data.replies.filter(
-            (reply) => reply.visible || (isAdmin && reply.pendingModeration) // Admins can see pending content
-          );
+        const visibleReplies = data.replies.filter(
+          (reply) => reply.visible || (isAdmin && reply.pendingModeration) // Admins can see pending content
+        );
 
-          setReplies(visibleReplies);
+        setReplies(visibleReplies);
 
-          if (isAuthenticated && data.topic.followers) {
-            setFollowing(false);
-          }
-        } catch (err) {
-          console.error("Error fetching topic:", err);
-          setError("Failed to load topic");
-        } finally {
-          setLoading(false);
+        if (isAuthenticated && data.topic.followers) {
+          setFollowing(false);
         }
-      };
+      } catch (err) {
+        console.error("Error fetching topic:", err);
+        setError("Failed to load topic");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      fetchTopicData();
-    }, [topicId, isAuthenticated, isAdmin]);
+    fetchTopicData();
+  }, [topicId, isAuthenticated, isAdmin]);
 
   const handleFollow = async () => {
     if (!isAuthenticated) {
@@ -150,13 +158,11 @@ const isReplyOwner = (replyAuthorId) =>
 
       const response = await forumService.createReply(topicId, content);
 
-      // Check if response indicates flagged content
       if (response.flaggedContent) {
         setFlaggedReplyContent(response.flaggedContent);
-        return null; // Return null to prevent ReplyForm from clearing
+        return null;
       }
 
-      // If no moderation issues, add the reply
       setReplies([...replies, response]);
 
       setTopic({
@@ -218,13 +224,14 @@ const isReplyOwner = (replyAuthorId) =>
     setShowReplyForm(false);
   };
 
-  const handleReplyButtonClick = () => {
-    if (!isAuthenticated) {
-      navigate("/login", { state: { from: `/community/topic/${topicId}` } });
-      return;
-    }
-    setShowReplyForm(true);
-  };
+const handleReplyButtonClick = (position = "topic") => {
+  if (!isAuthenticated) {
+    navigate("/login", { state: { from: `/community/topic/${topicId}` } });
+    return;
+  }
+  setReplyFormPosition(position);
+  setShowReplyForm(true);
+};
 
   const handleLike = async (replyId) => {
     if (!isAuthenticated) {
@@ -610,7 +617,7 @@ const isReplyOwner = (replyAuthorId) =>
 
               {(!topic.isLocked || isAdmin) && !editingTopic && (
                 <button
-                  onClick={handleReplyButtonClick}
+                  onClick={() => handleReplyButtonClick("topic")}
                   className="bg-black text-white px-4 py-2 rounded-full text-sm hover:scale-110"
                 >
                   {isAdmin && topic.isLocked
@@ -622,7 +629,7 @@ const isReplyOwner = (replyAuthorId) =>
           </div>
         </div>
 
-        {showReplyForm && (
+        {showReplyForm && replyFormPosition === "topic" && (
           <div className="bg-white rounded-3xl border border-gray-200 p-6 mb-4">
             <h3 className="text-lg font-medium mb-4">
               {isAdmin ? "Post a Reply as Admin" : "Post a Reply"}
@@ -775,7 +782,7 @@ const isReplyOwner = (replyAuthorId) =>
             replies.length > 0 && (
               <div className="mt-6 text-center">
                 <button
-                  onClick={handleReplyButtonClick}
+                  onClick={() => handleReplyButtonClick("bottom")}
                   className="bg-[#f0ff26] text-black px-4 py-2 rounded-full text-sm hover:bg-white"
                 >
                   {isAdmin && topic.isLocked
@@ -784,6 +791,30 @@ const isReplyOwner = (replyAuthorId) =>
                 </button>
               </div>
             )}
+          {showReplyForm && replyFormPosition === "bottom" && (
+            <div className="bg-white rounded-3xl border border-gray-200 p-6 mt-4">
+              <h3 className="text-lg font-medium mb-4">
+                {isAdmin ? "Post a Reply as Admin" : "Post a Reply"}
+              </h3>
+
+              {flaggedReplyContent ? (
+                <FlaggedContentNotice
+                  contentType="reply"
+                  issues={flaggedReplyContent.issues}
+                  onSubmitAnyway={handleSubmitReplyAnyway}
+                  onModify={handleModifyReply}
+                  onCancel={handleCancelFlaggedReply}
+                  originalContent={pendingReplyContent}
+                />
+              ) : (
+                <ReplyForm
+                  onSubmit={handleReply}
+                  onCancel={() => setShowReplyForm(false)}
+                  initialContent={pendingReplyContent}
+                />
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

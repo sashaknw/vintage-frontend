@@ -37,7 +37,7 @@ const ForumAdminControls = ({
           </Link>
           <Link
             to="/admin/moderation"
-            className="bg-black text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-gray-800 transition-colors flex items-center gap-1"
+            className="bg-black text-white border border-white px-4 py-2 rounded-full text-sm font-medium hover:bg-white hover:text-black transition-colors flex items-center gap-1"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
