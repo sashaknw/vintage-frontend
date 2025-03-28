@@ -58,6 +58,10 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
 
 
   const getAuthorName = () => {
+    if (item.authorName) {
+      return item.authorName;
+    }
+
     if (item.contentId?.author?.name) {
       return item.contentId.author.name;
     }
@@ -67,7 +71,7 @@ const ModerationItem = ({ item, onApprove, onReject, onModify }) => {
     if (typeof item.author === "object" && item.author?.name) {
       return item.author.name;
     }
-    console.log("Moderation item structure:", item);
+
     return "Unknown author";
   };
 
